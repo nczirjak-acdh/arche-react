@@ -1,17 +1,30 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  console.log('LANGUAGE SWITHCER:');
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    console.log('LANGUAGE SWITHCER LANG:');
+    console.log(lng);
+    localStorage.setItem('i18nextLng', lng);
+  };
+
+  return (
+    <div className="flex gap-2">
+      <button onClick={() => changeLanguage('en')}>EN</button>
+      <button onClick={() => changeLanguage('de')}>DE</button>
+    </div>
+  );
+
+  /*const { i18n } = useTranslation();
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'en' ? 'de' : 'en';
     i18n.changeLanguage(newLang);
     // Optionally update query param or localStorage
-    const url = new URL(window.location.href);
-    url.searchParams.set('lang', newLang);
-    window.history.pushState({}, '', url.toString());
+    localStorage.setItem('i18nextLng', newLang);
   };
 
   return (
@@ -21,5 +34,5 @@ export default function LanguageSwitcher() {
     >
       {i18n.language === 'en' ? 'DE' : 'EN'}
     </button>
-  );
+  );*/
 }
