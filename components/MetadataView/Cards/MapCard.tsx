@@ -1,3 +1,4 @@
+'use client';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';

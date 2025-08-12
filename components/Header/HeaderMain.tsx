@@ -72,9 +72,7 @@ export default function HeaderMain({
             {mainNavigation}
           </div>
 
-          <div className="flex items-center gap-1">
-            <LanguageSwitcher />
-          </div>
+          <div className="flex items-center gap-1"></div>
           <button className="text-[#3B89AD]">
             <svg
               xmlns="http://www.w3.org/2000/svg"

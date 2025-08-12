@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 
-const FundingDataCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
+const TechnicalCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useTranslation();
 
@@ -17,7 +17,7 @@ const FundingDataCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
           className="w-full flex justify-between items-center px-4 py-3 focus:outline-none"
         >
           <span className="text-[16px] font-semibold text-[#1A1A1A]">
-            {t('funding')}
+            {t('technical_info')}
           </span>
           {isOpen ? (
             <ChevronUpIcon className="h-5 w-5 text-gray-600" />
@@ -86,5 +86,4 @@ const FundingDataCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
     </div>
   );
 };
-
-export default FundingDataCard;
+export default TechnicalCard;

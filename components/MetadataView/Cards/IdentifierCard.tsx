@@ -30,10 +30,7 @@ const IdentifierCard = ({ data }: { data: any }) => {
       {/* Content */}
       {isOpen && (
         <div className="flex p-[12px] gap-[24px] border-t border-[#E1EDF3]">
-          <a
-            href="https://id.acdh.oeaw.ac.at/wollmilchsau"
-            className="text-[#4F8CA5] underline break-words"
-          >
+          <a href="{data}" className="">
             {data}
           </a>
         </div>
