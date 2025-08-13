@@ -37,7 +37,7 @@ export default function BasicBlockClient({ dataJson }: { dataJson: any }) {
             id="meta-content-container"
           >
             {expertView ? (
-              <ExpertView dataJson={dataJson} />
+              <ExpertView dataJson={dataJson.expertTableData} />
             ) : (
               <Content dataJson={dataJson} />
             )}

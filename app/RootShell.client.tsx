@@ -19,6 +19,7 @@ export default function RootShell({
   children: React.ReactNode;
 }) {
   const { t } = useTranslation();
+
   const pathname = usePathname();
   const router = useRouter();
 

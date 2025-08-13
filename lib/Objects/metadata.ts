@@ -297,6 +297,10 @@ export class Metadata {
     return this.#fetchCardsData(props);
   }
 
+  getExpertTableData(): Record<string, any> {
+    return this.properties;
+  }
+
   toJSON(): Record<string, any> {
     const result: Record<string, any> = {};
 
