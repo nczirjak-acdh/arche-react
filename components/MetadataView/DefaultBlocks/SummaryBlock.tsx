@@ -1,11 +1,13 @@
 'use client';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface MetadataProps {
   data: Record<string, any[]>;
 }
 
 export default function SummaryBlock({ data }: MetadataProps) {
+  const { t } = useTranslation();
   const [showFullDesc, setShowFullDesc] = useState(false);
 
   const formatYear = (dateStr: string) => {
@@ -17,12 +19,15 @@ export default function SummaryBlock({ data }: MetadataProps) {
     Array.isArray(data[key]) && data[key].length > 0;
 
   return (
-    <div className="w-full" id="av-summary">
+    <div className="w-full flex flex-col gap-5 pt-5" id="av-summary">
+      <div className="w-full">
+        <h5>{t('Summary')}</h5>
+      </div>
       <ul className="list-disc list-inside space-y-2">
         {/* Research Discipline */}
         {hasKey('acdh:hasRelatedDiscipline') && (
           <li>
-            <strong>Research Discipline:</strong>{' '}
+            <strong>{t('Research Discipline')}:</strong>{' '}
             {data['acdh:hasRelatedDiscipline']
               .map((item) => item.value)
               .join(', ')}
@@ -32,7 +37,7 @@ export default function SummaryBlock({ data }: MetadataProps) {
         {/* Subject */}
         {hasKey('acdh:hasSubject') && (
           <li>
-            <strong>Subject:</strong>{' '}
+            <strong>{t('Subject')}:</strong>{' '}
             {data['acdh:hasSubject'].map((item) => item.value).join(', ')}
           </li>
         )}
@@ -40,7 +45,7 @@ export default function SummaryBlock({ data }: MetadataProps) {
         {/* Spatial Coverage */}
         {hasKey('acdh:hasSpatialCoverage') && (
           <li>
-            <strong>Spatial Coverage:</strong>{' '}
+            <strong>{t('Spatial Coverage')}:</strong>{' '}
             {data['acdh:hasSpatialCoverage']
               .map((item) => item.value)
               .join(', ')}
@@ -51,35 +56,34 @@ export default function SummaryBlock({ data }: MetadataProps) {
         {(hasKey('acdh:hasCoverageStartDate') ||
           hasKey('acdh:hasCoverageEndDate')) && (
           <li>
-            <div className="flex gap-2">
-              <span className="font-semibold">Coverage Date:</span>
-              <span>
-                {hasKey('acdh:hasCoverageStartDate') &&
-                  hasKey('acdh:hasCoverageEndDate') &&
-                  (() => {
-                    const start = formatYear(
-                      data['acdh:hasCoverageStartDate'][0]?.value
-                    );
-                    const end = formatYear(
-                      data['acdh:hasCoverageEndDate'][0]?.value
-                    );
-                    return start === end ? start : `${start} - ${end}`;
-                  })()}
-                {hasKey('acdh:hasCoverageStartDate') &&
-                  !hasKey('acdh:hasCoverageEndDate') &&
-                  formatYear(data['acdh:hasCoverageStartDate'][0]?.value)}
-                {!hasKey('acdh:hasCoverageStartDate') &&
-                  hasKey('acdh:hasCoverageEndDate') &&
-                  formatYear(data['acdh:hasCoverageEndDate'][0]?.value)}
-              </span>
-            </div>
+            <strong>{t('Coverage Date')}: </strong>
+            <span>
+              {hasKey('acdh:hasCoverageStartDate') &&
+                hasKey('acdh:hasCoverageEndDate') &&
+                (() => {
+                  const start = formatYear(
+                    data['acdh:hasCoverageStartDate'][0]?.value
+                  );
+                  const end = formatYear(
+                    data['acdh:hasCoverageEndDate'][0]?.value
+                  );
+                  return start === end ? start : `${start} - ${end}`;
+                })()}
+              {hasKey('acdh:hasCoverageStartDate') &&
+                !hasKey('acdh:hasCoverageEndDate') &&
+                formatYear(data['acdh:hasCoverageStartDate'][0]?.value)}
+              {!hasKey('acdh:hasCoverageStartDate') &&
+                hasKey('acdh:hasCoverageEndDate') &&
+                formatYear(data['acdh:hasCoverageEndDate'][0]?.value)}
+            </span>
           </li>
         )}
 
         {/* Era */}
         {hasKey('acdh:hasTemporalCoverage') && (
           <li>
-            <strong>Era:</strong> {data['acdh:hasTemporalCoverage'][0].value}
+            <strong>{t('Era')}:</strong>{' '}
+            {data['acdh:hasTemporalCoverage'][0].value}
           </li>
         )}
       </ul>
@@ -105,7 +109,7 @@ export default function SummaryBlock({ data }: MetadataProps) {
                     className="text-blue-600 underline mt-1"
                     onClick={() => setShowFullDesc((prev) => !prev)}
                   >
-                    {showFullDesc ? 'Show Less' : 'Show More'}
+                    {showFullDesc ? t('Show less') : t('Show More')}
                   </button>
                 )}
               </>
@@ -118,7 +122,7 @@ export default function SummaryBlock({ data }: MetadataProps) {
       {hasKey('acdh:hasNote') && (
         <ul className="mt-4 list-disc list-inside">
           <li>
-            <strong>Note:</strong> {data['acdh:hasNote'][0].value}
+            <strong>{t('Note')}:</strong> {data['acdh:hasNote'][0].value}
           </li>
         </ul>
       )}
