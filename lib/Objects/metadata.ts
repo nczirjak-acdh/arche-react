@@ -209,6 +209,33 @@ export class Metadata {
     return result;
   }
 
+  #fetchBlocksData(props: Record<string, string>) {
+    const result: Record<string, any[]> = {};
+
+    for (const [k, v] of Object.entries(props)) {
+      let bucket = this.properties?.[k];
+
+      if (!bucket) continue;
+
+      // Normalize to array
+      if (!Array.isArray(bucket)) {
+        bucket = [bucket];
+      }
+      for (const val of bucket) {
+        if (
+          val &&
+          typeof val === 'object' &&
+          'value' in val &&
+          val.value != null
+        ) {
+          val.guiTitle = v;
+          (result[k] ||= []).push(val);
+        }
+      }
+    }
+    return result;
+  }
+
   getSizeData() {
     const props: Record<string, string> = {
       'acdh:hasExtent': 'Extent',
@@ -297,8 +324,33 @@ export class Metadata {
     return this.#fetchCardsData(props);
   }
 
+  getSeeAlsoData() {
+    const props: Record<string, string> = {
+      'acdh:hasUrl': 'Url',
+      'acdh:hasRelatedProject': 'Related Project',
+    };
+
+    return this.#fetchBlocksData(props);
+  }
+
   getExpertTableData(): Record<string, any> {
     return this.properties;
+  }
+
+  getSummaryData(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:hasRelatedDiscipline': 'Research Discipline',
+      'acdh:hasSubject': 'Subject',
+      'acdh:hasSpatialCoverage': 'Spatial Coverage',
+      'acdh:hasCoverageStartDate': 'Coverage Date - Start',
+      'acdh:hasCoverageEndDate': 'Coverage Date - End',
+      'acdh:hasCreatedStartDateOriginal': 'Creation Date of Original - Start',
+      'acdh:hasCreatedEndDateOriginal': 'Creation Date of Original - Start',
+      'acdh:hasDescription': 'Description',
+      'acdh:hasNote': 'Note',
+      'acdh:hasTemporalCoverage': 'Era',
+    };
+    return this.#fetchBlocksData(props);
   }
 
   toJSON(): Record<string, any> {

@@ -9,6 +9,9 @@ import SeeAlsoBlock from '../DefaultBlocks/SeeAlsoBlock';
 import DisseminationsBlock from '../Disseminations/DisseminationsBlock';
 
 const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
+  console.log('See also data');
+  console.log(dataJson.seeAlsoData);
+
   return (
     <div id="">
       <MetadataContentHeader data={dataJson}></MetadataContentHeader>
@@ -27,9 +30,13 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
 
       <CiteBlock></CiteBlock>
 
-      <SummaryBlock></SummaryBlock>
+      <SummaryBlock data={dataJson.summaryData}></SummaryBlock>
+      {/* if topcollection then show hasArrangement */}
 
-      <SeeAlsoBlock></SeeAlsoBlock>
+      {dataJson.seeAlsoData && Object.keys(dataJson.seeAlsoData).length > 0 && (
+        <SeeAlsoBlock data={dataJson.seeAlsoData}></SeeAlsoBlock>
+      )}
+
       <div className="flex flex-col lg:flex-row w-full">TABBED Tables</div>
 
       <DisseminationsBlock></DisseminationsBlock>

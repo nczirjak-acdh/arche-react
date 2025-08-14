@@ -31,3 +31,55 @@ h4 {
 	line-height: normal;
 }
 
+  h5 {
+	color: #333;
+	font-family: Lato;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+h6 {
+  color: 212529;
+  font-family: Lato;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+footer a {
+  color: white;
+}
+
+input {
+  border: 1px solid #e1e1e1;
+  padding: 10px;
+}
+.placeholder {
+  background-color: transparent;
+}
+
+/* WebKit browsers (Chrome, Safari, Opera) */
+input::placeholder {
+  opacity: 0.3;
+  /* Ensures full opacity */
+}
+/* Mozilla Firefox */
+input::-moz-placeholder {
+  opacity: 0.3;
+  /* Ensures full opacity */
+}
+/* Internet Explorer 10-11 */
+input:-ms-input-placeholder {
+  opacity: 0.3;
+  /* Ensures full opacity */
+}
+/* Microsoft Edge */
+input::-ms-input-placeholder {
+  opacity: 0.3;
+  /* Ensures full opacity */
+}
+.form-control::placeholder {
+  opacity: 0.3;
+}
