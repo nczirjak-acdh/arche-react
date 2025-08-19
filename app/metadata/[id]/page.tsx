@@ -18,20 +18,14 @@ export default async function metadata({ params }: MetadataPageProps) {
 
   const lang = (await cookies()).get('i18nextLng')?.value || 'en';
 
-  console.log('ITTT::::');
-  console.log(lang);
   let data;
   try {
     data = await fetchMetadata(id, lang);
-    console.log('fetchMetadata inside metadata');
-    console.log(data);
-    console.log(data.getDataByProperty('acdh:hasTitle'));
   } catch (err) {
     return notFound();
   }
 
   if (!data) {
-    console.log('NOT FOUND');
     return notFound();
   }
   const dataJson = data.toJSON();

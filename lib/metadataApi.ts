@@ -1,11 +1,9 @@
 import { Metadata } from './Objects/metadata';
+import { PUBLIC_CONFIG } from '@/config/public';
 
 export async function fetchMetadata(id: string, lang: string) {
-  console.log('METADATA API CALL: ');
-
-  console.log(lang);
   const res = await fetch(
-    `https://arche-dev.acdh-dev.oeaw.ac.at/browser/api/expert/${id}/${lang}`,
+    `${PUBLIC_CONFIG.apiBase}/browser/api/expert/${id}/${lang}`,
     {
       // Optionally add headers, method, etc.
       next: { revalidate: 2 }, // Revalidate cache every 60 seconds (optional)
@@ -19,9 +17,5 @@ export async function fetchMetadata(id: string, lang: string) {
   const raw = await res.json();
 
   const meta = new Metadata(raw, lang);
-  console.log('METAAAAAAAAA');
-  console.log(meta.getDataByProperty('acdh:hasTitle'));
-  console.log(meta.getDataByProperty('acdh:hasDescription'));
-  //return meta;
   return meta; // 🔥 return a class instance
 }
