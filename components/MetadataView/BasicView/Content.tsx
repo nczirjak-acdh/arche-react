@@ -7,6 +7,7 @@ import SummaryBlock from '../DefaultBlocks/SummaryBlock';
 import SeeAlsoBlock from '../DefaultBlocks/SeeAlsoBlock';
 import DisseminationsBlock from '../Disseminations/DisseminationsBlock';
 import NewVersionBlock from '../DefaultBlocks/NewVersionBlock';
+import CollectionContent from '../DefaultBlocks/CollectionContent';
 
 const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
   return (
@@ -37,7 +38,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       )}
 
       <div className="flex flex-col lg:flex-row w-full">TABBED Tables</div>
-
+      <CollectionContent identifier={dataJson.id}></CollectionContent>
       <DisseminationsBlock></DisseminationsBlock>
     </div>
   );

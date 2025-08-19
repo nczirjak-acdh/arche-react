@@ -1,22 +1,207 @@
 'use client';
 
 import Cookies from 'js-cookie';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { PUBLIC_CONFIG } from '@/config/public';
 
-type Item = { id: number; title: string };
+// ---------- Types ----------
+export type TreeItem = {
+  id: string;
+  title?: string;
+  text?: string;
+  a_attr?: { href?: string };
+  dir?: boolean; // true = folder, false = file
+  icon?: string;
+  children?: boolean | TreeItem[]; // true => has (lazy) children
+};
 
-export default function CollectionContent({
-  identifier,
-}: {
+type Props = {
   identifier: string;
+  lang: string;
+};
+
+// ---------- Tree Node ----------
+function TreeNode({
+  item,
+  level,
+  loadChildren,
+}: {
+  item: TreeItem;
+  level: number;
+  loadChildren: (id: string) => Promise<TreeItem[]>;
 }) {
-  const [data, setData] = useState<Item[] | null>(null);
+  const isFolder = !!item.dir;
+  const [open, setOpen] = useState(false);
+  const [kids, setKids] = useState<TreeItem[] | null>(
+    Array.isArray(item.children) ? item.children : null
+  );
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const label = item.title || item.text || '(untitled)';
+  const href = item.a_attr?.href;
+
+  async function handleToggle() {
+    if (!isFolder) return;
+
+    // on first open, lazily fetch children when children === true and kids not loaded
+    if (!open && kids == null && item.children === true) {
+      setLoading(true);
+      setLoadError(null);
+      try {
+        const res = await loadChildren(item.id);
+        setKids(res);
+      } catch (e: any) {
+        setLoadError(e?.message ?? 'Failed to load children');
+        setKids([]); // avoid refetch loop; remove this if you want to retry on every expand
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    setOpen((v) => !v);
+  }
+
+  return (
+    <li>
+      <div
+        className="flex items-center px-3 py-2 hover:bg-gray-50"
+        style={{ paddingLeft: `${level * 16 + 12}px` }} // indent
+      >
+        {/* caret / spacer */}
+        {isFolder ? (
+          <button
+            onClick={handleToggle}
+            aria-label={open ? 'Collapse' : 'Expand'}
+            className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded hover:bg-gray-100"
+          >
+            <svg
+              className={`h-4 w-4 transition-transform ${open ? 'rotate-90' : ''}`}
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M7 5l6 5-6 5V5z" />
+            </svg>
+          </button>
+        ) : (
+          <span className="mr-2 inline-block h-5 w-5" />
+        )}
+
+        {/* icon */}
+        {isFolder ? (
+          <svg
+            className="mr-2 h-5 w-5 text-yellow-500"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M10 4l2 2h8a2 2 0 012 2v1H4V6a2 2 0 012-2h4z" />
+            <path d="M4 9h20v9a2 2 0 01-2 2H6a2 2 0 01-2-2V9z" />
+          </svg>
+        ) : (
+          <svg
+            className="mr-2 h-5 w-5 text-gray-500"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" />
+            <path d="M14 2v6h6" />
+          </svg>
+        )}
+
+        {/* label / link */}
+        {href ? (
+          <Link
+            href={href}
+            className="truncate text-sm text-blue-700 hover:underline"
+          >
+            {label}
+          </Link>
+        ) : (
+          <span className="truncate text-sm text-gray-800">{label}</span>
+        )}
+      </div>
+
+      {/* children area */}
+      {isFolder && open && (
+        <div>
+          {loading && (
+            <div
+              className="flex items-center px-3 py-2 text-gray-500"
+              style={{ paddingLeft: `${(level + 1) * 16 + 28}px` }}
+            >
+              <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+              Loading…
+            </div>
+          )}
+
+          {loadError && !loading && (
+            <div
+              className="px-3 py-2 text-sm text-red-600"
+              style={{ paddingLeft: `${(level + 1) * 16 + 28}px` }}
+            >
+              {loadError}
+            </div>
+          )}
+
+          {!loading && !loadError && kids && kids.length === 0 && (
+            <div
+              className="px-3 py-2 text-sm text-gray-500"
+              style={{ paddingLeft: `${(level + 1) * 16 + 28}px` }}
+            >
+              (empty)
+            </div>
+          )}
+
+          {!loading && !loadError && kids && kids.length > 0 && (
+            <ul className="border-l border-gray-200">
+              {kids.map((child) => (
+                <TreeNode
+                  key={child.id}
+                  item={child}
+                  level={level + 1}
+                  loadChildren={loadChildren}
+                />
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
+// ---------- Tree View ----------
+function TreeView({
+  data,
+  loadChildren,
+}: {
+  data: TreeItem[];
+  loadChildren: (id: string) => Promise<TreeItem[]>;
+}) {
+  return (
+    <div className="rounded-md border border-gray-200 bg-white">
+      <ul className="divide-y divide-gray-100">
+        {data.map((item) => (
+          <TreeNode
+            key={item.id}
+            item={item}
+            level={0}
+            loadChildren={loadChildren}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ---------- Main (fetch + render) ----------
+export default function CollectionContent({ identifier }: Props) {
+  const [data, setData] = useState<TreeItem[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const lang = Cookies.get('i18nextLng') || 'en';
-
+  // Top-level fetch
   useEffect(() => {
     const ac = new AbortController();
 
@@ -26,10 +211,13 @@ export default function CollectionContent({
         setError(null);
 
         const res = await fetch(
-          `${PUBLIC_CONFIG.apiBase}/browser/api/versions-list/${identifier}/${lang}`
+          `${PUBLIC_CONFIG.apiBase}/browser/api/child-tree/${encodeURIComponent(
+            identifier
+          )}/${encodeURIComponent(lang)}`,
+          { signal: ac.signal, cache: 'no-store' }
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
+        const json = (await res.json()) as TreeItem[];
         setData(json);
       } catch (e: any) {
         if (e.name !== 'AbortError') setError(e.message ?? 'Unknown error');
@@ -40,44 +228,36 @@ export default function CollectionContent({
 
     load();
     return () => ac.abort();
-  }, []);
+  }, [identifier, lang]);
 
-  return (
-    <div className="max-w-lg flex flex-col ">
-      {/* Loader */}
-      {loading && (
-        <div className="flex items-center gap-3 text-gray-600">
-          <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent font-black" />
-          Loading…
-        </div>
-      )}
+  // Lazy children loader (called by TreeNode when a folder is opened)
+  async function loadChildren(id: string): Promise<TreeItem[]> {
+    const res = await fetch(
+      `${PUBLIC_CONFIG.apiBase}/browser/api/child-tree/${encodeURIComponent(
+        id
+      )}/${encodeURIComponent(lang)}`,
+      { cache: 'no-store' }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = (await res.json()) as TreeItem[];
+    return json;
+  }
 
-      {/* Error */}
-      {!loading && error && (
-        <div className="rounded border border-red-300 bg-red-50 text-red-700 p-3">
-          Failed to load: {error}
-        </div>
-      )}
+  // Loading indicator
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 text-gray-600">
+        <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+        Loading…
+      </div>
+    );
+  }
 
-      {/* Data */}
-      {!loading && !error && data && (
-        <div>
-          {data.map((it, index) => (
-            <span key={it.id} className="">
-              <Link
-                href={`/browser/metadata/${it.id}`}
-                id={`breadcrumb-${it.id}`}
-                className="hover:underline text-blue-600"
-              >
-                {it.title}
-              </Link>
-              {index < data.length - 1 && (
-                <span className="mx-2 text-gray-400">/</span>
-              )}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  // If initial fetch failed → render empty div (per your request)
+  if (error || !data || data.length === 0) {
+    return <div />;
+  }
+
+  // Success → render the tree
+  return <TreeView data={data} loadChildren={loadChildren} />;
 }
