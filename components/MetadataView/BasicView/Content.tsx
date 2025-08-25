@@ -26,7 +26,10 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         <h4>{dataJson.title}</h4>
       </div>
 
-      <CiteBlock></CiteBlock>
+      <CiteBlock
+        src="https://arche-biblatex.acdh.oeaw.ac.at/?id=https://arche-dev.acdh-dev.oeaw.ac.at/api/262625&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson"
+        lang="en-US"
+      />
       {dataJson.summaryData && Object.keys(dataJson.summaryData).length > 0 && (
         <SummaryBlock data={dataJson.summaryData}></SummaryBlock>
       )}
