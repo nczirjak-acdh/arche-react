@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 
-const FundingDataCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
+const FundingDataCard = ({
+  data = {},
+  logos = {},
+}: {
+  data?: Record<string, any[]>;
+  logos?: Record<string, any[]>;
+}) => {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useTranslation();
 
@@ -80,6 +86,20 @@ const FundingDataCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
                 })}
               </div>
             );
+          })}
+
+          {Object.entries(logos).map(([key, logo]) => {
+            if (logo && typeof logo === 'object' && logo.value) {
+              return (
+                <img
+                  key={key}
+                  src={logo.value}
+                  alt={`logo-${key}`}
+                  className="w-full max-h-[72px] object-contain object-left"
+                />
+              );
+            }
+            return null; // nothing if no value
           })}
         </div>
       )}

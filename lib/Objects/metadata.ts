@@ -183,6 +183,12 @@ export class Metadata {
     return identifier;
   }
 
+  getFundingLogos(): Array<string> {
+    const logos = this.properties['acdh:hasFunderLogo'] || [];
+    return logos;
+    //data.getData('acdh:hasFunderLogo');
+  }
+
   #fetchCardsData(props: Record<string, string>) {
     const result: Record<string, any[]> = {};
 

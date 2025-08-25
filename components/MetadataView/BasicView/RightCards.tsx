@@ -23,7 +23,10 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
         <CreditsDataCard data={dataJson.creditsData} />
       )}
       {dataJson.fundingData && Object.keys(dataJson.fundingData).length > 0 && (
-        <FundingDataCard data={dataJson.fundingData} />
+        <FundingDataCard
+          data={dataJson.fundingData}
+          logos={dataJson.fundingLogos}
+        />
       )}
       {dataJson.technicalData &&
         Object.keys(dataJson.technicalData).length > 0 && (
