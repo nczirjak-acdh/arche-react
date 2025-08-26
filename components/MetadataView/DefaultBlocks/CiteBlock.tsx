@@ -196,7 +196,7 @@ export default function CiteBlock({
       <div className="flex flex-col items-start gap-6 self-stretch rounded-[12px] bg-[#EEF5F8] p-6">
         <div className="whitespace-pre-wrap">{output || '// No output'}</div>
 
-        <div>
+        <div className="w-full flex justify-end">
           {!stylesLoaded &&
             (format === 'APA_6TH' ||
               format === 'HARVARD' ||
