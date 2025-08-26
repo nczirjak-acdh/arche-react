@@ -4,6 +4,8 @@ import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { PUBLIC_CONFIG } from '@/config/public';
+import Image from 'next/image';
+import loaderGif from '@/public/images/arche_logo_flip_47px.gif';
 
 type Item = { id: number; title: string };
 
@@ -46,9 +48,14 @@ export default function BreadcrumbBlock({
     <div className="max-w-lg flex flex-col ">
       {/* Loader */}
       {loading && (
-        <div className="flex items-center gap-3 text-gray-600">
-          <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent font-black" />
-          Loading…
+        <div className="flex justify-center items-center p-8">
+          <Image
+            src={loaderGif}
+            alt="Loading...."
+            width={64}
+            height={64}
+            className="w-16 h-16"
+          />
         </div>
       )}
 

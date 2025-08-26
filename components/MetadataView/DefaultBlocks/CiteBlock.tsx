@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Cite from 'citation-js';
+import Image from 'next/image';
+import loaderGif from '@/public/images/arche_logo_flip_47px.gif';
 
 type Props = {
   /** URL that returns CSL-JSON (your example works out of the box) */
@@ -168,7 +170,15 @@ export default function CiteBlock({
     return (
       <div className="flex items-center gap-2 text-gray-600">
         <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
-        Loading CSL-JSON…
+        <div className="flex justify-center items-center p-8">
+          <Image
+            src={loaderGif}
+            alt="Loading...."
+            width={64}
+            height={64}
+            className="w-16 h-16"
+          />
+        </div>
       </div>
     );
   }
@@ -191,9 +201,15 @@ export default function CiteBlock({
             (format === 'APA_6TH' ||
               format === 'HARVARD' ||
               format === 'VANCOUVER') && (
-              <span className="text-sm text-orange-600">
-                (Loading styles...)
-              </span>
+              <div className="flex justify-center items-center p-8">
+                <Image
+                  src={loaderGif}
+                  alt="Loading...."
+                  width={64}
+                  height={64}
+                  className="w-16 h-16"
+                />
+              </div>
             )}
 
           <select

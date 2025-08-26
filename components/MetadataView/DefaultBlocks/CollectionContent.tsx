@@ -4,6 +4,8 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { PUBLIC_CONFIG } from '@/config/public';
+import Image from 'next/image';
+import loaderGif from '@/public/images/arche_logo_flip_47px.gif';
 
 // ---------- Types ----------
 export type TreeItem = {
@@ -126,12 +128,14 @@ function TreeNode({
       {isFolder && open && (
         <div>
           {loading && (
-            <div
-              className="flex items-center px-3 py-2 text-gray-500"
-              style={{ paddingLeft: `${(level + 1) * 16 + 28}px` }}
-            >
-              <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
-              Loading…
+            <div className="flex justify-center items-center p-8">
+              <Image
+                src={loaderGif}
+                alt="Loading..."
+                width={64}
+                height={64}
+                className="w-16 h-16"
+              />
             </div>
           )}
 
@@ -246,9 +250,14 @@ export default function CollectionContent({ identifier }: Props) {
   // Loading indicator
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-gray-600">
-        <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
-        Loading…
+      <div className="flex justify-center items-center p-8">
+        <Image
+          src={loaderGif}
+          alt="Loading..."
+          width={64}
+          height={64}
+          className="w-16 h-16"
+        />
       </div>
     );
   }

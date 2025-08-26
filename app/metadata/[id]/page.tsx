@@ -14,8 +14,10 @@ interface MetadataPageProps {
 }
 
 export default async function metadata({ params }: MetadataPageProps) {
+  console.log('itt');
   const { id } = await params;
 
+  //const lang = 'en';
   const lang = (await cookies()).get('i18nextLng')?.value || 'en';
 
   let data;
