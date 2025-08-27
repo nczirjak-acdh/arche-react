@@ -17,3 +17,11 @@ export function getDataByProperty(
   if (first !== undefined) return Array.isArray(first) ? first : [first];
   return [];
 }
+
+export function humanLang<T extends Record<string, string> | undefined>(
+  obj: T,
+  lang = 'en'
+) {
+  if (!obj) return '';
+  return obj[lang] ?? obj.en ?? Object.values(obj)[0] ?? '';
+}

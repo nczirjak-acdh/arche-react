@@ -14,7 +14,6 @@ interface MetadataPageProps {
 }
 
 export default async function metadata({ params }: MetadataPageProps) {
-  console.log('itt');
   const { id } = await params;
 
   //const lang = 'en';
