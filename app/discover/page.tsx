@@ -33,7 +33,7 @@ export default function DiscoverPage() {
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* LEFT: facets (30%) */}
         <aside className="w-full lg:w-[30%] space-y-4">
-          Facets block :<br></br> {JSON.stringify(data.facets, null, 2)}
+          <FacetsBlock data={data.facets}></FacetsBlock>
           {/* {Object.entries(data.facets).map(([facetKey, facet]) => (
             <FacetsBlock />
          ))
@@ -44,11 +44,8 @@ export default function DiscoverPage() {
 
         {/* RIGHT: pager + results (70%) */}
         <div className="w-full lg:w-[70%] space-y-4">
-          Results block:
-          <br></br>
-          {JSON.stringify(data.results, null, 2)}
           {/* <Pager page={page} pageSize={pageSize} totalCount={totalCount} /> */}
-          <ResultBlock></ResultBlock>
+          <ResultBlock data={data.results}></ResultBlock>
           <br></br>
           Paging block: <br></br>
           Totalcount: {JSON.stringify(data.totalCound, null, 2)}
