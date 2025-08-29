@@ -21,7 +21,7 @@ const Footer = () => {
           <div className="">
             <a href="https://www.oeaw.ac.at/acdh/">
               <img
-                src="/images/logos/acdh-white-transparent-logo.svg"
+                src="/browser/images/logos/acdh-white-transparent-logo.svg"
                 alt="ACDH Logo"
                 className="mb-4 w-full max-w-[64px]"
               />
@@ -40,7 +40,7 @@ const Footer = () => {
             <p className="mt-4">T: +43 1 51581-2200</p>
             <a href="https://www.oeaw.ac.at/" className="inline-block mt-4">
               <img
-                src="/images/logos/OEAW_Logo_white.svg"
+                src="/browser/images/logos/OEAW_Logo_white.svg"
                 alt="ÖAW Logo"
                 className="max-w-[120px]"
               />
@@ -115,7 +115,7 @@ const Footer = () => {
               />
               <button type="submit" className="bg-[#3B89AD] p-2 rounded-r-md">
                 <img
-                  src="/images/common/search_icon.svg"
+                  src="/browser/images/common/search_icon.svg"
                   alt="Search"
                   className="w-4 h-4"
                 />

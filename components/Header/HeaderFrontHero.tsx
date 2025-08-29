@@ -10,7 +10,7 @@ export default function HeaderFrontHero() {
         {/* Left character (hidden on small screens) */}
         <div className="hidden md:flex md:w-1/4 lg:w-1/4 xl:w-1/3 items-end justify-center">
           <Image
-            src="/images/common/dante_pc.svg"
+            src="/browser/images/common/dante_pc.svg"
             alt="DANTE ARCHE"
             width={180}
             height={200}
@@ -23,14 +23,19 @@ export default function HeaderFrontHero() {
           <p className="text-xs text-[#005b9f] font-semibold tracking-wide uppercase mb-1">
             SEARCH NOW
           </p>
-          <h1 className="text-2xl font-semibold text-[#2c3e50] mb-1">Discover Resources</h1>
+          <h1 className="text-2xl font-semibold text-[#2c3e50] mb-1">
+            Discover Resources
+          </h1>
           <span className="text-sm text-[#5b7083]">
             Browse the wide range of resources in ARCHE
           </span>
 
           {/* Search Form */}
           <div className="w-full pt-4 pb-2">
-            <form className="flex w-full max-w-md mx-auto" id="hero-smart-search-form">
+            <form
+              className="flex w-full max-w-md mx-auto"
+              id="hero-smart-search-form"
+            >
               <input
                 type="search"
                 id="sm-hero-str"
@@ -43,7 +48,7 @@ export default function HeaderFrontHero() {
                 className="bg-[#22b6c0] px-4 py-2 rounded-r-full flex items-center justify-center"
               >
                 <Image
-                  src="/images/common/search_icon.svg"
+                  src="/browser/images/common/search_icon.svg"
                   alt="Search"
                   width={16}
                   height={16}
@@ -52,7 +57,7 @@ export default function HeaderFrontHero() {
             </form>
           </div>
 
-        {/* Logos */}
+          {/* Logos */}
           <div className="flex space-x-4 items-center mt-2">
             <Link
               href="https://www.coretrustseal.org/wp-content/uploads/2021/07/20210709-ARCHE-CTS_Certification_2020-2022.pdf"
@@ -65,10 +70,7 @@ export default function HeaderFrontHero() {
                 height={32}
               />
             </Link>
-            <Link
-              href="http://hdl.handle.net/11372/DOC-105"
-              target="_blank"
-            >
+            <Link href="http://hdl.handle.net/11372/DOC-105" target="_blank">
               <Image
                 src="/images/partner-logos/clarin_b_centre_72.png"
                 alt="CLARIN B-centre"
@@ -82,7 +84,7 @@ export default function HeaderFrontHero() {
         {/* Right character (hidden on small screens) */}
         <div className="hidden md:flex md:w-1/4 lg:w-1/4 xl:w-1/3 items-end justify-center">
           <Image
-            src="/images/common/nora.svg"
+            src="/browser/images/common/nora.svg"
             alt="NORA ARCHE"
             width={180}
             height={200}

@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import HomePage from '@/components/FrontPage/HomePage';
 import HeaderMain from '@/components/Header/HeaderMain';
 import HeaderFront from '@/components/FrontPage/HeaderFront';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
@@ -19,37 +19,53 @@ export default function RootShell({
   children: React.ReactNode;
 }) {
   const { t } = useTranslation();
-
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname(); // e.g. /browser/discover
+  const searchParams = useSearchParams(); // current querystring
 
   const [lang, setLang] = useState(initialLang);
 
   // On mount: prefer localStorage if present, keep everything in sync
   useEffect(() => {
-    const stored = localStorage.getItem('i18nextLng');
+    const stored =
+      typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') : null;
     const desired = stored || initialLang;
 
     setLang(desired);
     if (i18n.language !== desired) i18n.changeLanguage(desired);
 
-    // ensure <html lang> matches on the client too
-    if (document.documentElement.lang !== desired) {
+    if (
+      typeof document !== 'undefined' &&
+      document.documentElement.lang !== desired
+    ) {
       document.documentElement.lang = desired;
     }
 
-    // write cookie so future SSR uses the same lang
     document.cookie = `i18nextLng=${desired}; path=/; max-age=31536000; SameSite=Lax`;
   }, [initialLang]);
 
-  // Optional: expose a handler to switch language from any button
+  // Helper to update preferredLang in the URL while preserving other params
+  const updatePreferredLangInUrl = (next: string) => {
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
+    params.set('preferredLang', next);
+    const nextUrl = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    router.replace(nextUrl, { scroll: false });
+  };
+
   const changeLanguage = (next: string) => {
-    localStorage.setItem('i18nextLng', next);
+    // Persist
+    try {
+      localStorage.setItem('i18nextLng', next);
+    } catch {}
     document.cookie = `i18nextLng=${next}; path=/; max-age=31536000; SameSite=Lax`;
     i18n.changeLanguage(next);
-    document.documentElement.lang = next;
+    if (typeof document !== 'undefined') document.documentElement.lang = next;
     setLang(next);
-    // If you fetch data on the server with Accept-Language/cookie, refresh:
+
+    // Update URL param (works for any route; if the page doesn’t care, it’s harmless)
+    updatePreferredLangInUrl(next);
+
+    // Refresh SSR parts that depend on the cookie
     router.refresh();
   };
 
@@ -71,7 +87,6 @@ export default function RootShell({
               <a href="#" className="text-[#2c3e50] hover:underline">
                 About Arche
               </a>
-              {/* Example language toggle */}
               <button
                 className="ml-4 underline"
                 onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}

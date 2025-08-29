@@ -26,7 +26,7 @@ export default function HeaderMain({
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Image
-            src="/images/logos/arche_transparent_header.svg"
+            src="/browser/images/logos/arche_transparent_header.svg"
             alt="ARCHE logo"
             width={160}
             height={40}

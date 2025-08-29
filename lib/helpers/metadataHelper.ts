@@ -25,3 +25,14 @@ export function humanLang<T extends Record<string, string> | undefined>(
   if (!obj) return '';
   return obj[lang] ?? obj.en ?? Object.values(obj)[0] ?? '';
 }
+
+export function titleId(label: unknown): string {
+  const s = (label ?? '').toString();
+  return s
+    .normalize('NFD') // split accents
+    .replace(/[\u0300-\u036f]/g, '') // remove accents
+    .replace(/[^\w\s-]/g, '') // drop non word/space/hyphen
+    .trim()
+    .replace(/\s+/g, '_') // spaces -> underscores
+    .toLowerCase();
+}

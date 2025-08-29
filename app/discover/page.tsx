@@ -17,7 +17,7 @@ export default function DiscoverPage() {
 
   const { data, error, loading } = useApi<any>(url);
 
-  if (loading) return <Loader label="Keresés folyamatban…" />;
+  if (loading) return <Loader label="Loading…" />;
   if (error) {
     return (
       <div className="mx-auto max-w-4xl rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
