@@ -11,9 +11,17 @@ import ViewShareCard from '../Cards/ViewShareCard';
 import VersionsCard from '../Cards/VersionsCard';
 
 const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
+  const [hasImage, setHasImage] = React.useState(false);
+
   return (
     <div className="grid w-full lg:w-[30%] gap-8">
-      <TitleImageCard data={dataJson.id}></TitleImageCard>
+      <div className={hasImage ? 'block' : 'hidden'}>
+        <TitleImageCard
+          id={`${process.env.NEXT_PUBLIC_API_BASE}/api/${dataJson.id}`}
+          onFound={setHasImage}
+        />
+      </div>
+
       <MapCard data={dataJson.id}></MapCard>
       <IdentifierCard data={dataJson.pidOrAcdhIdentifier}></IdentifierCard>
       {dataJson.licenseData && Object.keys(dataJson.licenseData).length > 0 && (
