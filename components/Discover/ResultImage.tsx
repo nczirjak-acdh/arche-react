@@ -1,36 +1,40 @@
-// ResultImage.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function ResultImage({
   id,
   onFound,
 }: {
-  id: string;
+  id: string | number; // accept both
   onFound?: (hasImage: boolean) => void;
 }) {
   const [src, setSrc] = useState<string | null>(null);
-  console.log('RESULT IMAGE STARTED');
-  const url = `${process.env.NEXT_PUBLIC_THUMBNAILS_URL}${id}&width=400`; // 👈 build your url with id
+
+  // Build once per id to avoid re-fetch loops if parent re-renders
+  const url = useMemo(() => {
+    // If NEXT_PUBLIC_THUMBNAILS_URL already contains a query like '?id=',
+    // keep concatenation consistent with your backend expectations.
+    const base = process.env.NEXT_PUBLIC_THUMBNAILS_URL ?? '';
+    return `${base}${id}&width=400`;
+  }, [id]);
 
   useEffect(() => {
     let active = true;
 
     async function checkImage() {
       try {
-        const res = await fetch(url, { method: 'HEAD' }); // only ask for headers
+        const res = await fetch(url, { method: 'HEAD' });
         if (!active) return;
+
         if (res.ok) {
-          console.log('IMAGE ok ');
-          console.log(url);
           setSrc(url);
           onFound?.(true);
         } else {
-          setSrc(null); // 404 or other error
+          setSrc(null);
           onFound?.(false);
         }
-      } catch (e) {
+      } catch {
         if (active) {
           setSrc(null);
           onFound?.(false);
@@ -42,13 +46,13 @@ export default function ResultImage({
     return () => {
       active = false;
     };
-  }, [id, onFound]);
+  }, [url, onFound]);
 
   if (!src) return null;
 
   return (
     <img
-      src={url}
+      src={src}
       alt={`Preview ${id}`}
       className="max-h-32 w-auto object-contain rounded"
       loading="lazy"
