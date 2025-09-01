@@ -28,11 +28,15 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         <hr className="my-4 border-[#E1EDF3]" />
       </div>
       <NewVersionBlock identifier={dataJson.id}></NewVersionBlock>
-      <NextPrevItem></NextPrevItem>
+
+      {dataJson.parentId &&
+        typeof dataJson.parentId === 'string' &&
+        dataJson.parentId.trim() !== '' && (
+          <NextPrevItem identifier={dataJson.id} parentId={dataJson.parentId} />
+        )}
       <div className="flex flex-col lg:flex-row w-full">
         <h4>{dataJson.title}</h4>
       </div>
-
       <CiteBlock
         src={`https://arche-biblatex.acdh.oeaw.ac.at/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
         lang="en-US"

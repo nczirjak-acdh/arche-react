@@ -63,6 +63,12 @@ export class Metadata {
   getId(): string {
     return this.data.id;
   }
+  getParentId(): string {
+    if (this.data?.['acdh:isPartOf']) {
+      return Object.keys(this.data?.['acdh:isPartOf'])[0];
+    }
+    return '';
+  }
 
   getTitle(): string | null {
     const titleNode = this.properties['acdh:hasTitle'];
