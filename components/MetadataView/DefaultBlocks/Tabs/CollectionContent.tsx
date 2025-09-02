@@ -18,11 +18,6 @@ export type TreeItem = {
   children?: boolean | TreeItem[]; // true => has (lazy) children
 };
 
-type Props = {
-  identifier: string;
-  lang: string;
-};
-
 // ---------- Tree Node ----------
 function TreeNode({
   item,
@@ -200,11 +195,19 @@ function TreeView({
 }
 
 // ---------- Main (fetch + render) ----------
-export default function CollectionContent({ identifier }: Props) {
+export default function CollectionContent({
+  identifier,
+  onDataStatus,
+}: {
+  identifier: string | number; // accept both
+  onDataStatus: (hasData: boolean) => void;
+}) {
+  console.log('CollectionContent called');
   const [data, setData] = useState<TreeItem[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const lang = Cookies.get('i18nextLng') || 'en';
+
   // Top-level fetch
   useEffect(() => {
     const ac = new AbortController();
@@ -223,16 +226,18 @@ export default function CollectionContent({ identifier }: Props) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = (await res.json()) as TreeItem[];
         setData(json);
-      } catch (e: any) {
-        if (e.name !== 'AbortError') setError(e.message ?? 'Unknown error');
-      } finally {
         setLoading(false);
+        onDataStatus(true);
+      } catch (e: any) {
+        setLoading(false);
+        onDataStatus(false);
+        if (e.name !== 'AbortError') setError(e.message ?? 'Unknown error');
       }
     }
 
     load();
     return () => ac.abort();
-  }, [identifier, lang]);
+  }, [identifier, lang, onDataStatus]);
 
   // Lazy children loader (called by TreeNode when a folder is opened)
   async function loadChildren(id: string): Promise<TreeItem[]> {

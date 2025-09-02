@@ -9,10 +9,6 @@ const VersionsCard = ({ data }: { data: any }) => {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useTranslation();
 
-  console.log('VERSIONS::');
-
-  console.log(data);
-
   return (
     <div className="border border-[#E1E1E1] rounded-[8px] w-full">
       {/* Header */}

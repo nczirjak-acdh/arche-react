@@ -1,6 +1,6 @@
 import React, { JSX } from 'react';
 import MetadataContentHeader from '../MetadataContentHeader';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import NextPrevItem from '../DefaultBlocks/NextPrevItem';
 import CiteBlock from '../DefaultBlocks/CiteBlock';
@@ -8,18 +8,17 @@ import SummaryBlock from '../DefaultBlocks/SummaryBlock';
 import SeeAlsoBlock from '../DefaultBlocks/SeeAlsoBlock';
 import DisseminationsBlock from '../Disseminations/DisseminationsBlock';
 import NewVersionBlock from '../DefaultBlocks/NewVersionBlock';
-import CollectionContent from '../DefaultBlocks/CollectionContent';
+import CollectionContent from '../DefaultBlocks/Tabs/CollectionContent';
 import Tabs from '@/components/Tabs';
 import { PUBLIC_CONFIG } from '@/config/public';
+import AssociatedPublications from '../DefaultBlocks/Tabs/AssociatedPublications';
+import AssociatedCollectionsAndResources from '../DefaultBlocks/Tabs/AssociatedCollectionsAndResources';
 
 const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
-  const [availableTabs, setAvailableTabs] = useState<
-    { label: string; content: JSX.Element }[]
-  >([]);
-
-  const addTabIfData = (label: string, Component: JSX.Element) => {
-    setAvailableTabs((prev) => [...prev, { label, content: Component }]);
-  };
+  const [hasCollectionContentTab, setHasCollectionContentTab] =
+    React.useState(false);
+  const [hasAssociatedPublicationsTab, setHasAssociatedPublicationsTab] =
+    React.useState(false);
 
   return (
     <div id="">
@@ -48,6 +47,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       {dataJson.seeAlsoData && Object.keys(dataJson.seeAlsoData).length > 0 && (
         <SeeAlsoBlock data={dataJson.seeAlsoData}></SeeAlsoBlock>
       )}
+
       <div className="w-full flex flex-col lg:flex-row">
         <Tabs
           items={[
@@ -57,26 +57,26 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
                 <div className="w-full">
                   <CollectionContent
                     identifier={dataJson.id}
+                    onDataStatus={setHasCollectionContentTab}
                   ></CollectionContent>
                 </div>
               ),
             },
             {
-              label: 'Tab 2',
+              label: 'Associated Publications',
               content: (
-                <div className="rounded-md border p-4">
-                  <h3 className="text-lg font-semibold mb-2">Second content</h3>
-                  <p>Another block with its own layout.</p>
-                </div>
+                <AssociatedPublications
+                  identifier={dataJson.id}
+                  onDataStatus={setHasAssociatedPublicationsTab}
+                ></AssociatedPublications>
               ),
             },
             {
-              label: 'Tab 3',
+              label: 'Associated Collections and Resources',
               content: (
-                <div className="rounded-md border p-4">
-                  <h3 className="text-lg font-semibold mb-2">Third content</h3>
-                  <p>Put grids, forms, anything.</p>
-                </div>
+                <AssociatedCollectionsAndResources
+                  identifier={dataJson.id}
+                ></AssociatedCollectionsAndResources>
               ),
             },
           ]}

@@ -33,7 +33,7 @@ export default function BasicBlockClient({ dataJson }: { dataJson: any }) {
 
         <div className="flex flex-col lg:flex-row w-full gap-8">
           <div
-            className="w-full lg:w-[70%] bg-white rounded-[12px] border border-[#E1E1E1] p-[24px]"
+            className="w-full lg:w-[80%] bg-white rounded-[12px] border border-[#E1E1E1] p-[24px]"
             id="meta-content-container"
           >
             {expertView ? (

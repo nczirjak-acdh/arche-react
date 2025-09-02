@@ -14,7 +14,7 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
   const [hasImage, setHasImage] = React.useState(false);
 
   return (
-    <div className="grid w-full lg:w-[30%] gap-8">
+    <div className="grid w-full lg:w-[20%] gap-8">
       <div className={hasImage ? 'block' : 'hidden'}>
         <TitleImageCard
           id={`${process.env.NEXT_PUBLIC_API_BASE}/api/${dataJson.id}`}
