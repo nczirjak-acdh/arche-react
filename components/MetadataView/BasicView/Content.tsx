@@ -19,6 +19,8 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
     React.useState(false);
   const [hasAssociatedPublicationsTab, setHasAssociatedPublicationsTab] =
     React.useState(false);
+  const [hasAssociatedCollResTab, setHasAssociatedCollResTab] =
+    React.useState(false);
 
   return (
     <div id="">
@@ -55,6 +57,8 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
               label: 'Collection Content',
               content: (
                 <div className="w-full">
+                  Response:
+                  {hasCollectionContentTab.toString()}
                   <CollectionContent
                     identifier={dataJson.id}
                     onDataStatus={setHasCollectionContentTab}
@@ -65,24 +69,33 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
             {
               label: 'Associated Publications',
               content: (
-                <AssociatedPublications
-                  identifier={dataJson.id}
-                  onDataStatus={setHasAssociatedPublicationsTab}
-                ></AssociatedPublications>
+                <div className="w-full">
+                  Response:
+                  {hasAssociatedPublicationsTab.toString()}
+                  <AssociatedPublications
+                    identifier={dataJson.id}
+                    onDataStatus={setHasAssociatedPublicationsTab}
+                  ></AssociatedPublications>
+                </div>
               ),
             },
             {
               label: 'Associated Collections and Resources',
               content: (
-                <AssociatedCollectionsAndResources
-                  identifier={dataJson.id}
-                ></AssociatedCollectionsAndResources>
+                <div className="w-full">
+                  Response:
+                  {hasAssociatedCollResTab.toString()}
+                  <AssociatedCollectionsAndResources
+                    identifier={dataJson.id}
+                    onDataStatus={setHasAssociatedCollResTab}
+                  ></AssociatedCollectionsAndResources>
+                </div>
               ),
             },
           ]}
         />
       </div>
-      <DisseminationsBlock></DisseminationsBlock>
+      <DisseminationsBlock identifier={dataJson.id}></DisseminationsBlock>
     </div>
   );
 };
