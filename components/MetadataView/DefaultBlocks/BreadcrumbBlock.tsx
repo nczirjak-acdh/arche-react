@@ -52,8 +52,8 @@ export default function BreadcrumbBlock({
           <Image
             src={loaderGif}
             alt="Loading...."
-            width={64}
-            height={64}
+            width={16}
+            height={16}
             className="w-16 h-16"
           />
         </div>

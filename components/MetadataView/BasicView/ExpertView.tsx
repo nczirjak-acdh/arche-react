@@ -32,8 +32,6 @@ function toRows(data: ResultSet) {
 }
 
 const ExpertView = ({ dataJson = {} }: { dataJson?: ResultSet }) => {
-  console.log('EXPERT VIEW DATA');
-  console.log(dataJson);
   const [search, setSearch] = useState('');
 
   const allRows = Object.entries(dataJson).map(([prop, items], idx) => ({

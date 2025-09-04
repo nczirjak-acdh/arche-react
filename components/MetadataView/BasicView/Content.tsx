@@ -95,7 +95,10 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
           ]}
         />
       </div>
-      <DisseminationsBlock identifier={dataJson.id}></DisseminationsBlock>
+      <DisseminationsBlock
+        identifier={dataJson.id}
+        acdhCategory={dataJson.category}
+      ></DisseminationsBlock>
     </div>
   );
 };

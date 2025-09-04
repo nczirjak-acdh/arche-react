@@ -22,7 +22,7 @@ export default function BasicBlockClient({ dataJson }: { dataJson: any }) {
   }, [expertView]);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8 gap-[20px]">
+    <section className="max-w-7xl mx-auto gap-[20px]">
       <div className="flex flex-col gap-[20px] ">
         {/* Top bar with toggle button */}
         <MetadataContentTop
@@ -33,7 +33,7 @@ export default function BasicBlockClient({ dataJson }: { dataJson: any }) {
 
         <div className="flex flex-col lg:flex-row w-full gap-8">
           <div
-            className="w-full lg:w-[80%] bg-white rounded-[12px] border border-[#E1E1E1] p-[24px]"
+            className="w-full lg:w-[75%] bg-white rounded-[12px] border border-[#E1E1E1] p-[24px]"
             id="meta-content-container"
           >
             {expertView ? (

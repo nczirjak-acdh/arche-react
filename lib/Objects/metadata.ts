@@ -1,6 +1,29 @@
 // lib/Metadata.ts
 export type AnyObj = Record<string, any>;
 
+// audio categories
+export const AUDIO_CATEGORIES = [
+  'audio',
+  'sound',
+  'speechrecording',
+  'speech',
+] as const;
+
+// IIIF formats (image media types)
+export const IIIF_FORMATS = ['image/jpeg', 'image/png', 'image/tiff'] as const;
+export const PUBLIC_ACCESS_TITLE = ['public', 'öffentlich'] as const;
+
+type ResourceItem =
+  | {
+      id: string;
+      title?: string;
+      value?: string;
+      accessrestriction?: string;
+      vocabsid?: string | number;
+      [k: string]: any;
+    }
+  | Record<string, any>;
+
 function addExternalURLIfNeeded<T extends AnyObj>(v: T): T {
   // PHP: if (isset($v['property'])) { $this->addExternalURL($v); }
   // You can augment here if needed (e.g., build a clickable URL from `property`).
@@ -58,6 +81,41 @@ export class Metadata {
         store(chosen);
       }
     }
+  }
+
+  getIsPublic(): boolean {
+    const accessress = this.getAccessRestriction();
+    /*
+     * If there is no accessrestriction, then it is a collection
+     */
+    if (accessress.length === 0) {
+      return true;
+    }
+
+    if (PUBLIC_ACCESS_TITLE.includes(accessress.value)) {
+      return true;
+    }
+    return false;
+  }
+  getAccessRestriction(): ResourceItem {
+    const result: ResourceItem = {};
+
+    if (this.data?.['acdh:hasAccessRestriction']) {
+      const accessress = this.data?.['acdh:hasAccessRestriction'];
+      for (const [k, v] of Object.entries(accessress)) {
+        if (v[this.mainLang]) {
+          result.id = v[this.mainLang].id;
+          result.title = v[this.mainLang].value;
+          result.accessrestriction = v[this.mainLang].value;
+        } else {
+          result.id = Object.keys(v)[0].id;
+          result.title = Object.keys(v)[0].value;
+          result.accessrestriction = Object.keys(v)[0].value;
+        }
+      }
+      return result;
+    }
+    return [];
   }
 
   getId(): string {
