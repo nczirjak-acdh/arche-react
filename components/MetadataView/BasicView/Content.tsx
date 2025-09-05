@@ -14,6 +14,11 @@ import { PUBLIC_CONFIG } from '@/config/public';
 import AssociatedPublications from '../DefaultBlocks/Tabs/AssociatedPublications';
 import AssociatedCollectionsAndResources from '../DefaultBlocks/Tabs/AssociatedCollectionsAndResources';
 
+type DisseminationsProps = {
+  identifier: string;
+  acdhCategory: string[];
+};
+
 const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
   const [hasCollectionContentTab, setHasCollectionContentTab] =
     React.useState(false);
@@ -29,7 +34,6 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         <hr className="my-4 border-[#E1EDF3]" />
       </div>
       <NewVersionBlock identifier={dataJson.id}></NewVersionBlock>
-
       {dataJson.parentId &&
         typeof dataJson.parentId === 'string' &&
         dataJson.parentId.trim() !== '' && (
@@ -49,7 +53,6 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       {dataJson.seeAlsoData && Object.keys(dataJson.seeAlsoData).length > 0 && (
         <SeeAlsoBlock data={dataJson.seeAlsoData}></SeeAlsoBlock>
       )}
-
       <div className="w-full flex flex-col lg:flex-row">
         <Tabs
           items={[
@@ -95,9 +98,11 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
           ]}
         />
       </div>
+      Public:
+      {JSON.stringify(dataJson.disseminationCategories)}
       <DisseminationsBlock
         identifier={dataJson.id}
-        acdhCategory={dataJson.category}
+        acdhCategory={dataJson.disseminationCategories}
       ></DisseminationsBlock>
     </div>
   );

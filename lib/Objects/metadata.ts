@@ -7,6 +7,7 @@ export const AUDIO_CATEGORIES = [
   'sound',
   'speechrecording',
   'speech',
+  'audio visual',
 ] as const;
 
 // IIIF formats (image media types)
@@ -83,12 +84,13 @@ export class Metadata {
     }
   }
 
-  getIsPublic(): boolean {
+  isPublic(): boolean {
     const accessress = this.getAccessRestriction();
     /*
      * If there is no accessrestriction, then it is a collection
      */
-    if (accessress.length === 0) {
+
+    if (!accessress || Object.keys(accessress).length === 0) {
       return true;
     }
 
@@ -97,6 +99,27 @@ export class Metadata {
     }
     return false;
   }
+
+  getDisseminationCategories(): string {
+    const category = this.getAcdhCategory()?.toLowerCase();
+    const format = this.getFormat()?.toLowerCase();
+    console.log('getDisseminationCategories ::::::::::::::');
+    console.log(category);
+    console.log(format);
+
+    if (AUDIO_CATEGORIES.includes(category)) {
+      return 'audio';
+    }
+
+    if (category === 'text') {
+      if (format?.includes('pdf')) {
+        return 'pdf';
+      }
+    }
+
+    return '';
+  }
+
   getAccessRestriction(): ResourceItem {
     const result: ResourceItem = {};
 
@@ -113,9 +136,8 @@ export class Metadata {
           result.accessrestriction = Object.keys(v)[0].value;
         }
       }
-      return result;
     }
-    return [];
+    return result;
   }
 
   getId(): string {
@@ -167,6 +189,14 @@ export class Metadata {
 
   getAcdhType(): string | null {
     return this.properties['rdf:type']?.[0]?.value || '';
+  }
+
+  getAcdhCategory(): string | null {
+    return this.properties['acdh:hasCategory']?.[0]?.value || '';
+  }
+
+  getFormat(): string | null {
+    return this.properties['acdh:hasFormat']?.[0]?.value || '';
   }
 
   getAcdhTypeNiceFormat(): string | null {

@@ -20,7 +20,9 @@ const DisseminationsBlock = ({
   console.log(acdhCategory);
   switch (acdhCategory) {
     case 'pdf':
-      return <DisseminationPdf identifier={identifier} />;
+      return (
+        <DisseminationPdf url={`${PUBLIC_CONFIG.apiBase}/api/${identifier}`} />
+      );
 
     case 'audio':
       return (
