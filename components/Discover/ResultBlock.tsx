@@ -18,7 +18,9 @@ export default function ResultBlock({
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
       {/* Top row */}
       <div className="flex flex-col lg:flex-row w-full gap-4 p-5">
-        <div className="w-full lg:w-[20%] space-y-4">Results …</div>
+        <div className="w-full lg:w-[20%] space-y-4">
+          {pagerData.totalCount} Result(s)
+        </div>
         <div className="w-full lg:w-[65%] space-y-4">
           <Pager data={pagerData}></Pager>
         </div>
@@ -40,6 +42,21 @@ export default function ResultBlock({
         {data.map((item) => (
           <ResultRow key={item.id} item={item} />
         ))}
+      </div>
+      <div className="flex flex-col lg:flex-row w-full gap-4 p-5">
+        <div className="w-full lg:w-[20%] space-y-4">
+          {pagerData.totalCount} Result(s)
+        </div>
+        <div className="w-full lg:w-[65%] space-y-4">
+          <Pager data={pagerData}></Pager>
+        </div>
+        <div className="w-full lg:w-[15%] space-y-4">
+          <select className="smartPageSize" id="smartPageSize">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
       </div>
     </div>
   );

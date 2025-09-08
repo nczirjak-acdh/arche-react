@@ -5,16 +5,22 @@ import { useSearchParams } from 'next/navigation';
 import { useApi } from '@/lib/useApi';
 import Loader from '@/components/Loader';
 import FacetsBlock from '@/components/Discover/FacetsBlock';
-import Pager from '@/components/Discover/Pager';
 import ResultBlock from '@/components/Discover/ResultBlock';
 import type { PagerItem } from '@/lib/types/types';
+import { toNumber } from '@/lib/helpers/metadataHelper';
 
 export default function DiscoverPage() {
   const sp = useSearchParams();
-  const qs = sp.toString();
-  const url = qs
-    ? `${process.env.NEXT_PUBLIC_API_BASE}/browser/api/smartsearch/?${sp}`
-    : undefined;
+
+  // the api uses 0 as first page, so we have to change the url for the api call and for the ui
+  const uiPage = toNumber(sp.get('page'), 1);
+  const apiPage = Math.max(0, uiPage - 1);
+
+  const apiParams = new URLSearchParams(sp.toString());
+  apiParams.set('page', String(apiPage));
+
+  const base = process.env.NEXT_PUBLIC_API_BASE!;
+  const url = `${base}/browser/api/smartsearch/?${apiParams.toString()}`;
 
   const { data, error, loading } = useApi<any>(url);
 
@@ -27,6 +33,9 @@ export default function DiscoverPage() {
     );
   }
   if (!data) return null;
+  // the api uses 0 as first page, so we have to change the url for the api call and for the ui
+  data.page = uiPage;
+
   const pagerData: PagerItem = {
     totalCount: data.totalCount ?? 0,
     maxCount: data.maxCount ?? 0,
@@ -34,8 +43,7 @@ export default function DiscoverPage() {
     pageSize: data.pageSize ?? 0,
     messages: JSON.stringify(data.messages, null, 2) ?? '',
   };
-  console.log('Discover pager:');
-  console.log(pagerData);
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-8">
       <div className="flex flex-col gap-6 lg:flex-row">

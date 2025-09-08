@@ -20,12 +20,7 @@ const Pager = ({ data }: { data: PagerItem }) => {
   const to = Math.min(data.page * data.pageSize, data.totalCount);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-gray-200 bg-white p-3">
-      <div className="text-sm text-gray-600">
-        {data.totalCount > 0
-          ? `${from}–${to} / ${data.totalCount}`
-          : 'No results'}
-      </div>
+    <div className="flex flex-wrap items-center justify-between gap-3">
       <div className="flex items-center gap-2">
         <button
           onClick={() => setPage(1)}
@@ -35,7 +30,7 @@ const Pager = ({ data }: { data: PagerItem }) => {
           « First
         </button>
         <button
-          onClick={() => setPage(page - 1)}
+          onClick={() => setPage(data.page - 1)}
           disabled={data.page <= 1}
           className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
         >
@@ -45,7 +40,7 @@ const Pager = ({ data }: { data: PagerItem }) => {
           Page {data.page} / {totalPages}
         </span>
         <button
-          onClick={() => setPage(page + 1)}
+          onClick={() => setPage(data.page + 1)}
           disabled={data.page >= totalPages}
           className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
         >

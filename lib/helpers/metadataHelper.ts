@@ -36,3 +36,8 @@ export function titleId(label: unknown): string {
     .replace(/\s+/g, '_') // spaces -> underscores
     .toLowerCase();
 }
+
+export const toNumber = (v: string | null, fallback: number) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+};
