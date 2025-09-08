@@ -7,6 +7,7 @@ import Loader from '@/components/Loader';
 import FacetsBlock from '@/components/Discover/FacetsBlock';
 import Pager from '@/components/Discover/Pager';
 import ResultBlock from '@/components/Discover/ResultBlock';
+import type { PagerItem } from '@/lib/types/types';
 
 export default function DiscoverPage() {
   const sp = useSearchParams();
@@ -26,8 +27,15 @@ export default function DiscoverPage() {
     );
   }
   if (!data) return null;
-
-  console.log(data);
+  const pagerData: PagerItem = {
+    totalCount: data.totalCount ?? 0,
+    maxCount: data.maxCount ?? 0,
+    page: data.page ?? 0,
+    pageSize: data.pageSize ?? 0,
+    messages: JSON.stringify(data.messages, null, 2) ?? '',
+  };
+  console.log('Discover pager:');
+  console.log(pagerData);
   return (
     <section className="mx-auto max-w-7xl px-4 py-8">
       <div className="flex flex-col gap-6 lg:flex-row">
@@ -45,10 +53,10 @@ export default function DiscoverPage() {
         {/* RIGHT: pager + results (70%) */}
         <div className="w-full lg:w-[70%] space-y-4">
           {/* <Pager page={page} pageSize={pageSize} totalCount={totalCount} /> */}
-          <ResultBlock data={data.results}></ResultBlock>
+          <ResultBlock data={data.results} pagerData={pagerData}></ResultBlock>
           <br></br>
           Paging block: <br></br>
-          Totalcount: {JSON.stringify(data.totalCound, null, 2)}
+          Totalcount: {JSON.stringify(data.totalCount, null, 2)}
           <br></br>
           maxCount: {JSON.stringify(data.maxCount, null, 2)} <br></br>
           page: {JSON.stringify(data.page, null, 2)}

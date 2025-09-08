@@ -1,27 +1,28 @@
 'use client';
 import React from 'react';
 import ResultImage from './ResultImage';
-
-type ResultItem = {
-  id: number | string;
-  url: string; // used by thumbnails api
-  title?: Record<string, string>;
-  description?: Record<string, string>;
-  class?: string[];
-};
+import type { PagerItem, ResultItem } from '@/lib/types/types';
+import Pager from './Pager';
 
 export default function ResultBlock({
   data = [] as ResultItem[],
+  pagerData = [] as PagerItem[],
 }: {
   data?: ResultItem[];
+  pagerData?: PagerItem[];
 }) {
+  console.log('DATA RESULT BLOCK: ');
+  console.log(data);
+  console.log(pagerData);
   return (
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
       {/* Top row */}
       <div className="flex flex-col lg:flex-row w-full gap-4 p-5">
-        <div className="w-full lg:w-[30%] space-y-4">Results …</div>
-        <div className="w-full lg:w-[40%] space-y-4">Pager</div>
-        <div className="w-full lg:w-[30%] space-y-4">
+        <div className="w-full lg:w-[20%] space-y-4">Results …</div>
+        <div className="w-full lg:w-[65%] space-y-4">
+          <Pager data={pagerData}></Pager>
+        </div>
+        <div className="w-full lg:w-[15%] space-y-4">
           <select className="smartPageSize" id="smartPageSize">
             <option value="10">10</option>
             <option value="25">25</option>
@@ -73,14 +74,14 @@ function ResultRow({ item }: { item: ResultItem }) {
 
       {/* Description + Image: adapt layout when image is found */}
       <div
-        className={`grid gap-4 p-5 ${hasImage ? 'grid-cols-3' : 'grid-cols-1'}`}
+        className={`w-full flex gap-4 p-5 ${hasImage ? 'lg:w-[100%]' : 'lg:w-[100%]'}`}
       >
-        <div className={hasImage ? 'col-span-2' : ''}>
+        <div className={hasImage ? 'lg:w-[75%]' : 'lg:w-[100%]'}>
           {desc && <p className="text-sm text-gray-700">{desc}</p>}
         </div>
 
         {/* Always render ResultImage so it can probe and set hasImage */}
-        <div className={hasImage ? 'block' : 'hidden'}>
+        <div className={hasImage ? ' flex lg:w-[25%]' : 'hidden'}>
           {/* If your thumbnail API expects the *api url* in the id, pass item.url (as you had) */}
           <ResultImage id={item.url} onFound={setHasImage} />
         </div>

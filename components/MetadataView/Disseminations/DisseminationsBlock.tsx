@@ -15,9 +15,6 @@ const DisseminationsBlock = ({
   identifier: string;
   acdhCategory: string;
 }) => {
-  const directAudioUrl = 'https://arche-dev.acdh-dev.oeaw.ac.at/api/262652';
-  const audioURL = `/browser/api/audio?url=${encodeURIComponent(directAudioUrl)}`;
-  console.log(acdhCategory);
   switch (acdhCategory) {
     case 'pdf':
       return (
