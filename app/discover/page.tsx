@@ -62,15 +62,6 @@ export default function DiscoverPage() {
         <div className="w-full lg:w-[70%] space-y-4">
           {/* <Pager page={page} pageSize={pageSize} totalCount={totalCount} /> */}
           <ResultBlock data={data.results} pagerData={pagerData}></ResultBlock>
-          <br></br>
-          Paging block: <br></br>
-          Totalcount: {JSON.stringify(data.totalCount, null, 2)}
-          <br></br>
-          maxCount: {JSON.stringify(data.maxCount, null, 2)} <br></br>
-          page: {JSON.stringify(data.page, null, 2)}
-          <br></br>
-          messages_ {JSON.stringify(data.messages, null, 2)} <br></br>
-          pageSize_: {JSON.stringify(data.pageSize, null, 2)} <br></br>
           searchIn {JSON.stringify(data.searchIn, null, 2)}
           <br></br>
           allPins {JSON.stringify(data.allPins, null, 2)}

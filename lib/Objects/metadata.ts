@@ -117,6 +117,16 @@ export class Metadata {
       }
     }
 
+    if (category === '3d data') {
+      if (format?.includes('gltf')) {
+        return 'glb';
+      }
+
+      if (format?.includes('ply')) {
+        return 'ply';
+      }
+    }
+
     return '';
   }
 

@@ -84,3 +84,27 @@ input::-ms-input-placeholder {
 .form-control::placeholder {
   opacity: 0.3;
 }
+
+@layer components {
+.btn-toolbar-public { background-color:#1dd1a1; color:#fff; }
+.btn-toolbar-academic { background-color:#ff9f43; color:#fff; }
+.btn-toolbar-restricted { background-color:#ee5253; color:#fff; }
+.btn-toolbar-public-academic { background: #1dd1a1; background: linear-gradient(90deg, #1dd1a1 0%, #ff9f43 100%);  color:#fff; }
+.btn-toolbar-academic-public { background: #ff9f43; background: linear-gradient(90deg, #ff9f43 0%, #1dd1a1 100%); color:#fff;  }
+.btn-toolbar-public-restricted {
+    background: linear-gradient(90deg, #1dd1a1 0%, #ee5253 100%);
+    color: #fff;
+  }
+  .btn-toolbar-restricted-public {
+    background: linear-gradient(90deg, #ee5253 0%, #1dd1a1 100%);
+    color: #fff;
+  }
+  .btn-toolbar-academic-restricted {
+    background: linear-gradient(90deg, #ff9f43 0%, #ee5253 100%);
+    color: #fff;
+  }
+  .btn-toolbar-restricted-academic {
+    background: linear-gradient(90deg, #ee5253 0%, #ff9f43 100%);
+    color: #fff;
+  }
+}

@@ -13,5 +13,6 @@ export type ResultItem = {
   url: string; // used by thumbnails api
   title?: Record<string, string>;
   description?: Record<string, string>;
+  accessRestrictionSummary?: Record<string, string>;
   class?: string[];
 };

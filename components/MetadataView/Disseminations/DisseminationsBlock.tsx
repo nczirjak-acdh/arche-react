@@ -29,13 +29,27 @@ const DisseminationsBlock = ({
       );
 
     case 'glb':
-      return <DisseminationGlb identifier={identifier} />;
+      return (
+        <DisseminationGlb
+          src={`${PUBLIC_CONFIG.apiBase}/api/${identifier}`}
+          autoRotate
+          cameraControls
+          className="rounded-xl shadow"
+        />
+      );
 
     case 'iiif':
       return <DisseminationIIIF identifier={identifier} />;
 
     case 'ply':
-      return <DisseminationPLY identifier={identifier} />;
+      return (
+        <DisseminationPLY
+          src="https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ply/binary/Lucy100k.ply"
+          height={520}
+          background="#f8fafc"
+          className="rounded-xl"
+        />
+      );
 
     case 'tei':
       return <DisseminationTEI identifier={identifier} />;

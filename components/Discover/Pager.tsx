@@ -20,40 +20,38 @@ const Pager = ({ data }: { data: PagerItem }) => {
   const to = Math.min(data.page * data.pageSize, data.totalCount);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => setPage(1)}
-          disabled={data.page <= 1}
-          className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
-        >
-          « First
-        </button>
-        <button
-          onClick={() => setPage(data.page - 1)}
-          disabled={data.page <= 1}
-          className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
-        >
-          ‹ Prev
-        </button>
-        <span className="px-2 text-sm text-gray-700">
-          Page {data.page} / {totalPages}
-        </span>
-        <button
-          onClick={() => setPage(data.page + 1)}
-          disabled={data.page >= totalPages}
-          className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
-        >
-          Next ›
-        </button>
-        <button
-          onClick={() => setPage(totalPages)}
-          disabled={data.page >= totalPages}
-          className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
-        >
-          Last »
-        </button>
-      </div>
+    <div className="flex w-full items-center justify-center gap-2">
+      <button
+        onClick={() => setPage(1)}
+        disabled={data.page <= 1}
+        className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
+      >
+        {'<<'}
+      </button>
+      <button
+        onClick={() => setPage(data.page - 1)}
+        disabled={data.page <= 1}
+        className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
+      >
+        {'<'}
+      </button>
+      <span className="px-2 text-sm text-gray-700">
+        Page {data.page} / {totalPages}
+      </span>
+      <button
+        onClick={() => setPage(data.page + 1)}
+        disabled={data.page >= totalPages}
+        className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
+      >
+        {'>'}
+      </button>
+      <button
+        onClick={() => setPage(totalPages)}
+        disabled={data.page >= totalPages}
+        className="rounded-md border px-2 py-1 text-sm disabled:opacity-50"
+      >
+        {'>>'}
+      </button>
     </div>
   );
 };

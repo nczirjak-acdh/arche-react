@@ -3,6 +3,7 @@ import React from 'react';
 import ResultImage from './ResultImage';
 import type { PagerItem, ResultItem } from '@/lib/types/types';
 import Pager from './Pager';
+import AccessRestrictionBlock from './AccessRestrictionBlock';
 
 export default function ResultBlock({
   data = [] as ResultItem[],
@@ -11,17 +12,14 @@ export default function ResultBlock({
   data?: ResultItem[];
   pagerData?: PagerItem[];
 }) {
-  console.log('DATA RESULT BLOCK: ');
-  console.log(data);
-  console.log(pagerData);
   return (
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
       {/* Top row */}
       <div className="flex flex-col lg:flex-row w-full gap-4 p-5">
-        <div className="w-full lg:w-[20%] space-y-4">
+        <div className="w-full lg:w-[15%] space-y-4">
           {pagerData.totalCount} Result(s)
         </div>
-        <div className="w-full lg:w-[65%] space-y-4">
+        <div className="w-full lg:w-[70%] space-y-4">
           <Pager data={pagerData}></Pager>
         </div>
         <div className="w-full lg:w-[15%] space-y-4">
@@ -44,10 +42,10 @@ export default function ResultBlock({
         ))}
       </div>
       <div className="flex flex-col lg:flex-row w-full gap-4 p-5">
-        <div className="w-full lg:w-[20%] space-y-4">
+        <div className="w-full lg:w-[15%] space-y-4">
           {pagerData.totalCount} Result(s)
         </div>
-        <div className="w-full lg:w-[65%] space-y-4">
+        <div className="w-full lg:w-[70%] space-y-4">
           <Pager data={pagerData}></Pager>
         </div>
         <div className="w-full lg:w-[15%] space-y-4">
@@ -75,6 +73,16 @@ function ResultRow({ item }: { item: ResultItem }) {
     item.description?.en ||
     item.description?.de ||
     (typeof item.description === 'string' ? item.description : '');
+
+  const accessRestrictionSummary =
+    item.accessRestrictionSummary?.en ||
+    item.accessRestrictionSummary?.de ||
+    (typeof item.accessRestrictionSummary === 'string'
+      ? item.accessRestrictionSummary
+      : '');
+
+  console.log('RESULT ROW:::');
+  console.log(item.accessRestrictionSummary);
 
   const classBadge =
     item.class && item.class[0]
@@ -108,7 +116,11 @@ function ResultRow({ item }: { item: ResultItem }) {
         <span className="inline-block px-2 py-1 rounded-[12px] bg-[#5B595B] text-white h-fit">
           {classBadge}
         </span>
-        <span>accessress</span>
+        <span>
+          <AccessRestrictionBlock
+            value={accessRestrictionSummary}
+          ></AccessRestrictionBlock>
+        </span>
       </div>
 
       <hr className="my-4 border-[#E1EDF3]" />
