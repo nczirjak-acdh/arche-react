@@ -38,8 +38,13 @@ const DisseminationsBlock = ({
         />
       );
 
-    case 'iiif':
-      return <DisseminationIIIF identifier={identifier} />;
+    case 'image':
+      return (
+        <DisseminationIIIF
+          endpoint={`https://arche-iiifmanifest.acdh.oeaw.ac.at/?id=${PUBLIC_CONFIG.apiBase}/api/${identifier}&mode=images`}
+          height={600}
+        />
+      );
 
     case 'ply':
       return (
@@ -52,7 +57,11 @@ const DisseminationsBlock = ({
       );
 
     case 'tei':
-      return <DisseminationTEI identifier={identifier} />;
+      return (
+        <DisseminationTEI
+          url={`${PUBLIC_CONFIG.apiBase}/api/${identifier}?skipContentDisposition=true`}
+        />
+      );
 
     default:
       return null; // or some fallback UI

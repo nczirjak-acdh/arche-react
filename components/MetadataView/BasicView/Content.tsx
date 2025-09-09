@@ -98,6 +98,8 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
           ]}
         />
       </div>
+      Size:
+      {dataJson.binarySize}
       Public:
       {JSON.stringify(dataJson.disseminationCategories)}
       <DisseminationsBlock

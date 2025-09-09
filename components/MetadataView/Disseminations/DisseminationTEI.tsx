@@ -1,9 +1,7 @@
 import React from 'react';
 
-const DisseminationTEI = () => {
-  return (
-    <div className="flex flex-col lg:flex-row w-full">disseminations : tei</div>
-  );
+const DisseminationTEI = ({ url }: { url: string }) => {
+  return <div className="flex flex-col lg:flex-row w-full"></div>;
 };
 
 export default DisseminationTEI;

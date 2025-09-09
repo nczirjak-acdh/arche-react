@@ -89,23 +89,25 @@ export class Metadata {
     /*
      * If there is no accessrestriction, then it is a collection
      */
-
     if (!accessress || Object.keys(accessress).length === 0) {
       return true;
     }
 
-    if (PUBLIC_ACCESS_TITLE.includes(accessress.value)) {
+    if (PUBLIC_ACCESS_TITLE.includes(accessress.title)) {
       return true;
     }
     return false;
   }
 
   getDisseminationCategories(): string {
+    //we display only public resources
+    if (!this.isPublic()) {
+      return '';
+    }
+
     const category = this.getAcdhCategory()?.toLowerCase();
+    const vocabs = this.getAcdhCategoryVocabsId()?.toLowerCase();
     const format = this.getFormat()?.toLowerCase();
-    console.log('getDisseminationCategories ::::::::::::::');
-    console.log(category);
-    console.log(format);
 
     if (AUDIO_CATEGORIES.includes(category)) {
       return 'audio';
@@ -117,7 +119,7 @@ export class Metadata {
       }
     }
 
-    if (category === '3d data') {
+    if (category === '3d data' || category === '3d-daten') {
       if (format?.includes('gltf')) {
         return 'glb';
       }
@@ -127,7 +129,36 @@ export class Metadata {
       }
     }
 
+    if (vocabs && vocabs.includes('/image')) {
+      if (IIIF_FORMATS.includes(format)) {
+        return 'image';
+      }
+    }
+    console.log('DISSSS CAT::::::::::::');
+    console.log(category);
+    console.log(format);
+
+    if (category === 'xml/tei' || category === 'dataset') {
+      return 'tei';
+    }
+
     return '';
+  }
+
+  getBinarySize(): number {
+    const category = this.getAcdhCategory()?.toLowerCase();
+    if (
+      category === 'resource' ||
+      category === 'oldresource' ||
+      category === 'dataset'
+    ) {
+      const size =
+        this.data?.['acdh:hasBinarySize']?.[this.mainId]?.[this.mainLang]?.[0]
+          ?.value;
+      return size;
+    }
+
+    return 0;
   }
 
   getAccessRestriction(): ResourceItem {
@@ -201,7 +232,22 @@ export class Metadata {
     return this.properties['rdf:type']?.[0]?.value || '';
   }
 
+  getAcdhCategoryVocabsId(): string | null {
+    const categories = this.properties['acdh:hasCategory'];
+    if (!Array.isArray(categories)) return null;
+    for (const c of categories) {
+      const identifiers = c.identifiers;
+      for (const i of identifiers) {
+        if (i.includes('/vocabs.acdh.oeaw')) {
+          return i;
+        }
+      }
+    }
+    return '';
+  }
+
   getAcdhCategory(): string | null {
+    console.log(this.properties['acdh:hasCategory']);
     return this.properties['acdh:hasCategory']?.[0]?.value || '';
   }
 
