@@ -45,7 +45,8 @@ export default function CiteBlock({
         setErr(null);
         const res = await fetch(src, { cache: 'no-store' });
         if (!res.ok)
-          throw new Error(`Failed to load CSL-JSON (HTTP ${res.status})`);
+          console.log(`Failed to load CSL-JSON (HTTP ${res.status})`);
+        throw new Error(`Failed to load CSL-JSON (HTTP ${res.status})`);
         const json = await res.json();
         if (!cancelled) setCslJson(json);
       } catch (e: any) {
@@ -184,11 +185,7 @@ export default function CiteBlock({
   }
 
   if (err) {
-    return (
-      <div className="rounded-md border border-red-200 bg-red-50 p-3 text-red-700">
-        Failed to load citation data: {err}
-      </div>
-    );
+    return <div className="hidden"></div>;
   }
 
   return (

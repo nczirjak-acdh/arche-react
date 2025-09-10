@@ -42,8 +42,9 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       <div className="flex flex-col lg:flex-row w-full">
         <h4>{dataJson.title}</h4>
       </div>
+
       <CiteBlock
-        src={`https://arche-biblatex.acdh.oeaw.ac.at/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
+        src={`${process.env.NEXT_PUBLIC_THUMBNAILS_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
         lang="en-US"
       />
       {dataJson.summaryData && Object.keys(dataJson.summaryData).length > 0 && (
@@ -98,10 +99,6 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
           ]}
         />
       </div>
-      Size:
-      {dataJson.binarySize}
-      Public:
-      {JSON.stringify(dataJson.disseminationCategories)}
       <DisseminationsBlock
         identifier={dataJson.id}
         acdhCategory={dataJson.disseminationCategories}
