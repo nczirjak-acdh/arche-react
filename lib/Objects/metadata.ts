@@ -108,6 +108,8 @@ export class Metadata {
     const category = this.getAcdhCategory()?.toLowerCase();
     const vocabs = this.getAcdhCategoryVocabsId()?.toLowerCase();
     const format = this.getFormat()?.toLowerCase();
+    const fileName =
+      this.getDataByProperty('acdh:hasFilename')?.[0]?.['value'] ?? '';
 
     if (AUDIO_CATEGORIES.includes(category)) {
       return 'audio';
@@ -124,7 +126,7 @@ export class Metadata {
         return 'glb';
       }
 
-      if (format?.includes('ply')) {
+      if (fileName && fileName.includes('.ply')) {
         return 'ply';
       }
     }
@@ -137,6 +139,7 @@ export class Metadata {
     console.log('DISSSS CAT::::::::::::');
     console.log(category);
     console.log(format);
+    console.log(fileName);
 
     if (category === 'xml/tei' || category === 'dataset') {
       return 'tei';

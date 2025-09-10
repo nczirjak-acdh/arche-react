@@ -18,6 +18,7 @@ export default function DisseminationPLY({
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const threeRef = useRef<{
+    THREE?: any;
     renderer?: any;
     scene?: any;
     camera?: any;
@@ -84,6 +85,9 @@ export default function DisseminationPLY({
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
+      controls.enableZoom = true;
+      controls.minDistance = 0.01; // keep from going through the model
+      controls.maxDistance = 1e6;
 
       // Group to hold model
       const modelGroup = new THREE.Group();
@@ -94,27 +98,19 @@ export default function DisseminationPLY({
       loader.load(
         src,
         (geometry: any) => {
-          // If PLY has no normals, compute them so lighting looks good
-          if (!geometry.attributes.normal) {
-            geometry.computeVertexNormals();
-          }
+          if (!geometry.attributes.normal) geometry.computeVertexNormals();
 
-          let material: any;
-          // If vertex colors exist, use them
-          if (geometry.attributes.color) {
-            material = new THREE.MeshBasicMaterial({ vertexColors: true });
-          } else {
-            material = new THREE.MeshStandardMaterial({
-              color: 0xb0b0b0,
-              metalness: 0.1,
-              roughness: 0.8,
-            });
-          }
+          const material = geometry.attributes.color
+            ? new THREE.MeshBasicMaterial({ vertexColors: true })
+            : new THREE.MeshStandardMaterial({
+                color: 0xb0b0b0,
+                metalness: 0.1,
+                roughness: 0.8,
+              });
 
           const mesh = new THREE.Mesh(geometry, material);
           modelGroup.add(mesh);
 
-          // Frame the model
           geometry.computeBoundingSphere();
           geometry.computeBoundingBox();
 
@@ -122,10 +118,9 @@ export default function DisseminationPLY({
           const center = sphere.center;
           const radius = Math.max(sphere.radius, 1e-6);
 
-          // Re-center model at origin for nicer controls
+          // Center model and frame it
           modelGroup.position.set(-center.x, -center.y, -center.z);
 
-          // Set camera to frame object
           const fov = (camera.fov * Math.PI) / 180;
           const distance = radius / Math.sin(fov / 2);
 
@@ -145,7 +140,6 @@ export default function DisseminationPLY({
         },
         undefined,
         (err) => {
-          // eslint-disable-next-line no-console
           console.error('PLY load error:', err);
         }
       );
@@ -161,7 +155,7 @@ export default function DisseminationPLY({
       // Resize
       const onResize = () => {
         const w = container.clientWidth;
-        const h = heightPx; // fixed height
+        const h = heightPx;
         renderer.setSize(w, h);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
@@ -169,7 +163,8 @@ export default function DisseminationPLY({
       const ro = new ResizeObserver(onResize);
       ro.observe(container);
 
-      // Save refs
+      // Save refs (including THREE for zoomBy)
+      threeRef.current.THREE = THREE;
       threeRef.current.renderer = renderer;
       threeRef.current.scene = scene;
       threeRef.current.camera = camera;
@@ -185,16 +180,14 @@ export default function DisseminationPLY({
       disposed = true;
       const t = threeRef.current;
       if (t.animId) cancelAnimationFrame(t.animId);
-      if (t.controls) t.controls.dispose();
+      t.controls?.dispose?.();
       if (t.scene) {
         t.scene.traverse((obj: any) => {
           if (obj.isMesh) {
             obj.geometry?.dispose?.();
-            if (Array.isArray(obj.material)) {
+            if (Array.isArray(obj.material))
               obj.material.forEach((m: any) => m.dispose?.());
-            } else {
-              obj.material?.dispose?.();
-            }
+            else obj.material?.dispose?.();
           }
         });
       }
@@ -203,21 +196,35 @@ export default function DisseminationPLY({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, height, background]);
 
-  // Controls: zoom via OrbitControls dollyIn/Out (keeps perspective & feel)
-  const zoom = (factor: number) => {
-    const controls: any = threeRef.current.controls;
-    if (!controls) return;
-    // OrbitControls offers dollyIn/Out for perspective cameras
-    if (factor > 1) controls.dollyOut?.(factor);
-    else controls.dollyIn?.(1 / factor);
+  // ---- Zoom helpers (camera dolly along view vector) ----
+  const zoomBy = (scale: number) => {
+    const { THREE, camera, controls } = threeRef.current as any;
+    if (!THREE || !camera || !controls) return;
+
+    // vector from target -> camera
+    const v = new THREE.Vector3().copy(camera.position).sub(controls.target);
+
+    // clamp distance inside OrbitControls limits
+    const newLen = Math.max(
+      controls.minDistance ?? 0.01,
+      Math.min(v.length() * scale, controls.maxDistance ?? 1e6)
+    );
+    v.setLength(newLen);
+
+    camera.position.copy(controls.target).add(v);
+    camera.updateProjectionMatrix();
     controls.update();
   };
+
+  const zoomIn = () => zoomBy(0.8); // 20% closer
+  const zoomOut = () => zoomBy(1.25); // 25% farther
 
   const reset = () => {
     const { camera, controls, initial } = threeRef.current as any;
     if (!camera || !controls || !initial) return;
     camera.position.set(...initial.position);
     controls.target.set(...initial.target);
+    camera.updateProjectionMatrix();
     controls.update();
   };
 
@@ -230,7 +237,7 @@ export default function DisseminationPLY({
       />
       <div className="pointer-events-auto absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
         <button
-          onClick={() => zoom(1.2)} // zoom out
+          onClick={zoomOut}
           className="rounded-md border bg-white/90 px-3 py-1 text-sm shadow hover:bg-white"
           aria-label="Zoom out"
           title="Zoom out"
@@ -246,7 +253,7 @@ export default function DisseminationPLY({
           Reset
         </button>
         <button
-          onClick={() => zoom(0.8)} // zoom in
+          onClick={zoomIn}
           className="rounded-md border bg-white/90 px-3 py-1 text-sm shadow hover:bg-white"
           aria-label="Zoom in"
           title="Zoom in"
