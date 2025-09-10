@@ -3,7 +3,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const MapCard = ({ data }: { data: any }) => {
+const MapCard = ({ data, mapType }: { data: any; mapType: string }) => {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useTranslation();
 
@@ -29,12 +29,8 @@ const MapCard = ({ data }: { data: any }) => {
       {/* Content */}
       {isOpen && (
         <div className="flex p-[12px] gap-[24px] border-t border-[#E1EDF3]">
-          <a
-            href="https://id.acdh.oeaw.ac.at/wollmilchsau"
-            className="text-[#4F8CA5] underline break-words"
-          >
-            {data}
-          </a>
+          {data}
+          {mapType}
         </div>
       )}
     </div>

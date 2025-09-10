@@ -136,16 +136,60 @@ export class Metadata {
         return 'image';
       }
     }
-    console.log('DISSSS CAT::::::::::::');
-    console.log(category);
-    console.log(format);
-    console.log(fileName);
 
     if (category === 'xml/tei' || category === 'dataset') {
       return 'tei';
     }
 
     return '';
+  }
+
+  getMapType(): string {
+    const wkt =
+      this.data?.['acdh:hasWKT']?.[this.mainId]?.[this.mainLang]?.[0]?.value;
+    const coordinate =
+      this.data?.['acdh:hasLatitude']?.[this.mainId]?.[this.mainLang]?.[0]
+        ?.value;
+
+    if (wkt && wkt.includes('multipolygon')) {
+      return 'multipolygon';
+    } else if (wkt && wkt.includes('polygon')) {
+      return 'polygon';
+    } else if (coordinate) {
+      return 'coordinates';
+    }
+    return '';
+  }
+
+  getPolygon(): string {
+    return '';
+  }
+
+  getCoordinates(): string {
+    return '';
+  }
+
+  getSpatialCoordinates(): Array<string> {
+    const spatial =
+      this.data?.['acdh:hasSpatialCoverage']?.[this.mainId]?.[
+        this.mainLang
+      ]?.[0]?.value;
+
+    if (spatial) {
+      //we have to do a second api query to get the resource properties from the spatial id resource
+    }
+
+    /*
+    if (isset($this->properties['acdh:hasSpatialCoverage'])) {
+            $spatialId = isset($this->properties['acdh:hasSpatialCoverage'][0]['id']) ? $this->properties['acdh:hasSpatialCoverage'][0]['id'] : "";
+
+            if (!empty($spatialId)) {
+                $class = new \Drupal\arche_core_gui\Object\SpatialMapData();
+                return $class->getData($this->getRepoBaseUrl().'/api/getCoordinates/' . $spatialId);
+            }
+        }
+        return [];*/
+    return [];
   }
 
   getBinarySize(): number {
