@@ -151,9 +151,9 @@ export class Metadata {
       this.data?.['acdh:hasLatitude']?.[this.mainId]?.[this.mainLang]?.[0]
         ?.value;
 
-    if (wkt && wkt.includes('multipolygon')) {
+    if (wkt && wkt.toLowerCase().includes('multipolygon')) {
       return 'multipolygon';
-    } else if (wkt && wkt.includes('polygon')) {
+    } else if (wkt && wkt.toLowerCase().includes('polygon')) {
       return 'polygon';
     } else if (coordinate) {
       return 'coordinates';
@@ -161,11 +161,46 @@ export class Metadata {
     return '';
   }
 
-  getPolygon(): string {
+  getMapPolygon(): string {
+    const wkt =
+      this.data?.['acdh:hasWKT']?.[this.mainId]?.[this.mainLang]?.[0]?.value;
+    if (wkt) {
+      return wkt;
+    }
+
     return '';
   }
 
-  getCoordinates(): string {
+  getMapCoordinates(): string {
+    const lon =
+      this.data?.['acdh:hasLongitude']?.[this.mainId]?.[this.mainLang]?.[0]
+        ?.value;
+    const lat =
+      this.data?.['acdh:hasLatitude']?.[this.mainId]?.[this.mainLang]?.[0]
+        ?.value;
+
+    const wkt =
+      this.data?.['acdh:hasWKT']?.[this.mainId]?.[this.mainLang]?.[0]?.value;
+
+    if (
+      lon !== undefined &&
+      lon !== null &&
+      String(lon).trim() !== '' &&
+      lat !== undefined &&
+      lat !== null &&
+      String(lat).trim() !== ''
+    ) {
+      return `[${lat}, ${lon}]`; // keep your original output order
+    }
+    if (wkt && String(wkt).trim() !== '') {
+      // match: POINT(<first> <second>) – allow spaces, no commas
+      const m = /POINT\(\s*([^\s,]+)\s+([^\s)]+)\s*\)/i.exec(String(wkt));
+      if (m) {
+        const first = m[1]; // usually lon
+        const second = m[2]; // usually lat
+        return `POINT(${second} ${first})`; // swap
+      }
+    }
     return '';
   }
 
@@ -294,7 +329,6 @@ export class Metadata {
   }
 
   getAcdhCategory(): string | null {
-    console.log(this.properties['acdh:hasCategory']);
     return this.properties['acdh:hasCategory']?.[0]?.value || '';
   }
 

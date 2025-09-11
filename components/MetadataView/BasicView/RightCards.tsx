@@ -13,8 +13,17 @@ import VersionsCard from '../Cards/VersionsCard';
 const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
   const [hasImage, setHasImage] = React.useState(false);
 
-  console.log('MAP');
-  console.log(dataJson.mapType);
+  let mapData = '';
+  const resourceMapType = dataJson.mapType;
+
+  console.log(resourceMapType);
+  if (resourceMapType === 'multipolygon') {
+    mapData = dataJson.mapPolygon;
+  } else if (resourceMapType === 'polygon') {
+    mapData = dataJson.mapPolygon;
+  } else if (resourceMapType === 'coordinates') {
+    mapData = dataJson.mapCoordinates;
+  }
   return (
     <div className="grid w-full lg:w-[25%] gap-8">
       <div className={hasImage ? 'block' : 'hidden'}>
@@ -24,7 +33,8 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
         />
       </div>
 
-      <MapCard data={dataJson.id} mapType={dataJson.mapType}></MapCard>
+      {mapData && <MapCard data={mapData!} mapType={resourceMapType} />}
+
       <IdentifierCard data={dataJson.pidOrAcdhIdentifier}></IdentifierCard>
       {dataJson.licenseData && Object.keys(dataJson.licenseData).length > 0 && (
         <LicenseDataCard data={dataJson.licenseData} />
