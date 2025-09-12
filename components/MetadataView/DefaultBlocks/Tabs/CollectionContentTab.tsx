@@ -197,7 +197,7 @@ function TreeView({
 
 // ----------
 
-export default function CustomTabItem2({
+export default function CollectionContentTab({
   endpoint,
   onDataStatus, // optional: parent can hide tab label if false
 }: {

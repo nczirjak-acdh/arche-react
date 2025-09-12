@@ -15,7 +15,7 @@ import AssociatedPublications from '../DefaultBlocks/Tabs/AssociatedPublications
 import AssociatedCollectionsAndResources from '../DefaultBlocks/Tabs/AssociatedCollectionsAndResources';
 import CustomTab, { TabItem } from './CustomTab';
 import CustomTabItem1 from './CustomTabItem1';
-import CustomTabItem2 from './CustomTabItem2';
+import CollectionContentTab from '../DefaultBlocks/Tabs/CollectionContentTab';
 
 type Status = 'pending' | 'has' | 'empty';
 
@@ -48,7 +48,9 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
     items.push({
       key: 'coll-cont',
       label: 'Collection Content',
-      content: <CustomTabItem2 endpoint={dataJson.id} onDataStatus={onT1} />,
+      content: (
+        <CollectionContentTab endpoint={dataJson.id} onDataStatus={onT1} />
+      ),
     });
   }
   if (t2 !== 'empty') {
@@ -56,8 +58,8 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       key: 'assoc-publ',
       label: 'Associated Publications',
       content: (
-        <CustomTabItem1
-          endpoint={`${PUBLIC_CONFIG.apiBase}/browser/api/child-tree2/${encodeURIComponent(
+        <AssociatedPublications
+          endpoint={`${PUBLIC_CONFIG.apiBase}/browser/api/publicationsDT/${encodeURIComponent(
             dataJson.id
           )}/${encodeURIComponent('en')}`}
           onDataStatus={onT2}
@@ -70,10 +72,12 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       key: 'assoc-coll-res',
       label: 'Associated Collections and Resources',
       content: (
-        <CollectionContent
-          identifier={dataJson.id}
+        <AssociatedCollectionsAndResources
+          endpoint={`${PUBLIC_CONFIG.apiBase}/browser/api/rprDT/${encodeURIComponent(
+            dataJson.id
+          )}/${encodeURIComponent('en')}`}
           onDataStatus={onT3}
-        ></CollectionContent>
+        ></AssociatedCollectionsAndResources>
       ),
     });
   }
@@ -116,7 +120,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         <SeeAlsoBlock data={dataJson.seeAlsoData}></SeeAlsoBlock>
       )}
 
-      <div>
+      <div className="w-full flex flex-col lg:flex-row">
         {anyHas ? (
           <CustomTab key={tabsKey} items={items} />
         ) : anyPending ? (

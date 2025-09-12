@@ -25,7 +25,7 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
     mapData = dataJson.mapCoordinates;
   }
   return (
-    <div className="grid w-full lg:w-[25%] gap-8">
+    <div className="flex flex-col w-full lg:w-[25%] gap-8">
       <div className={hasImage ? 'block' : 'hidden'}>
         <TitleImageCard
           id={`${process.env.NEXT_PUBLIC_API_BASE}/api/${dataJson.id}`}

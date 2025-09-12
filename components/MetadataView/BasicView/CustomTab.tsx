@@ -11,11 +11,9 @@ export type TabItem = {
 export default function CustomTab({
   items,
   initial = 0,
-  className = '',
 }: {
   items: TabItem[];
   initial?: number;
-  className?: string;
 }) {
   const [active, setActive] = React.useState(
     Math.min(initial, items.length - 1)
@@ -29,8 +27,8 @@ export default function CustomTab({
   if (!items.length) return null;
 
   return (
-    <div className={className}>
-      <div className="flex gap-2 border-b">
+    <div>
+      <div className="flex gap-2">
         {items.map((it, i) => (
           <button
             key={it.key}
