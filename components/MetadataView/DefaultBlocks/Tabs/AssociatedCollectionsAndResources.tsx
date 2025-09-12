@@ -1,7 +1,16 @@
 import React from 'react';
 
-const AssociatedCollectionsAndResources = (id: string) => {
-  return <div>AssociatedCollectionsAndResources</div>;
-};
-
-export default AssociatedCollectionsAndResources;
+export default function AssociatedCollectionsAndResources({
+  identifier,
+  onDataStatus,
+}: {
+  identifier: string | number; // accept both
+  onDataStatus: (hasData: boolean) => void;
+}) {
+  return (
+    <div>
+      AssociatedCollectionsAndResources
+      <div>eeeee</div>
+    </div>
+  );
+}

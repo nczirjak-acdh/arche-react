@@ -8,6 +8,7 @@ import ProjectBlock from '@/components/MetadataView/Project/ProjectBlock';
 import OldResourceBlock from '@/components/MetadataView/OldResourceView/OldResourceBlock';
 import BasicBlock from '@/components/MetadataView/BasicView/BasicBlock';
 import { cookies } from 'next/headers';
+import Script from 'next/script';
 
 interface MetadataPageProps {
   params: { id: string };

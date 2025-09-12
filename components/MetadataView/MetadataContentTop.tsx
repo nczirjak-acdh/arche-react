@@ -26,7 +26,7 @@ const MetadataContentTop = ({
           id="expertViewBtn"
           onClick={() => setExpertView((prev) => !prev)}
         >
-          {expertView ? t('basic_view') : t('expert_view')}
+          {expertView ? t('Basic view') : t('Expert view')}
         </button>
       </div>
     </div>

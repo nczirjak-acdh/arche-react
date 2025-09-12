@@ -1,9 +1,16 @@
 import React from 'react';
 
-const AssociatedPublications = (identifier: string) => {
-  console.log('AssociatedPublications id:');
-  console.log(identifier);
-  return <div>AssociatedPublications</div>;
-};
-
-export default AssociatedPublications;
+export default function AssociatedPublications({
+  identifier,
+  onDataStatus,
+}: {
+  identifier: string | number; // accept both
+  onDataStatus: (hasData: boolean) => void;
+}) {
+  return (
+    <div>
+      AssociatedPublications
+      <div>ddddd</div>
+    </div>
+  );
+}

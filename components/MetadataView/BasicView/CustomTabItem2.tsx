@@ -1,7 +1,8 @@
+// components/CustomTab1.tsx
 'use client';
-
-import Cookies from 'js-cookie';
+import React from 'react';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { PUBLIC_CONFIG } from '@/config/public';
 import Image from 'next/image';
@@ -194,54 +195,47 @@ function TreeView({
   );
 }
 
-// ---------- Main (fetch + render) ----------
-export default function CollectionContent({
-  identifier,
-  onDataStatus,
+// ----------
+
+export default function CustomTabItem2({
+  endpoint,
+  onDataStatus, // optional: parent can hide tab label if false
 }: {
-  identifier: string | number; // accept both
-  onDataStatus: (hasData: boolean) => void;
+  endpoint: string;
+  onDataStatus?: (hasData: boolean) => void;
 }) {
-  console.log('CollectionContent called...');
-  const [data, setData] = useState<TreeItem[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = React.useState<any[] | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const lang = Cookies.get('i18nextLng') || 'en';
+  const url = `${PUBLIC_CONFIG.apiBase}/browser/api/child-tree/${encodeURIComponent(
+    endpoint
+  )}/${encodeURIComponent(lang)}`;
 
-  // Top-level fetch
-  useEffect(() => {
-    const ac = new AbortController();
-
-    async function load() {
+  React.useEffect(() => {
+    let alive = true;
+    (async () => {
       try {
         setLoading(true);
         setError(null);
-
-        const res = await fetch(
-          `${PUBLIC_CONFIG.apiBase}/browser/api/child-tree/${encodeURIComponent(
-            identifier
-          )}/${encodeURIComponent(lang)}`,
-          { signal: ac.signal, cache: 'no-store' }
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = (await res.json()) as TreeItem[];
-        if (json.length === 0) {
-          onDataStatus(false);
-        } else {
-          onDataStatus(true);
-        }
-        setData(json);
-        setLoading(false);
+        const r = await fetch(url, { cache: 'no-store' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const j = await r.json();
+        if (!alive) return;
+        setData(j);
+        onDataStatus?.(Array.isArray(j) ? j.length > 0 : !!j);
       } catch (e: any) {
-        setLoading(false);
-        onDataStatus(false);
-        if (e.name !== 'AbortError') setError(e.message ?? 'Unknown error');
+        if (!alive) return;
+        setError(e?.message || 'Failed to load');
+        onDataStatus?.(false);
+      } finally {
+        if (alive) setLoading(false);
       }
-    }
-
-    load();
-    return () => ac.abort();
-  }, [identifier, lang, onDataStatus]);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [endpoint, onDataStatus]);
 
   // Lazy children loader (called by TreeNode when a folder is opened)
   async function loadChildren(id: string): Promise<TreeItem[]> {
@@ -271,11 +265,15 @@ export default function CollectionContent({
     );
   }
 
-  // If initial fetch failed → render empty div (per your request)
-  if (error || !data || data.length === 0) {
-    return <div />;
-  }
+  if (loading) return <div className="text-sm text-gray-600">Loading…</div>;
+  if (error) return <div className="text-sm text-red-600">Error: {error}</div>;
+  if (!data || (Array.isArray(data) && data.length === 0))
+    return <div className="text-sm text-gray-500">No data available.</div>;
 
-  // Success → render the tree
-  return <TreeView data={data} loadChildren={loadChildren} />;
+  return (
+    <div className="space-y-2">
+      {/* render your data */}
+      <TreeView data={data} loadChildren={loadChildren} />
+    </div>
+  );
 }

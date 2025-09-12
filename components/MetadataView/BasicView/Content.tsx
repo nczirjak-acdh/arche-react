@@ -13,19 +13,78 @@ import Tabs from '@/components/Tabs';
 import { PUBLIC_CONFIG } from '@/config/public';
 import AssociatedPublications from '../DefaultBlocks/Tabs/AssociatedPublications';
 import AssociatedCollectionsAndResources from '../DefaultBlocks/Tabs/AssociatedCollectionsAndResources';
+import CustomTab, { TabItem } from './CustomTab';
+import CustomTabItem1 from './CustomTabItem1';
+import CustomTabItem2 from './CustomTabItem2';
 
-type DisseminationsProps = {
-  identifier: string;
-  acdhCategory: string[];
-};
+type Status = 'pending' | 'has' | 'empty';
 
 const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
-  const [hasCollectionContentTab, setHasCollectionContentTab] =
-    React.useState(false);
-  const [hasAssociatedPublicationsTab, setHasAssociatedPublicationsTab] =
-    React.useState(false);
-  const [hasAssociatedCollResTab, setHasAssociatedCollResTab] =
-    React.useState(false);
+  const [t1, setT1] = React.useState<Status>('pending');
+  const [t2, setT2] = React.useState<Status>('pending');
+  const [t3, setT3] = React.useState<Status>('pending');
+
+  // stable mappers
+  const onT1 = React.useCallback(
+    (has: boolean) => setT1(has ? 'has' : 'empty'),
+    []
+  );
+  const onT2 = React.useCallback(
+    (has: boolean) => setT2(has ? 'has' : 'empty'),
+    []
+  );
+  const onT3 = React.useCallback(
+    (has: boolean) => setT3(has ? 'has' : 'empty'),
+    []
+  );
+
+  // Build visible tabs:
+  // - show while 'pending' (so user sees loader)
+  // - keep if 'has'
+  // - drop only when 'empty'
+  const items: TabItem[] = [];
+
+  if (t1 !== 'empty') {
+    items.push({
+      key: 'coll-cont',
+      label: 'Collection Content',
+      content: <CustomTabItem2 endpoint={dataJson.id} onDataStatus={onT1} />,
+    });
+  }
+  if (t2 !== 'empty') {
+    items.push({
+      key: 'assoc-publ',
+      label: 'Associated Publications',
+      content: (
+        <CustomTabItem1
+          endpoint={`${PUBLIC_CONFIG.apiBase}/browser/api/child-tree2/${encodeURIComponent(
+            dataJson.id
+          )}/${encodeURIComponent('en')}`}
+          onDataStatus={onT2}
+        />
+      ),
+    });
+  }
+  if (t3 !== 'empty') {
+    items.push({
+      key: 'assoc-coll-res',
+      label: 'Associated Collections and Resources',
+      content: (
+        <CollectionContent
+          identifier={dataJson.id}
+          onDataStatus={onT3}
+        ></CollectionContent>
+      ),
+    });
+  }
+
+  // Force Tabs remount when set of labels changes (many Tab libs cache items on mount)
+  const tabsKey = items.map((i) => i.key).join('|');
+
+  // Optional total loader while both tabs are still probing and nothing visible yet
+  const anyPending = [t1, t2].some((s) => s === 'pending');
+  const anyHas = items.length > 0;
+  const allEmpty = !anyHas && !anyPending;
 
   return (
     <div id="">
@@ -47,58 +106,29 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         src={`${process.env.NEXT_PUBLIC_THUMBNAILS_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
         lang="en-US"
       />
+
       {dataJson.summaryData && Object.keys(dataJson.summaryData).length > 0 && (
         <SummaryBlock data={dataJson.summaryData}></SummaryBlock>
       )}
+
       {/* if topcollection then show hasArrangement */}
       {dataJson.seeAlsoData && Object.keys(dataJson.seeAlsoData).length > 0 && (
         <SeeAlsoBlock data={dataJson.seeAlsoData}></SeeAlsoBlock>
       )}
-      <div className="w-full flex flex-col lg:flex-row">
-        <Tabs
-          items={[
-            {
-              label: 'Collection Content',
-              content: (
-                <div className="w-full">
-                  Response:
-                  {hasCollectionContentTab.toString()}
-                  <CollectionContent
-                    identifier={dataJson.id}
-                    onDataStatus={setHasCollectionContentTab}
-                  ></CollectionContent>
-                </div>
-              ),
-            },
-            {
-              label: 'Associated Publications',
-              content: (
-                <div className="w-full">
-                  Response:
-                  {hasAssociatedPublicationsTab.toString()}
-                  <AssociatedPublications
-                    identifier={dataJson.id}
-                    onDataStatus={setHasAssociatedPublicationsTab}
-                  ></AssociatedPublications>
-                </div>
-              ),
-            },
-            {
-              label: 'Associated Collections and Resources',
-              content: (
-                <div className="w-full">
-                  Response:
-                  {hasAssociatedCollResTab.toString()}
-                  <AssociatedCollectionsAndResources
-                    identifier={dataJson.id}
-                    onDataStatus={setHasAssociatedCollResTab}
-                  ></AssociatedCollectionsAndResources>
-                </div>
-              ),
-            },
-          ]}
-        />
+
+      <div>
+        {anyHas ? (
+          <CustomTab key={tabsKey} items={items} />
+        ) : anyPending ? (
+          <div className="rounded border p-6 text-sm text-gray-600">
+            Loading…
+          </div>
+        ) : allEmpty ? (
+          <div className="hidden"></div>
+        ) : null}
       </div>
+
+      <div className="w-full flex flex-col lg:flex-row"></div>
       <DisseminationsBlock
         identifier={dataJson.id}
         acdhCategory={dataJson.disseminationCategories}
