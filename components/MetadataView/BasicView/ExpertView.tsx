@@ -23,14 +23,6 @@ function pickLink(item: Item): string | null {
   return null;
 }
 
-function toRows(data: ResultSet) {
-  return Object.entries(data).map(([prop, items], idx) => ({
-    id: idx,
-    prop,
-    items: Array.isArray(items) ? items : [],
-  }));
-}
-
 const ExpertView = ({ dataJson = {} }: { dataJson?: ResultSet }) => {
   const [search, setSearch] = useState('');
 
@@ -48,7 +40,7 @@ const ExpertView = ({ dataJson = {} }: { dataJson?: ResultSet }) => {
       )
   );
 
-  const rows = React.useMemo(() => toRows(dataJson), [dataJson]);
+  //const rows = React.useMemo(() => toRows(dataJson), [dataJson]);
 
   const columns = React.useMemo<GridColDef[]>(
     () => [
@@ -107,7 +99,7 @@ const ExpertView = ({ dataJson = {} }: { dataJson?: ResultSet }) => {
   );
 
   return (
-    <div style={{ width: '100%', height: 600 }}>
+    <div style={{ width: '100%', height: 'auto' }}>
       <input
         type="text"
         placeholder="Search…"

@@ -27,7 +27,7 @@ export default function CustomTab({
   if (!items.length) return null;
 
   return (
-    <div>
+    <div className="w-full flex flex-col">
       <div className="flex gap-2">
         {items.map((it, i) => (
           <button
@@ -44,7 +44,7 @@ export default function CustomTab({
         ))}
       </div>
 
-      <div className="rounded-b-md border p-4">{items[active]?.content}</div>
+      <div className="rounded-b-md p-4">{items[active]?.content}</div>
     </div>
   );
 }

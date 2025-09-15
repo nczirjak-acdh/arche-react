@@ -211,7 +211,6 @@ export default function CollectionContent({
   // Top-level fetch
   useEffect(() => {
     const ac = new AbortController();
-
     async function load() {
       try {
         setLoading(true);

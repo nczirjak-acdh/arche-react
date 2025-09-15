@@ -1,20 +1,15 @@
 import React, { JSX } from 'react';
 import MetadataContentHeader from '../MetadataContentHeader';
-import { useState, useMemo } from 'react';
-
 import NextPrevItem from '../DefaultBlocks/NextPrevItem';
 import CiteBlock from '../DefaultBlocks/CiteBlock';
 import SummaryBlock from '../DefaultBlocks/SummaryBlock';
 import SeeAlsoBlock from '../DefaultBlocks/SeeAlsoBlock';
 import DisseminationsBlock from '../Disseminations/DisseminationsBlock';
 import NewVersionBlock from '../DefaultBlocks/NewVersionBlock';
-import CollectionContent from '../DefaultBlocks/Tabs/CollectionContent';
-import Tabs from '@/components/Tabs';
 import { PUBLIC_CONFIG } from '@/config/public';
 import AssociatedPublications from '../DefaultBlocks/Tabs/AssociatedPublications';
 import AssociatedCollectionsAndResources from '../DefaultBlocks/Tabs/AssociatedCollectionsAndResources';
 import CustomTab, { TabItem } from './CustomTab';
-import CustomTabItem1 from './CustomTabItem1';
 import CollectionContentTab from '../DefaultBlocks/Tabs/CollectionContentTab';
 
 type Status = 'pending' | 'has' | 'empty';
@@ -124,7 +119,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         {anyHas ? (
           <CustomTab key={tabsKey} items={items} />
         ) : anyPending ? (
-          <div className="rounded border p-6 text-sm text-gray-600">
+          <div className="w-full flex flex-col rounded border p-6 text-sm text-gray-600">
             Loading…
           </div>
         ) : allEmpty ? (
