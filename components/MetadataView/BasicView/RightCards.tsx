@@ -52,7 +52,7 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
         Object.keys(dataJson.technicalData).length > 0 && (
           <TechnicalCard data={dataJson.technicalData} />
         )}
-      <DownloadCard data={dataJson.id} />
+      <DownloadCard data={dataJson} />
       <ViewShareCard data={dataJson.id}></ViewShareCard>
       <VersionsCard data={dataJson.id}></VersionsCard>
     </div>

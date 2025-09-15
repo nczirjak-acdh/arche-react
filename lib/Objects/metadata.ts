@@ -99,6 +99,10 @@ export class Metadata {
     return false;
   }
 
+  getDownloadCardAccess(): bool {
+    return this.isPublic();
+  }
+
   getDisseminationCategories(): string {
     //we display only public resources
     if (!this.isPublic()) {
@@ -138,7 +142,9 @@ export class Metadata {
     }
 
     if (category === 'xml/tei' || category === 'dataset') {
-      return 'tei';
+      if (fileName && fileName.includes('.xml')) {
+        return 'tei';
+      }
     }
 
     return '';

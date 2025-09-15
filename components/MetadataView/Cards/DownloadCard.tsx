@@ -1,12 +1,16 @@
 'use client';
 import React from 'react';
+import Image from 'next/image';
 import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
+import downloadIcon from '@/public/images/icons/dl_icon.png';
 
 const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useTranslation();
+  let isDownloadEnabled = true;
+  const isPublic = data.downloadCardAccess;
 
   return (
     <div className="border border-[#E1E1E1] rounded-[8px] w-full">
@@ -30,7 +34,115 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
       {/* Content */}
       {isOpen && (
         <div className="flex flex-col p-[12px] gap-[24px] border-t border-[#E1EDF3]">
-          Under development
+          {isPublic === false && (
+            <div
+              role="alert"
+              class="relative w-full rounded-md border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800"
+            >
+              Resource is not public! Please login to download!
+            </div>
+          )}
+
+          <div className="hidden" id="download-not-logged">
+            <div className="w-full pt-2">
+              <a
+                href={`"/api/user?redirect=${process.env.NEXT_PUBLIC_GUI_URL}`}
+                className="btn btn-arche-blue"
+                rel="nofollow"
+              >
+                ARCHE Login
+              </a>
+            </div>
+            <div className="w-full pt-2">
+              <a
+                href={`"/Shibboleth.sso/Login?target=${process.env.NEXT_PUBLIC_GUI_URL}`}
+                className="btn btn-arche-blue"
+                rel="nofollow"
+              >
+                Federated Login
+              </a>
+            </div>
+          </div>
+
+          <div className="hidden" id="download-logged">
+            <div className="w-full">
+              <div
+                role="alert"
+                className="relative w-full rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+              >
+                <div>
+                  You are logged in as: <span id="user-logged-text"></span>
+                </div>
+                <div className="pt-2">
+                  <div className="w-full gui-https-logout">
+                    <span className="btn btn-arche-blue httpd-logout-btn">
+                      Logout
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden" id="download-not-authorized">
+            <div className="w-full">
+              <div className="alert alert-warning">
+                <div>You are not authorized to download this data!</div>
+                <div>
+                  You are logged in as:
+                  <span id="user-logged-not-auth-text"></span>
+                </div>
+                <div className="pt-2">
+                  <div className="w-full gui-https-logout">
+                    <span className="btn btn-arche-blue httpd-logout-btn">
+                      Logout
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="W-full " id="download-resource-section">
+            {data.binarySize > 0 && (
+              <div className="w-full flex flex-col pt-2 pb-2">
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}`}
+                  className="btn-arche-blue-sidebar"
+                  target="_blank"
+                >
+                  Download File
+                  <Image
+                    src={downloadIcon}
+                    alt="Download File"
+                    width={16}
+                    height={16}
+                    className="pb-5 bg-blue-700"
+                  />
+                </a>
+              </div>
+            )}
+
+            {data.acdhType === 'collection' ||
+              (data.acdhType === 'topcollection' && (
+                <div className="w-full flex flex-col pt-2 pb-2">
+                  <a
+                    href={`${process.env.NEXT_PUBLIC_GUI_URL}/dissemination/collection_download_script/${data.id}`}
+                    className="btn-arche-blue-sidebar"
+                    target="_blank"
+                  >
+                    Download Collection Script{' '}
+                    <Image
+                      src={downloadIcon}
+                      alt="Download File"
+                      width={16}
+                      height={16}
+                      className="pb-5"
+                    />
+                  </a>
+                </div>
+              ))}
+          </div>
         </div>
       )}
     </div>

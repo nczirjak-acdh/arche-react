@@ -2,7 +2,12 @@
 
 @import "tailwindcss";
 
-
+@theme {
+  --color-arche-green: #58bcc1;
+  --color-arche-blue:  #3b89ad;
+  --color-arche-gray:  #5b595b;
+  --color-arche-red:   #dc3545;
+}
 
 body {
   color: var(--Grey, #5B595B);
@@ -85,6 +90,8 @@ input::-ms-input-placeholder {
   opacity: 0.3;
 }
 
+
+
 @layer components {
 .btn-toolbar-public { background-color:#1dd1a1; color:#fff; }
 .btn-toolbar-academic { background-color:#ff9f43; color:#fff; }
@@ -107,4 +114,8 @@ input::-ms-input-placeholder {
     background: linear-gradient(90deg, #ee5253 0%, #ff9f43 100%);
     color: #fff;
   }
+
+
+
 }
+
