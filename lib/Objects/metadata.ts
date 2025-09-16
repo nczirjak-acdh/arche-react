@@ -488,7 +488,7 @@ export class Metadata {
     return this.#fetchCardsData(props);
   }
 
-  getPlaceAddress() {
+  getPlaceAddress(): Record<string, any> {
     const props: Record<string, string> = {
       'acdh:hasAddressLine1': 'Address Line 1',
       'acdh:hasAddressLine2 ': 'Address Line 2',
@@ -498,6 +498,15 @@ export class Metadata {
       'acdh:hasCountry': 'Country',
     };
     return this.#fetchCardsData(props);
+  }
+
+  getArrangement() {
+    if (this.getAcdhType()?.includes('TopCollection')) {
+      const props: Record<string, string> = {
+        'acdh:hasArrangement': 'Arrangement',
+      };
+      return this.#fetchBlocksData(props);
+    }
   }
 
   getTechnicalData() {

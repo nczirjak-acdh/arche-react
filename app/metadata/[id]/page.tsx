@@ -30,25 +30,10 @@ export default async function metadata({ params }: MetadataPageProps) {
   if (!data) {
     return notFound();
   }
-  const dataJson = data.toJSON();
-  const type = dataJson.acdhType;
 
   return (
     <div className="p-8 bg-white">
-      {type === 'place' && <PlaceBlock data={data} />}
-      {type === 'person' && <PersonBlock data={data} />}
-      {type === 'organisation' && <OrganisationBlock data={data} />}
-      {type === 'publication' && <PublicationBlock data={data} />}
-      {type === 'project' && <ProjectBlock data={data} />}
-      {type === 'oldresource' && <OldResourceBlock data={data} />}
-      {![
-        'place',
-        'person',
-        'organisation',
-        'publication',
-        'project',
-        'oldresource',
-      ].includes(type) && <BasicBlock data={data} />}
+      <BasicBlock data={data} />
     </div>
   );
 }

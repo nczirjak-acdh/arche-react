@@ -11,6 +11,7 @@ import AssociatedPublications from '../DefaultBlocks/Tabs/AssociatedPublications
 import AssociatedCollectionsAndResources from '../DefaultBlocks/Tabs/AssociatedCollectionsAndResources';
 import CustomTab, { TabItem } from './CustomTab';
 import CollectionContentTab from '../DefaultBlocks/Tabs/CollectionContentTab';
+import ArrangementBlock from '../DefaultBlocks/ArrangementBlock';
 
 type Status = 'pending' | 'has' | 'empty';
 
@@ -100,21 +101,20 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       <div className="flex flex-col lg:flex-row w-full">
         <h4>{dataJson.title}</h4>
       </div>
-
       <CiteBlock
         src={`${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
         lang="en-US"
       />
-
       {dataJson.summaryData && Object.keys(dataJson.summaryData).length > 0 && (
         <SummaryBlock data={dataJson.summaryData}></SummaryBlock>
       )}
-
+      {dataJson.arrangement && Object.keys(dataJson.arrangement).length > 0 && (
+        <ArrangementBlock data={dataJson.arrangement}></ArrangementBlock>
+      )}
       {/* if topcollection then show hasArrangement */}
       {dataJson.seeAlsoData && Object.keys(dataJson.seeAlsoData).length > 0 && (
         <SeeAlsoBlock data={dataJson.seeAlsoData}></SeeAlsoBlock>
       )}
-
       <div className="w-full flex flex-col lg:flex-row">
         {anyHas ? (
           <CustomTab key={tabsKey} items={items} />
@@ -126,7 +126,6 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
           <div className="hidden"></div>
         ) : null}
       </div>
-
       <div className="w-full flex flex-col lg:flex-row"></div>
       <DisseminationsBlock
         identifier={dataJson.id}
