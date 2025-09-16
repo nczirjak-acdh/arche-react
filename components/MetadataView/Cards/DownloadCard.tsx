@@ -12,13 +12,6 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
   let isDownloadEnabled = true;
   const isPublic = data.downloadCardAccess;
 
-  if (
-    data.acdhType.includes('Collection') ||
-    data.acdhType.includes('TopCollection')
-  ) {
-    console.log('Collection or TopCopollection');
-  }
-
   return (
     <div className="border border-[#E1E1E1] rounded-[8px] w-full">
       {/* Header */}

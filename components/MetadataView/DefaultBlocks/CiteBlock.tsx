@@ -23,10 +23,7 @@ const STYLE_URLS: Record<'APA_6TH' | 'HARVARD' | 'VANCOUVER', string> = {
     'https://raw.githubusercontent.com/citation-style-language/styles/master/vancouver.csl',
 };
 
-export default function CiteBlock({
-  src = 'https://arche-biblatex.acdh.oeaw.ac.at/?id=https://arche-dev.acdh-dev.oeaw.ac.at/api/262625&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson',
-  lang = 'en-US',
-}: Props) {
+export default function CiteBlock({ src, lang = 'en-US' }: Props) {
   const [cslJson, setCslJson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -44,9 +41,12 @@ export default function CiteBlock({
         setLoading(true);
         setErr(null);
         const res = await fetch(src, { cache: 'no-store' });
-        if (!res.ok)
+
+        if (!res.ok) {
           console.log(`Failed to load CSL-JSON (HTTP ${res.status})`);
-        throw new Error(`Failed to load CSL-JSON (HTTP ${res.status})`);
+          throw new Error(`Failed to load CSL-JSON (HTTP ${res.status})`);
+        }
+
         const json = await res.json();
         if (!cancelled) setCslJson(json);
       } catch (e: any) {
@@ -82,6 +82,7 @@ export default function CiteBlock({
               if (!Cite.CSL.register.getTemplate(name)) {
                 Cite.CSL.register.addTemplate(name, xml);
               }
+
               return name;
             }
           )
