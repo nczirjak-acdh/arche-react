@@ -68,7 +68,7 @@
   "Extent": "Umfang",
   "funding": "Funding",
   "technical_info": "Technische Info",
-  "download": "Herunterladen",
+  "Download": "Herunterladen",
   "View and Share": "Anzeigen und Teilen",
   "Versions": "Versionen",
   "Spatial Coverage": "Geografische Abdeckung",
@@ -79,5 +79,15 @@
   "Even though we do our best to keep our namespace tidy and persistent, there might still be a broken link here and there.": "Auch wenn wir unser Bestes tun, um unseren Namensraum ordentlich und beständig zu halten, kann es trotzdem hin und wieder einen defekten Link geben.",
   "We apologize for the inconvenience.": "Wir entschuldigen uns für die Unannehmlichkeiten.",
   "VISIT ACDH WEBSITE": "ACDH-WEBSITE BESUCHEN",
-  "CONTACT US": "KONTAKTIEREN SIE UNS"
+  "CONTACT US": "KONTAKTIEREN SIE UNS",
+  "Resource is :not public! Please login to download!": "Die Ressource ist nicht öffentlich! Bitte melden Sie sich an, um sie herunterzuladen!",
+  "ARCHE Login": "ARCHE ",
+  "You are not authorized to download this data!": "Sie sind nicht berechtigt, diese Daten herunterzuladen!",
+  "You are logged in as": "Sie sind angemeldet als",
+  "Download File": "Datei herunterladen",
+  "Logout": "Ausloggen",
+  "Federated Login": "Federated Login",
+  "Download Collection Script": "Skript Sammlung herunterladen",
+  "Download Metadata": "Metadaten herunterladen",
+  "RDF Viewer": "RDF Viewer"
 }

@@ -503,7 +503,8 @@ export class Metadata {
   getTechnicalData() {
     let props: Record<string, string> = {};
     const lower = this.getAcdhType()?.toLowerCase();
-    if (lower === 'topcollection' || lower === 'collection') {
+
+    if (lower?.includes('topcollection') || lower?.includes('collection')) {
       props = {
         'acdh:hasLifeCycleStatus': 'Life Cycle Status',
         'acdh:hasExtent': 'Extent',

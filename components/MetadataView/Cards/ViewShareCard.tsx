@@ -3,6 +3,8 @@ import React from 'react';
 import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
+import Image from 'next/image';
+import downloadIcon from '@/public/images/icons/dl_icon.png';
 
 const ViewShareCard = ({ data }: { data: any }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -30,7 +32,25 @@ const ViewShareCard = ({ data }: { data: any }) => {
       {/* Content */}
       {isOpen && (
         <div className="flex flex-col p-[12px] gap-[24px] border-t border-[#E1EDF3]">
-          Under development
+          <div className="w-full" id="download-metadata-section">
+            <div className="w-full pt-2 pb-2">
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}/metadata`}
+                className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
+                target="_blank"
+              >
+                {t('RDF Viewer')}
+
+                <Image
+                  src={downloadIcon}
+                  alt={t('RDF Viewer')}
+                  width={16}
+                  height={16}
+                  className="w-4 h-4"
+                />
+              </a>
+            </div>
+          </div>
         </div>
       )}
     </div>

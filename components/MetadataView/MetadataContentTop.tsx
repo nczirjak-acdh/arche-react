@@ -21,13 +21,13 @@ const MetadataContentTop = ({
         <BreadcrumbBlock identifier={data.id}></BreadcrumbBlock>
       </div>
       <div className="w-full lg:w-[30%] flex justify-end">
-        <button
-          className="text-white px-[16px] py-[10px] gap-[8px] rounded-[6px] bg-[#3B89AD] w-fit"
+        <a
+          className="btn-arche-blue text-white px-[16px] py-[10px] gap-[8px] w-fit"
           id="expertViewBtn"
           onClick={() => setExpertView((prev) => !prev)}
         >
           {expertView ? t('Basic view') : t('Expert view')}
-        </button>
+        </a>
       </div>
     </div>
   );

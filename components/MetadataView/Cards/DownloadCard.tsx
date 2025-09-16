@@ -12,6 +12,13 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
   let isDownloadEnabled = true;
   const isPublic = data.downloadCardAccess;
 
+  if (
+    data.acdhType.includes('Collection') ||
+    data.acdhType.includes('TopCollection')
+  ) {
+    console.log('Collection or TopCopollection');
+  }
+
   return (
     <div className="border border-[#E1E1E1] rounded-[8px] w-full">
       {/* Header */}
@@ -21,7 +28,7 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
           className="w-full flex justify-between items-center px-4 py-3 focus:outline-none"
         >
           <span className="text-[16px] font-semibold text-[#1A1A1A]">
-            {t('download')}
+            {t('Download')}
           </span>
           {isOpen ? (
             <ChevronUpIcon className="h-5 w-5 text-gray-600" />
@@ -33,13 +40,13 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
 
       {/* Content */}
       {isOpen && (
-        <div className="flex flex-col p-[12px] gap-[24px] border-t border-[#E1EDF3]">
+        <div className="flex flex-col p-[12px] gap-[4px] border-t border-[#E1EDF3]">
           {isPublic === false && (
             <div
               role="alert"
               class="relative w-full rounded-md border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800"
             >
-              Resource is not public! Please login to download!
+              {t('Resource is not public! Please login to download!')}
             </div>
           )}
 
@@ -47,19 +54,19 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
             <div className="w-full pt-2">
               <a
                 href={`"/api/user?redirect=${process.env.NEXT_PUBLIC_GUI_URL}`}
-                className="btn btn-arche-blue"
+                className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
                 rel="nofollow"
               >
-                ARCHE Login
+                {t('ARCHE Login')}
               </a>
             </div>
             <div className="w-full pt-2">
               <a
                 href={`"/Shibboleth.sso/Login?target=${process.env.NEXT_PUBLIC_GUI_URL}`}
-                className="btn btn-arche-blue"
+                className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
                 rel="nofollow"
               >
-                Federated Login
+                {t('Federated Login')}
               </a>
             </div>
           </div>
@@ -71,12 +78,13 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
                 className="relative w-full rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
               >
                 <div>
-                  You are logged in as: <span id="user-logged-text"></span>
+                  {t('You are logged in as')}:
+                  <span id="user-logged-text"></span>
                 </div>
                 <div className="pt-2">
                   <div className="w-full gui-https-logout">
-                    <span className="btn btn-arche-blue httpd-logout-btn">
-                      Logout
+                    <span className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline">
+                      {t('Logout')}
                     </span>
                   </div>
                 </div>
@@ -87,15 +95,15 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
           <div className="hidden" id="download-not-authorized">
             <div className="w-full">
               <div className="alert alert-warning">
-                <div>You are not authorized to download this data!</div>
+                <div>{t('You are not authorized to download this data!')}</div>
                 <div>
-                  You are logged in as:
+                  {t('You are logged in as')}:
                   <span id="user-logged-not-auth-text"></span>
                 </div>
                 <div className="pt-2">
                   <div className="w-full gui-https-logout">
-                    <span className="btn btn-arche-blue httpd-logout-btn">
-                      Logout
+                    <span className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline">
+                      {t('Logout')}
                     </span>
                   </div>
                 </div>
@@ -108,40 +116,61 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
               <div className="w-full flex flex-col pt-2 pb-2">
                 <a
                   href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}`}
-                  className="btn-arche-blue-sidebar"
+                  className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
                   target="_blank"
                 >
-                  Download File
+                  {t('Download File')}
+
                   <Image
                     src={downloadIcon}
-                    alt="Download File"
+                    alt={t('Download File')}
                     width={16}
                     height={16}
-                    className="pb-5 bg-blue-700"
+                    className="w-4 h-4"
                   />
                 </a>
               </div>
             )}
 
-            {data.acdhType === 'collection' ||
-              (data.acdhType === 'topcollection' && (
-                <div className="w-full flex flex-col pt-2 pb-2">
-                  <a
-                    href={`${process.env.NEXT_PUBLIC_GUI_URL}/dissemination/collection_download_script/${data.id}`}
-                    className="btn-arche-blue-sidebar"
-                    target="_blank"
-                  >
-                    Download Collection Script{' '}
-                    <Image
-                      src={downloadIcon}
-                      alt="Download File"
-                      width={16}
-                      height={16}
-                      className="pb-5"
-                    />
-                  </a>
-                </div>
-              ))}
+            {(data.acdhType?.includes('TopCollection') ||
+              data.acdhType?.includes('Collection')) && (
+              <div className="w-full flex flex-col pt-2 pb-2">
+                <a
+                  href={`${process.env.NEXT_PUBLIC_GUI_URL}/dissemination/collection_download_script/${data.id}`}
+                  className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
+                  target="_blank"
+                >
+                  {t('Download Collection Script')}
+                  <Image
+                    src={downloadIcon}
+                    alt={t('Download Collection Script')}
+                    width={16}
+                    height={16}
+                    className="w-4 h-4"
+                  />
+                </a>
+              </div>
+            )}
+          </div>
+
+          <div className="w-full" id="download-metadata-section">
+            <div className="w-full pt-2 pb-2">
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}/metadata?format=text/turtle&readMode=relatives&parentProperty=https%3A%2F%2Fvocabs.acdh.oeaw.ac.at%2Fschema%23isPartOf`}
+                className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
+                target="_blank"
+              >
+                {t('Download Metadata')}
+
+                <Image
+                  src={downloadIcon}
+                  alt={t('Download Metadata')}
+                  width={16}
+                  height={16}
+                  className="w-4 h-4"
+                />
+              </a>
+            </div>
           </div>
         </div>
       )}
