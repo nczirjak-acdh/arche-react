@@ -3,12 +3,25 @@ import MetadataContentHeader from '../MetadataContentHeader';
 import NextPrevItem from '../DefaultBlocks/NextPrevItem';
 import NewVersionBlock from '../DefaultBlocks/NewVersionBlock';
 import { PUBLIC_CONFIG } from '@/config/public';
+import PlaceAddressBlock from './PlaceAddressBlock';
+import PlaceDescriptionBlock from './PlaceDescriptionBlock';
+import PlaceMapBlock from './PlaceMapBlock';
 
 const PlaceBlock = ({
   dataJson = {},
 }: {
   dataJson?: Record<string, any[]>;
 }) => {
+  const resourceMapType = dataJson.mapType;
+  let mapData = '';
+  if (resourceMapType === 'multipolygon') {
+    mapData = dataJson.mapPolygon;
+  } else if (resourceMapType === 'polygon') {
+    mapData = dataJson.mapPolygon;
+  } else if (resourceMapType === 'coordinates') {
+    mapData = dataJson.mapCoordinates;
+  }
+
   return (
     <div id="">
       <MetadataContentHeader data={dataJson}></MetadataContentHeader>
@@ -24,6 +37,22 @@ const PlaceBlock = ({
       <div className="flex flex-col lg:flex-row w-full">
         <h4>{dataJson.title}</h4>
       </div>
+
+      <div className="flex flex-col lg:flex-row w-full">
+        {dataJson.placeAddress &&
+          Object.keys(dataJson.placeAddress).length > 0 && (
+            <PlaceAddressBlock data={dataJson.placeAddress} />
+          )}
+      </div>
+
+      <div className="flex flex-col lg:flex-row w-full">
+        {dataJson.placeDescription &&
+          Object.keys(dataJson.placeDescription).length > 0 && (
+            <PlaceDescriptionBlock data={dataJson.placeDescription} />
+          )}
+      </div>
+
+      {mapData && <PlaceMapBlock data={mapData!} mapType={resourceMapType} />}
     </div>
   );
 };

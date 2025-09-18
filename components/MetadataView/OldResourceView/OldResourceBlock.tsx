@@ -11,7 +11,6 @@ const OldResourceBlock = ({
 }) => {
   return (
     <div id="">
-      PLACE
       <MetadataContentHeader data={dataJson}></MetadataContentHeader>
       <div className="flex flex-col w-full">
         <hr className="my-4 border-[#E1EDF3]" />

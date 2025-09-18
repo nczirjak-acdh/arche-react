@@ -500,6 +500,15 @@ export class Metadata {
     return this.#fetchCardsData(props);
   }
 
+  getPlaceDescription(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:hasDescription': 'Description',
+      'acdh:hasPart ': 'Part(s)',
+      'acdh:isPartOf': 'Is part of',
+    };
+    return this.#fetchCardsData(props);
+  }
+
   getArrangement() {
     if (this.getAcdhType()?.includes('TopCollection')) {
       const props: Record<string, string> = {

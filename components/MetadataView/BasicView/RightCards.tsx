@@ -15,8 +15,8 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
 
   let mapData = '';
   const resourceMapType = dataJson.mapType;
-
-  console.log(resourceMapType);
+  const acdhType = dataJson.acdhType;
+  console.log(acdhType);
   if (resourceMapType === 'multipolygon') {
     mapData = dataJson.mapPolygon;
   } else if (resourceMapType === 'polygon') {
@@ -33,7 +33,9 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
         />
       </div>
 
-      {mapData && <MapCard data={mapData!} mapType={resourceMapType} />}
+      {mapData && !acdhType.includes('#Place') && (
+        <MapCard data={mapData!} mapType={resourceMapType} />
+      )}
 
       <IdentifierCard data={dataJson.pidOrAcdhIdentifier}></IdentifierCard>
       {dataJson.licenseData && Object.keys(dataJson.licenseData).length > 0 && (
