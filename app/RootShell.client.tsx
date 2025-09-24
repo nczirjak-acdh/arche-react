@@ -24,27 +24,51 @@ const MENU_URLS = {
       DE: process.env.NEXT_PUBLIC_DEPOSIT_DEPOSITION_PROCESS_DE,
     },
     DEPOSITION_AGREEMENT: {
-      EN: process.env.NEXT_PUBLIC_DEPOSIT_GUIDELINES_URL_EN,
-      DE: process.env.NEXT_PUBLIC_DEPOSIT_GUIDELINES_URL_DE,
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_DEPOSITION_AGREEMENT_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_DEPOSITION_AGREEMENT_DE,
     },
-    contact: {
-      EN: process.env.NEXT_PUBLIC_DEPOSIT_CONTACT_URL_EN,
-      DE: process.env.NEXT_PUBLIC_DEPOSIT_CONTACT_URL_DE,
+    FILENAMES_FORMATS: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_FILENAMES_FORMATS_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_FILENAMES_FORMATS_DE,
+    },
+    FAQ: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_FAQ_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_FAQ_DE,
+    },
+    FURTHER_GUIDANCE: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_FURTHER_GUIDANCE_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_FURTHER_GUIDANCE_DE,
+    },
+    TECHNICAL_SETUP: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_TECHNICAL_SETUP_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_TECHNICAL_SETUP_DE,
+    },
+    API_ACCESS: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_API_ACCESS_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_API_ACCESS_DE,
     },
   },
   policies: {
-    terms: {
-      EN: process.env.NEXT_PUBLIC_POLICIES_TERMS_URL_EN,
-      DE: process.env.NEXT_PUBLIC_POLICIES_TERMS_URL_DE,
+    COLLECTION_POLICY: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_COLLECTION_POLICY_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_COLLECTION_POLICY_DE,
     },
-    privacy: {
-      EN: process.env.NEXT_PUBLIC_POLICIES_PRIVACY_URL_EN,
-      DE: process.env.NEXT_PUBLIC_POLICIES_PRIVACY_URL_DE,
+    PRESERVATION_POLICY: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_PRESERVATION_POLICY_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_PRESERVATION_POLICY_DE,
     },
-    licenses: {
-      EN: process.env.NEXT_PUBLIC_POLICIES_LICENSES_URL_EN,
-      DE: process.env.NEXT_PUBLIC_POLICIES_LICENSES_URL_DE,
+    PRIVACY_POLICY: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_PRIVACY_POLICY_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_PRIVACY_POLICY_DE,
     },
+    TERMS_OF_USE: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_TERMS_OF_USE_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_TERMS_OF_USE_DE,
+    },
+  },
+  about: {
+    EN: process.env.NEXT_PUBLIC_ABOUT_ARCHE_EN,
+    DE: process.env.NEXT_PUBLIC_ABOUT_ARCHE_DE,
   },
 } as const;
 
@@ -522,7 +546,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.DEPOSITION_PROCESS[L] ?? '#'}
                   >
                     {t('Deposition Process')}
                   </a>
@@ -531,7 +555,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.DEPOSITION_AGREEMENT[L] ?? '#'}
                   >
                     {t('Deposition Agreement')}
                   </a>
@@ -540,7 +564,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.FILENAMES_FORMATS[L] ?? '#'}
                   >
                     {t('Filenames, Fomats, and Metadata')}
                   </a>
@@ -549,7 +573,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.FAQ[L] ?? '#'}
                   >
                     {t('FAQ')}
                   </a>
@@ -558,7 +582,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.FURTHER_GUIDANCE[L] ?? '#'}
                   >
                     {t('Further Guidance')}
                   </a>
@@ -567,7 +591,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.TECHNICAL_SETUP[L] ?? '#'}
                   >
                     {t('Technical Setup')}
                   </a>
@@ -576,7 +600,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.deposit.API_ACCESS[L] ?? '#'}
                   >
                     {t('API Access')}
                   </a>
@@ -605,7 +629,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.policies.COLLECTION_POLICY[L] ?? '#'}
                   >
                     {t('Collection Policy')}
                   </a>
@@ -615,7 +639,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.policies.PRESERVATION_POLICY[L] ?? '#'}
                   >
                     {t('Preservation Policy')}
                   </a>
@@ -624,7 +648,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.policies.PRIVACY_POLICY[L] ?? '#'}
                   >
                     {t('Privacy Policy')}
                   </a>
@@ -633,7 +657,7 @@ export default function RootShell({
                   <a
                     role="menuitem"
                     className="block px-3 py-2 hover:bg-gray-50"
-                    href="#"
+                    href={MENU_URLS.policies.TERMS_OF_USE[L] ?? '#'}
                   >
                     {t('Terms of Use')}
                   </a>
@@ -642,7 +666,7 @@ export default function RootShell({
             </li>
 
             <li>
-              <a href="#" className="header-nav-text">
+              <a href={MENU_URLS.about[L] ?? '#'} className="header-nav-text">
                 {t('About Arche')}
               </a>
             </li>

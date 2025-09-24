@@ -288,6 +288,15 @@ export class Metadata {
     return 'Untitled';
   }
 
+  getAlternativeTitle(): string | null {
+    const titleNode = this.properties['acdh:hasAlternativeTitle'];
+
+    const value = titleNode?.[0]?.value;
+    if (value) return value;
+
+    return '';
+  }
+
   getDataByProperty(property: string): any[] {
     const propData = this.properties?.[property];
     if (!propData) return [];
@@ -486,6 +495,24 @@ export class Metadata {
       'acdh:hasBinarySize': 'Binary Size',
     };
     return this.#fetchCardsData(props);
+  }
+
+  getProjectSummary(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:hasRelatedDiscipline': 'Research Discipline',
+      'acdh:hasSubject': 'Subject',
+      'acdh:hasSpatialCoverage': 'Spatial Coverage',
+      'acdh:hasTemporalCoverage': 'Era',
+      'acdh:hasCoverageStartDate': 'Coverage Date',
+      'acdh:hasCoverageEndDate': 'Coverage Date',
+      'acdh:hasAppliedMethod': 'Methods',
+      'acdh:hasAppliedMethodDescription': 'Methods description',
+      'acdh:hasCollectedStartDate': 'Data Collection Date',
+      'acdh:hasCollectedEndDate': 'Data Collection Date',
+      'acdh:hasDescription': 'Description',
+      'acdh:hasNote': 'Note',
+    };
+    return this.#fetchBlocksData(props);
   }
 
   getPlaceAddress(): Record<string, any> {

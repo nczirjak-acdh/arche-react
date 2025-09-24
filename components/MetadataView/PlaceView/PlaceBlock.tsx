@@ -25,7 +25,10 @@ const PlaceBlock = ({
 
   return (
     <div className="flex flex-col gap-2" id="">
-      <MetadataContentHeader data={dataJson}></MetadataContentHeader>
+      <MetadataContentHeader
+        data={dataJson}
+        availableDate={false}
+      ></MetadataContentHeader>
       <div className="flex flex-col w-full">
         <hr className="my-4 border-[#E1EDF3]" />
       </div>
