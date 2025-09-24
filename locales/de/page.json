@@ -90,5 +90,19 @@
   "Download Collection Script": "Skript Sammlung herunterladen",
   "Download Metadata": "Metadaten herunterladen",
   "RDF Viewer": "RDF Viewer",
-  "Arrangement": "Anordnung"
+  "Arrangement": "Anordnung",
+  "Discover": "Entdecken",
+  "Deposit": "Einreichen",
+  "Deposition Process": "Einreichungsprozess",
+  "Deposition Agreement": "Datenübergabevertrag",
+  "Filenames, Formats, and Metadata": "Dateinamen, Formate und Metadaten",
+  "Further Guidance": "Weiterführende Informationen",
+  "Technical Setup": "Technischer Aufbau",
+  "API Access": "API-Zugriff",
+  "Policies": "Richtlinien",
+  "Collection Policy": "Sammlungsstrategie",
+  "Preservation Policy": "Konservierungsrichtlinien",
+  "Privacy Policy": "Datenschutzbestimmungen",
+  "Terms of Use": "Nutzungsbedingungen",
+  "About Arche": "Über Arche"
 }

@@ -136,7 +136,14 @@ input::-ms-input-placeholder {
     background-color: #5CA3C6;
     text-decoration: none;
   }
+
+  a.header-nav-text {
+    color: #5B595B !important;
+  }
   
+  a.header-nav-text:hover {
+    color: rgba(91, 89, 91, 0.4) !important;
+  }
 
 
 

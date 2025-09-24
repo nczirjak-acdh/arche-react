@@ -25,13 +25,15 @@ export default function HeaderMain({
       <header className="flex items-center justify-between px-8 pt-5 bg-transparent">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <Image
-            src="/browser/images/logos/arche_transparent_header.svg"
-            alt="ARCHE logo"
-            width={160}
-            height={40}
-            className="w-[160px] h-[40px]"
-          />
+          <Link href="/">
+            <Image
+              src="/browser/images/logos/arche_transparent_header.svg"
+              alt="ARCHE logo"
+              width={160}
+              height={40}
+              className="w-[160px] h-[40px]"
+            />
+          </Link>
         </div>
 
         {/* Nav */}

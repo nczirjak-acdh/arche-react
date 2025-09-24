@@ -9,32 +9,47 @@ const Header = () => {
       <HeaderFront
         mainNavigation={
           <>
-            <a href="#" className="text-[#2c3e50] hover:underline">
+            <a
+              href="#"
+              className="text-[rgba(91,89,91,0.2)] hover:underline header-nav-text"
+            >
               Discover
             </a>
-            <a href="#" className="text-[#2c3e50] hover:underline">
+            <a href="#" className="text-[rgba(91,89,91,0.2)] hover:underline">
               Deposit
             </a>
-            <a href="#" className="text-[#2c3e50] hover:underline">
+            <a href="#" className="text-[rgba(91,89,91,0.2)] hover:underline">
               Policies
             </a>
-            <a href="#" className="text-[#2c3e50] hover:underline">
+            <a href="#" className="text-[rgba(91,89,91,0.2)] hover:underline">
               About Arche
             </a>
           </>
         }
         mobileNavigation={
           <>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
+            <a
+              href="#"
+              className="block py-2 text-[rgba(91,89,91,0.2)] hover:underline"
+            >
               Discover
             </a>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
+            <a
+              href="#"
+              className="block py-2 text-[rgba(91,89,91,0.2)] hover:underline"
+            >
               Deposit
             </a>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
+            <a
+              href="#"
+              className="block py-2 text-[rgba(91,89,91,0.2)] hover:underline"
+            >
               Policies
             </a>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
+            <a
+              href="#"
+              className="block py-2 text-[rgba(91,89,91,0.2)] hover:underline"
+            >
               About Arche
             </a>
           </>

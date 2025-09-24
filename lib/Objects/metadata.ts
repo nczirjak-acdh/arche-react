@@ -500,6 +500,15 @@ export class Metadata {
     return this.#fetchCardsData(props);
   }
 
+  getMapCoordinatesBlock(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:hasLatitude': 'Latitude',
+      'acdh:hasLongitude': 'Longitude',
+      'acdh:hasWKT': 'WKT',
+    };
+    return this.#fetchCardsData(props);
+  }
+
   getPlaceDescription(): Record<string, any> {
     const props: Record<string, string> = {
       'acdh:hasDescription': 'Description',

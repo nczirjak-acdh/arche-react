@@ -7,9 +7,46 @@ import HomePage from '@/components/FrontPage/HomePage';
 import HeaderMain from '@/components/Header/HeaderMain';
 import HeaderFront from '@/components/FrontPage/HeaderFront';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+
+// Language-normalized helper
+
+const MENU_URLS = {
+  discover: {
+    EN: process.env.NEXT_PUBLIC_DISCOVER_URL_PARAMS_EN,
+    DE: process.env.NEXT_PUBLIC_DISCOVER_URL_PARAMS_DE,
+  },
+  deposit: {
+    DEPOSITION_PROCESS: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_DEPOSITION_PROCESS_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_DEPOSITION_PROCESS_DE,
+    },
+    DEPOSITION_AGREEMENT: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_GUIDELINES_URL_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_GUIDELINES_URL_DE,
+    },
+    contact: {
+      EN: process.env.NEXT_PUBLIC_DEPOSIT_CONTACT_URL_EN,
+      DE: process.env.NEXT_PUBLIC_DEPOSIT_CONTACT_URL_DE,
+    },
+  },
+  policies: {
+    terms: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_TERMS_URL_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_TERMS_URL_DE,
+    },
+    privacy: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_PRIVACY_URL_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_PRIVACY_URL_DE,
+    },
+    licenses: {
+      EN: process.env.NEXT_PUBLIC_POLICIES_LICENSES_URL_EN,
+      DE: process.env.NEXT_PUBLIC_POLICIES_LICENSES_URL_DE,
+    },
+  },
+} as const;
 
 export default function RootShell({
   initialLang,
@@ -24,6 +61,32 @@ export default function RootShell({
   const searchParams = useSearchParams(); // current querystring
 
   const [lang, setLang] = useState(initialLang);
+  const L = lang.toUpperCase();
+  console.log('LANGGG:: ');
+  console.log(L);
+  // --- dropdown state + outside-click handling ---
+  const [open, setOpen] = useState<null | 'deposit' | 'policies'>(null);
+  const navRef = useRef<HTMLUListElement | null>(null);
+
+  const toggle = (which: 'deposit' | 'policies') =>
+    setOpen((prev) => (prev === which ? null : which));
+
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpen(null);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(null);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
 
   // On mount: prefer localStorage if present, keep everything in sync
   useEffect(() => {
@@ -74,42 +137,346 @@ export default function RootShell({
       <I18nProvider>
         <HeaderFront
           mainNavigation={
-            <>
-              <a href="#" className="text-[#2c3e50] hover:underline">
-                {t('menu_discover')}
-              </a>
-              <a href="#" className="text-[#2c3e50] hover:underline">
-                {t('menu_deposit')}
-              </a>
-              <a href="#" className="text-[#2c3e50] hover:underline">
-                Policies
-              </a>
-              <a href="#" className="text-[#2c3e50] hover:underline">
-                About Arche
-              </a>
-              <button
-                className="ml-4 underline"
-                onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}
-              >
-                {lang.toUpperCase()}
-              </button>
-            </>
+            <ul
+              ref={navRef}
+              className="inline-flex items-center gap-4 whitespace-nowrap list-none"
+            >
+              <li>
+                <a
+                  href={MENU_URLS.discover[L] ?? '#'}
+                  className="header-nav-text"
+                >
+                  {t('Discover')}
+                </a>
+              </li>
+
+              {/* menu_deposit with dropdown */}
+              <li className="relative">
+                <button
+                  type="button"
+                  className="header-nav-text inline-flex items-center gap-1"
+                  aria-haspopup="menu"
+                  aria-expanded={open === 'deposit'}
+                  onClick={() => toggle('deposit')}
+                >
+                  {t('Deposit')}
+                  <span aria-hidden>▾</span>
+                </button>
+                <ul
+                  role="menu"
+                  className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'deposit' ? 'block' : 'hidden'}`}
+                >
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Deposition Process')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Deposition Agreement')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Filenames, Fomats, and Metadata')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('FAQ')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Further Guidance')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Technical Setup')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('API Access')}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              {/* Policies with dropdown */}
+              <li className="relative">
+                <button
+                  type="button"
+                  className="header-nav-text inline-flex items-center gap-1"
+                  aria-haspopup="menu"
+                  aria-expanded={open === 'policies'}
+                  onClick={() => toggle('policies')}
+                >
+                  {t('Policies')}
+                  <span aria-hidden>▾</span>
+                </button>
+                <ul
+                  role="menu"
+                  className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'policies' ? 'block' : 'hidden'}`}
+                >
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Collection Policy')}
+                    </a>
+                  </li>
+
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Preservation Policy')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Privacy Policy')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Terms of Use')}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li>
+                <a href="#" className="header-nav-text">
+                  {t('About Arche')}
+                </a>
+              </li>
+
+              {/* language toggle as a proper list item */}
+              <li>
+                <button
+                  className="ml-2 underline"
+                  onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}
+                >
+                  {lang.toUpperCase()}
+                </button>
+              </li>
+            </ul>
           }
           mobileNavigation={
-            <>
-              <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-                {t('menu_discover')}
-              </a>
-              <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-                {t('menu_deposit')}
-              </a>
-              <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-                Policies
-              </a>
-              <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-                About Arche
-              </a>
-            </>
+            <ul
+              ref={navRef}
+              className="inline-flex items-center gap-4 whitespace-nowrap list-none"
+            >
+              <li>
+                <a
+                  href={MENU_URLS.discover[L] ?? '#'}
+                  className="header-nav-text"
+                >
+                  {t('Discover')}
+                </a>
+              </li>
+
+              {/* menu_deposit with dropdown */}
+              <li className="relative">
+                <button
+                  type="button"
+                  className="header-nav-text inline-flex items-center gap-1"
+                  aria-haspopup="menu"
+                  aria-expanded={open === 'deposit'}
+                  onClick={() => toggle('deposit')}
+                >
+                  {t('Deposit')}
+                  <span aria-hidden>▾</span>
+                </button>
+                <ul
+                  role="menu"
+                  className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'deposit' ? 'block' : 'hidden'}`}
+                >
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Deposition Process')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Deposition Agreement')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Filenames, Fomats, and Metadata')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('FAQ')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Further Guidance')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Technical Setup')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('API Access')}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              {/* Policies with dropdown */}
+              <li className="relative">
+                <button
+                  type="button"
+                  className="header-nav-text inline-flex items-center gap-1"
+                  aria-haspopup="menu"
+                  aria-expanded={open === 'policies'}
+                  onClick={() => toggle('policies')}
+                >
+                  {t('Policies')}
+                  <span aria-hidden>▾</span>
+                </button>
+                <ul
+                  role="menu"
+                  className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'policies' ? 'block' : 'hidden'}`}
+                >
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Collection Policy')}
+                    </a>
+                  </li>
+
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Preservation Policy')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Privacy Policy')}
+                    </a>
+                  </li>
+                  <li role="none">
+                    <a
+                      role="menuitem"
+                      className="block px-3 py-2 hover:bg-gray-50"
+                      href="#"
+                    >
+                      {t('Terms of Use')}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li>
+                <a href="#" className="header-nav-text">
+                  {t('About Arche')}
+                </a>
+              </li>
+
+              {/* language toggle as a proper list item */}
+              <li>
+                <button
+                  className="ml-2 underline"
+                  onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}
+                >
+                  {lang.toUpperCase()}
+                </button>
+              </li>
+            </ul>
           }
         />
         <HomePage />
@@ -117,47 +484,350 @@ export default function RootShell({
       </I18nProvider>
     );
   }
-
   return (
     <I18nProvider>
       <HeaderMain
         mainNavigation={
-          <>
-            <a href="#" className="text-[#2c3e50] hover:underline">
-              {t('menu_discover')}
-            </a>
-            <a href="#" className="text-[#2c3e50] hover:underline">
-              {t('menu_deposit')}
-            </a>
-            <a href="#" className="text-[#2c3e50] hover:underline">
-              Policies
-            </a>
-            <a href="#" className="text-[#2c3e50] hover:underline">
-              About Arche
-            </a>
-            <button
-              className="ml-4 underline"
-              onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}
-            >
-              {lang.toUpperCase()}
-            </button>
-          </>
+          <ul
+            ref={navRef}
+            className="inline-flex items-center gap-4 whitespace-nowrap list-none"
+          >
+            <li>
+              <a
+                href={MENU_URLS.discover[L] ?? '#'}
+                className="header-nav-text"
+              >
+                {t('Discover')}
+              </a>
+            </li>
+
+            {/* menu_deposit with dropdown */}
+            <li className="relative">
+              <button
+                type="button"
+                className="header-nav-text inline-flex items-center gap-1"
+                aria-haspopup="menu"
+                aria-expanded={open === 'deposit'}
+                onClick={() => toggle('deposit')}
+              >
+                {t('Deposit')}
+                <span aria-hidden>▾</span>
+              </button>
+              <ul
+                role="menu"
+                className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'deposit' ? 'block' : 'hidden'}`}
+              >
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Deposition Process')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Deposition Agreement')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Filenames, Fomats, and Metadata')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('FAQ')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Further Guidance')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Technical Setup')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('API Access')}
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            {/* Policies with dropdown */}
+            <li className="relative">
+              <button
+                type="button"
+                className="header-nav-text inline-flex items-center gap-1"
+                aria-haspopup="menu"
+                aria-expanded={open === 'policies'}
+                onClick={() => toggle('policies')}
+              >
+                {t('Policies')}
+                <span aria-hidden>▾</span>
+              </button>
+              <ul
+                role="menu"
+                className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'policies' ? 'block' : 'hidden'}`}
+              >
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Collection Policy')}
+                  </a>
+                </li>
+
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Preservation Policy')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Privacy Policy')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Terms of Use')}
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a href="#" className="header-nav-text">
+                {t('About Arche')}
+              </a>
+            </li>
+
+            {/* language toggle as a proper list item */}
+            <li>
+              <button
+                className="ml-2 underline"
+                onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}
+              >
+                {lang.toUpperCase()}
+              </button>
+            </li>
+          </ul>
         }
         mobileNavigation={
-          <>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-              {t('menu_discover')}
-            </a>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-              {t('menu_deposit')}
-            </a>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-              Policies
-            </a>
-            <a href="#" className="block py-2 text-[#2c3e50] hover:underline">
-              About Arche
-            </a>
-          </>
+          <ul
+            ref={navRef}
+            className="inline-flex items-center gap-4 whitespace-nowrap list-none"
+          >
+            <li>
+              <a
+                href={MENU_URLS.discover[L] ?? '#'}
+                className="header-nav-text"
+              >
+                {t('Discover')}
+              </a>
+            </li>
+
+            {/* menu_deposit with dropdown */}
+            <li className="relative">
+              <button
+                type="button"
+                className="header-nav-text inline-flex items-center gap-1"
+                aria-haspopup="menu"
+                aria-expanded={open === 'deposit'}
+                onClick={() => toggle('deposit')}
+              >
+                {t('Deposit')}
+                <span aria-hidden>▾</span>
+              </button>
+              <ul
+                role="menu"
+                className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'deposit' ? 'block' : 'hidden'}`}
+              >
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href={MENU_URLS.deposit.DEPOSITION_PROCESS[L] ?? '#'}
+                  >
+                    {t('Deposition Process')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Deposition Agreement')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Filenames, Fomats, and Metadata')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('FAQ')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Further Guidance')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Technical Setup')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('API Access')}
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            {/* Policies with dropdown */}
+            <li className="relative">
+              <button
+                type="button"
+                className="header-nav-text inline-flex items-center gap-1"
+                aria-haspopup="menu"
+                aria-expanded={open === 'policies'}
+                onClick={() => toggle('policies')}
+              >
+                {t('Policies')}
+                <span aria-hidden>▾</span>
+              </button>
+              <ul
+                role="menu"
+                className={`absolute left-0 top-full mt-2 min-w-56 rounded-md border bg-white shadow-lg z-20 p-1
+                  ${open === 'policies' ? 'block' : 'hidden'}`}
+              >
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Collection Policy')}
+                  </a>
+                </li>
+
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Preservation Policy')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Privacy Policy')}
+                  </a>
+                </li>
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-gray-50"
+                    href="#"
+                  >
+                    {t('Terms of Use')}
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a href="#" className="header-nav-text">
+                {t('About Arche')}
+              </a>
+            </li>
+
+            {/* language toggle as a proper list item */}
+            <li>
+              <button
+                className="ml-2 underline"
+                onClick={() => changeLanguage(lang === 'en' ? 'de' : 'en')}
+              >
+                {lang.toUpperCase()}
+              </button>
+            </li>
+          </ul>
         }
       />
       {children}

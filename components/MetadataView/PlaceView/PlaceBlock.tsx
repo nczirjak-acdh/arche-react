@@ -6,6 +6,7 @@ import { PUBLIC_CONFIG } from '@/config/public';
 import PlaceAddressBlock from './PlaceAddressBlock';
 import PlaceDescriptionBlock from './PlaceDescriptionBlock';
 import PlaceMapBlock from './PlaceMapBlock';
+import PlaceCoordinatesBlock from './PlaceCoordinatesBlock';
 
 const PlaceBlock = ({
   dataJson = {},
@@ -23,7 +24,7 @@ const PlaceBlock = ({
   }
 
   return (
-    <div id="">
+    <div className="flex flex-col gap-2" id="">
       <MetadataContentHeader data={dataJson}></MetadataContentHeader>
       <div className="flex flex-col w-full">
         <hr className="my-4 border-[#E1EDF3]" />
@@ -37,22 +38,27 @@ const PlaceBlock = ({
       <div className="flex flex-col lg:flex-row w-full">
         <h4>{dataJson.title}</h4>
       </div>
-
       <div className="flex flex-col lg:flex-row w-full">
         {dataJson.placeAddress &&
           Object.keys(dataJson.placeAddress).length > 0 && (
             <PlaceAddressBlock data={dataJson.placeAddress} />
           )}
       </div>
-
       <div className="flex flex-col lg:flex-row w-full">
         {dataJson.placeDescription &&
           Object.keys(dataJson.placeDescription).length > 0 && (
             <PlaceDescriptionBlock data={dataJson.placeDescription} />
           )}
       </div>
-
-      {mapData && <PlaceMapBlock data={mapData!} mapType={resourceMapType} />}
+      <div className="flex flex-col lg:flex-row w-full">
+        {dataJson.mapCoordinatesBlock &&
+          Object.keys(dataJson.mapCoordinatesBlock).length > 0 && (
+            <PlaceCoordinatesBlock data={dataJson.mapCoordinatesBlock} />
+          )}
+      </div>
+      <div className="flex flex-col lg:flex-row w-full pt-2">
+        {mapData && <PlaceMapBlock data={mapData!} mapType={resourceMapType} />}
+      </div>
     </div>
   );
 };

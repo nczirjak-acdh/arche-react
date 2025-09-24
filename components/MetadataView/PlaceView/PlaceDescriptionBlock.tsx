@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,66 +13,66 @@ export default function PlaceDescriptionBlock({ data }: MetadataProps) {
   console.log(data);
 
   return (
-    <div className="w-full flex flex-col gap-5 pt-5" id="av-summary">
+    <div className="w-full flex flex-col gap-5 pt-5" id="map-description-block">
       <div className="w-full">
         <h5>{t('Address')}</h5>
       </div>
       <div>
-        <ul>
+        <ul className="list-disc pl-6 space-y-2 marker:text-slate-500">
           {Object.entries(data).map(([key, list]) => {
             if (!Array.isArray(list) || list.length === 0) return null;
 
             return (
-              <div key={key} className="">
-                <li className="w-full flex items-center gap-2">
-                  <b>{t(key)}:</b>
+              <li key={key} className="list-item">
+                {/* put flex on a child, not on the <li> */}
+                <div className="flex items-start gap-2 flex-wrap">
+                  <b className="shrink-0">{t(key)}:</b>
 
-                  {list.map((val, idx) => {
-                    const content = (
-                      <span style={{ whiteSpace: 'pre-line' }}>
-                        {val.value ?? ''}
-                      </span>
-                    );
+                  <div className="break-words">
+                    {list.map((val, idx) => {
+                      const label = String(val?.value ?? '');
 
-                    if (val.externalUrl) {
+                      if (val?.externalUrl) {
+                        return (
+                          <React.Fragment key={idx}>
+                            <a
+                              href={val.externalUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {label}
+                            </a>
+                            {idx < list.length - 1 && ', '}
+                          </React.Fragment>
+                        );
+                      }
+
+                      if (val?.id != null) {
+                        return (
+                          <React.Fragment key={idx}>
+                            <a
+                              href={`/browser/metadata/${val.id}`}
+                              id="archeHref"
+                            >
+                              {label}
+                            </a>
+                            {idx < list.length - 1 && ', '}
+                          </React.Fragment>
+                        );
+                      }
+
                       return (
-                        <div key={idx}>
-                          <a
-                            href={val.externalUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {val.value}
-                          </a>
-                          <br />
-                        </div>
+                        <React.Fragment key={idx}>
+                          <span style={{ whiteSpace: 'pre-line' }}>
+                            {label}
+                          </span>
+                          {idx < list.length - 1 && ', '}
+                        </React.Fragment>
                       );
-                    }
-
-                    if (val.id != null) {
-                      return (
-                        <div key={idx}>
-                          <a
-                            href={`/browser/metadata/${val.id}`}
-                            id="archeHref"
-                          >
-                            {val.value}
-                          </a>
-                          <br />
-                        </div>
-                      );
-                    }
-
-                    // default branch (Twig's `nl2br`)
-                    return (
-                      <div key={idx}>
-                        {content}
-                        <br />
-                      </div>
-                    );
-                  })}
-                </li>
-              </div>
+                    })}
+                  </div>
+                </div>
+              </li>
             );
           })}
         </ul>
