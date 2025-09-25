@@ -38,6 +38,8 @@ export class Metadata {
   private properties: Record<string, any> = {};
 
   constructor(data: AnyObj, language: string) {
+    console.log('MAIN DATA');
+    console.log(data.data);
     this.data = data.data;
     this.mainId = this.data.id;
     this.mainLang = language;
@@ -234,11 +236,13 @@ export class Metadata {
   }
 
   getBinarySize(): number {
-    const category = this.getAcdhCategory()?.toLowerCase();
+    const category = this.getAcdhType()?.toLowerCase();
+    console.log('BINARY CATEGORY');
+    console.log(category);
     if (
-      category === 'resource' ||
-      category === 'oldresource' ||
-      category === 'dataset'
+      category.includes('resource') ||
+      category.includes('oldresource') ||
+      category.includes('dataset')
     ) {
       const size =
         this.data?.['acdh:hasBinarySize']?.[this.mainId]?.[this.mainLang]?.[0]
@@ -440,7 +444,8 @@ export class Metadata {
 
     for (const [k, v] of Object.entries(props)) {
       let bucket = this.properties?.[k];
-
+      console.log('BUCKET');
+      console.log(bucket);
       if (!bucket) continue;
 
       // Normalize to array
@@ -523,6 +528,27 @@ export class Metadata {
       'acdh:hasCity': 'City',
       'acdh:hasRegion': 'Region',
       'acdh:hasCountry': 'Country',
+    };
+    return this.#fetchCardsData(props);
+  }
+
+  getOrganisationAddressBlock(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:hasAddressLine1': 'Address Line 1',
+      'acdh:hasAddressLine2 ': 'Address Line 2',
+      'acdh:hasPostcode': 'Postcode',
+      'acdh:hasCity': 'City',
+      'acdh:hasRegion': 'Region',
+      'acdh:hasCountry': 'Country',
+      'acdh:hasEmail': 'Email',
+      'acdh:hasUrl': 'URL',
+    };
+    return this.#fetchCardsData(props);
+  }
+
+  getOrganisationMemberBlock(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:isMemberOf': 'Member of',
     };
     return this.#fetchCardsData(props);
   }
