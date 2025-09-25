@@ -94,6 +94,15 @@ export default function HasMembersTable({
     []
   );
 
+  if (error) {
+    console.log('Has members table error: ' + error);
+    return null;
+  }
+
+  if (!!data && Array.isArray(data.aaData) && rows.length === 0) {
+    return null; // nothing rendered at all
+  }
+
   return (
     <div style={{ width: '100%' }} className="basic-inside-content-div">
       <div className="flex flex-col items-start gap-6 p-6 self-stretch rounded-xl bg-[#ffffff]">
@@ -111,7 +120,7 @@ export default function HasMembersTable({
           <Loader label="Loading…" />
         ) : error ? (
           <div className="mx-auto max-w-4xl rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
-            Error: {String(error)}
+            Error: {String(error)} ...
           </div>
         ) : (
           <DataGrid

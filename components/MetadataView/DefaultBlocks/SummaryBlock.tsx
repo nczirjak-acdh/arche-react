@@ -86,6 +86,20 @@ export default function SummaryBlock({ data }: MetadataProps) {
             {data['acdh:hasTemporalCoverage'][0].value}
           </li>
         )}
+
+        {hasKey('acdh:hasAppliedMethod') && (
+          <li>
+            <strong>{t('Methods')}:</strong>{' '}
+            {data['acdh:hasAppliedMethod'][0].value}
+          </li>
+        )}
+
+        {hasKey('acdh:hasAppliedMethodDescription') && (
+          <li>
+            <strong>{t('Methods description')}:</strong>{' '}
+            {data['acdh:hasAppliedMethodDescription'][0].value}
+          </li>
+        )}
       </ul>
 
       {/* Description */}

@@ -44,7 +44,7 @@ export default function InvolvedInTable({
   });
 
   const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/involvedDT/${resourceID}/${guiLang}`;
+  const url = `${base}/browser/api/contributedDT/${resourceID}/${guiLang}`;
   const { data, error, loading } = useApi<ApiResponse>(url);
 
   type Row = {
@@ -126,7 +126,7 @@ export default function InvolvedInTable({
   return (
     <div className="w-full basic-inside-content-div">
       <div className="flex flex-col items-start gap-6 p-6 self-stretch rounded-xl bg-white w-full">
-        <h5>Involved in</h5>
+        <h5>Contributed to</h5>
 
         <input
           type="text"

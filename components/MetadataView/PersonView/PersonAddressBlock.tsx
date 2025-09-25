@@ -7,7 +7,7 @@ interface MetadataProps {
   data: Record<string, any[]>;
 }
 
-export default function OrganisationAddressBlock({ data }: MetadataProps) {
+export default function PersonAddressBlock({ data }: MetadataProps) {
   const { t } = useTranslation();
 
   return (

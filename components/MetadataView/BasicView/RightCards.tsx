@@ -9,6 +9,7 @@ import TechnicalCard from '../Cards/TechnicalCard';
 import DownloadCard from '../Cards/DownloadCard';
 import ViewShareCard from '../Cards/ViewShareCard';
 import VersionsCard from '../Cards/VersionsCard';
+import ProjectDetailsCard from '../Cards/ProjectDetailsCard';
 
 const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
   const [hasImage, setHasImage] = React.useState(false);
@@ -54,6 +55,11 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
           logos={dataJson.fundingLogos}
         />
       )}
+
+      {dataJson.projectDetailsData &&
+        Object.keys(dataJson.projectDetailsData).length > 0 && (
+          <ProjectDetailsCard data={dataJson.projectDetailsData} />
+        )}
 
       {dataJson.technicalData &&
         Object.keys(dataJson.technicalData).length > 0 && (

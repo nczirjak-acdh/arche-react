@@ -292,6 +292,15 @@ export class Metadata {
     return 'Untitled';
   }
 
+  getPersonalTitle(): string | null {
+    const titleNode = this.properties['acdh:hasPersonalTitle'];
+
+    const value = titleNode?.[0]?.value;
+    if (value) return value;
+
+    return '';
+  }
+
   getAlternativeTitle(): string | null {
     const titleNode = this.properties['acdh:hasAlternativeTitle'];
 
@@ -601,6 +610,16 @@ export class Metadata {
         'acdh:hasExtent': 'Extent',
       };
     }
+
+    return this.#fetchCardsData(props);
+  }
+
+  getProjectDetailsData() {
+    const props: Record<string, string> = {
+      'acdh:hasStartDate': 'Project Start Date',
+      'acdh:hasEndDate': 'Project End Date',
+      'acdh:hasLifeCycleStatus': 'Life Cycle Status',
+    };
 
     return this.#fetchCardsData(props);
   }
