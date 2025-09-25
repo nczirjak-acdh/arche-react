@@ -119,6 +119,7 @@ export default function DisseminationGlb({
 
   return (
     <div className={`relative w-full ${className}`}>
+      <h5 className="flex justify-center pb-5">3D Viewer</h5>
       {/* @ts-ignore - model-viewer is a custom element */}
       <model-viewer
         ref={mvRef}

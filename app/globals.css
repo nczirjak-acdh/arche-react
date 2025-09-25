@@ -145,6 +145,17 @@ input::-ms-input-placeholder {
     color: rgba(91, 89, 91, 0.4) !important;
   }
 
+  .basic-inside-content-div {
+	display: flex;
+	padding: 24px;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 24px;
+	align-self: stretch;
+	border-radius: 12px;
+	background: #EEF5F8;
+}
+
 
 
 }

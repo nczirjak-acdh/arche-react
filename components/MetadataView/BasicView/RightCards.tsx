@@ -24,6 +24,10 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
   } else if (resourceMapType === 'coordinates') {
     mapData = dataJson.mapCoordinates;
   }
+
+  console.log('TECHNOCAL DAZA');
+  console.log(dataJson.technicalData);
+
   return (
     <div className="flex flex-col w-full lg:w-[25%] gap-8">
       <div className={hasImage ? 'block' : 'hidden'}>
@@ -50,6 +54,7 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
           logos={dataJson.fundingLogos}
         />
       )}
+
       {dataJson.technicalData &&
         Object.keys(dataJson.technicalData).length > 0 && (
           <TechnicalCard data={dataJson.technicalData} />

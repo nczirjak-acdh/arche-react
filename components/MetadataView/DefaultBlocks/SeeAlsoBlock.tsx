@@ -8,7 +8,7 @@ const SeeAlsoBlock = ({ data = {} }: { data?: Record<string, unknown[]> }) => {
     Array.isArray(data[key]) && data[key].length > 0;
 
   return (
-    <div className="lg:flex-row w-full">
+    <div className="lg:flex-row w-full pb-5">
       <div className="w-full flex gap-5 pt-5">
         <h5>{t('See Also')}</h5>
       </div>
@@ -18,8 +18,30 @@ const SeeAlsoBlock = ({ data = {} }: { data?: Record<string, unknown[]> }) => {
           {/* hasUrl */}
           {hasKey('acdh:hasUrl') && (
             <li>
-              <strong>{t('URL')}:</strong>
-              {data['acdh:hasUrl'].map((item) => item.value).join(', ')}
+              <strong>{t('URL')}:</strong>{' '}
+              {data['acdh:hasUrl']
+                .filter(
+                  (u) => typeof u?.value === 'string' && u.value.trim() !== ''
+                )
+                .map((item, idx, arr) => {
+                  const url = item.value as string;
+                  const href = /^https?:\/\//i.test(url)
+                    ? url
+                    : `http://${url}`; // add protocol if missing
+                  return (
+                    <React.Fragment key={`${url}-${idx}`}>
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline break-all"
+                      >
+                        {url}
+                      </a>
+                      {idx < arr.length - 1 && ', '}
+                    </React.Fragment>
+                  );
+                })}
             </li>
           )}
 

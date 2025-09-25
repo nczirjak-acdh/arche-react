@@ -567,7 +567,7 @@ export class Metadata {
       };
     }
 
-    if (lower === 'metadata' || lower === 'resource') {
+    if (lower?.includes('metadata') || lower?.includes('resource')) {
       props = {
         'acdh:hasCategory': 'Category',
         'acdh:hasFormat': 'File format',

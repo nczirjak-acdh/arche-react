@@ -76,11 +76,15 @@ export default function AssociatedCollectionsTable({
         headerName: 'Title',
         flex: 1,
         minWidth: 320,
-        renderCell: (p) => (
-          <div style={{ whiteSpace: 'normal', lineHeight: 1.4 }}>
-            {p.value as string}
-          </div>
-        ),
+        renderCell: (p) => {
+          const label = (p.value as string) || '-';
+          const metaId = p.row.id; // if your metadata id differs, use that field instead
+          return label !== '-' ? (
+            <a href={`/browser/metadata/${metaId}`}>{label}</a>
+          ) : (
+            <span>-</span>
+          );
+        },
       },
       {
         field: 'typeLabel',
@@ -93,31 +97,36 @@ export default function AssociatedCollectionsTable({
   );
 
   return (
-    <div style={{ width: '100%' }}>
-      <input
-        type="text"
-        placeholder="Search…"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: 8, padding: 4, width: '100%' }}
-      />
-
-      {loading ? (
-        <Loader label="Loading…" />
-      ) : error ? (
-        <div className="mx-auto max-w-4xl rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
-          Error: {String(error)}
-        </div>
-      ) : (
-        <DataGrid
-          rows={filtered}
-          columns={columns}
-          disableRowSelectionOnClick
-          pageSizeOptions={[10, 25, 50]}
-          initialState={{ pagination: { paginationModel: { pageSize: 25 } } }}
-          autoHeight
+    <div style={{ width: '100%' }} className="basic-inside-content-div">
+      <div className="flex flex-col items-start gap-6 p-6 self-stretch rounded-xl bg-[#ffffff]">
+        <h5>Associated Collections</h5>
+        <input
+          type="text"
+          placeholder="Search…"
+          value={search}
+          className="rounded-xl"
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ marginBottom: 5, padding: 10, width: '100%' }}
         />
-      )}
+
+        {loading ? (
+          <Loader label="Loading…" />
+        ) : error ? (
+          <div className="mx-auto max-w-4xl rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
+            Error: {String(error)}
+          </div>
+        ) : (
+          <DataGrid
+            rows={filtered}
+            columns={columns}
+            disableRowSelectionOnClick
+            pageSizeOptions={[10, 25, 50]}
+            initialState={{ pagination: { paginationModel: { pageSize: 25 } } }}
+            className="flex w-full"
+            autoHeight
+          />
+        )}
+      </div>
     </div>
   );
 }

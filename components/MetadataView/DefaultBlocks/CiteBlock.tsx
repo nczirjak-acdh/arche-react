@@ -190,7 +190,8 @@ export default function CiteBlock({ src, lang = 'en-US' }: Props) {
   }
 
   return (
-    <div className="w-full space-y-3 pt-5">
+    <div className="w-full space-y-3 pt-6">
+      <h5>Cite Resource</h5>
       <div className="flex flex-col items-start gap-6 self-stretch rounded-[12px] bg-[#EEF5F8] p-6">
         <div className="whitespace-pre-wrap">{output || '// No output'}</div>
 

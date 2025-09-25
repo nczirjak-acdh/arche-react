@@ -127,6 +127,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
         ) : null}
       </div>
       <div className="w-full flex flex-col lg:flex-row"></div>
+
       <DisseminationsBlock
         identifier={dataJson.id}
         acdhCategory={dataJson.disseminationCategories}
