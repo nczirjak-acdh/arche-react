@@ -38,8 +38,6 @@ export class Metadata {
   private properties: Record<string, any> = {};
 
   constructor(data: AnyObj, language: string) {
-    console.log('MAIN DATA');
-    console.log(data.data);
     this.data = data.data;
     this.mainId = this.data.id;
     this.mainLang = language;
@@ -237,8 +235,6 @@ export class Metadata {
 
   getBinarySize(): number {
     const category = this.getAcdhType()?.toLowerCase();
-    console.log('BINARY CATEGORY');
-    console.log(category);
     if (
       category.includes('resource') ||
       category.includes('oldresource') ||
@@ -453,8 +449,7 @@ export class Metadata {
 
     for (const [k, v] of Object.entries(props)) {
       let bucket = this.properties?.[k];
-      console.log('BUCKET');
-      console.log(bucket);
+
       if (!bucket) continue;
 
       // Normalize to array
@@ -527,6 +522,25 @@ export class Metadata {
       'acdh:hasNote': 'Note',
     };
     return this.#fetchBlocksData(props);
+  }
+
+  getPublicationSummary(): Record<string, any> {
+    const props: Record<string, string> = {
+      'acdh:hasAuthor': 'Author',
+      'acdh:hasEditor': 'Editor',
+      'acdh:hasSeriesInformation': 'Series Information',
+      'acdh:hasExtent': 'Extent',
+      'acdh:hasPages': 'Pages',
+      'acdh:hasIssuedDate': 'Issued Date',
+      'acdh:hasCity': 'City',
+      'acdh:hasPublisher': 'Publisher',
+      'acdh:hasUrl': 'URL',
+      'acdh:hasLanguage': 'Language',
+      'acdh:hasEditorialPractice': 'Editorial Practice',
+      'acdh:hasTableOfContent': 'Table of content',
+      'acdh:hasNote': 'Note',
+    };
+    return this.#fetchCardsData(props);
   }
 
   getPlaceAddress(): Record<string, any> {

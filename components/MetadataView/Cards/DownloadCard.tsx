@@ -12,8 +12,6 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
   let isDownloadEnabled = true;
   const isPublic = data.downloadCardAccess;
 
-  console.log('DOWNLOAD:');
-  console.log(data);
   return (
     <div className="border border-[#E1E1E1] rounded-[8px] w-full">
       {/* Header */}

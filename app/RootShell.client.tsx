@@ -86,8 +86,7 @@ export default function RootShell({
 
   const [lang, setLang] = useState(initialLang);
   const L = lang.toUpperCase();
-  console.log('LANGGG:: ');
-  console.log(L);
+
   // --- dropdown state + outside-click handling ---
   const [open, setOpen] = useState<null | 'deposit' | 'policies'>(null);
   const navRef = useRef<HTMLUListElement | null>(null);

@@ -115,7 +115,7 @@ export default function InvolvedInTable({
   const ready = !!data && Array.isArray(data.aaData);
 
   if (error) {
-    console.log('Involved in  table error: ' + error);
+    console.log('Person contributed  table error: ' + error);
     return null;
   }
 

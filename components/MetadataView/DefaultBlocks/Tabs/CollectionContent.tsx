@@ -202,7 +202,6 @@ export default function CollectionContent({
   identifier: string | number; // accept both
   onDataStatus: (hasData: boolean) => void;
 }) {
-  console.log('CollectionContent called...');
   const [data, setData] = useState<TreeItem[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

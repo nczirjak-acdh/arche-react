@@ -81,9 +81,6 @@ function ResultRow({ item }: { item: ResultItem }) {
       ? item.accessRestrictionSummary
       : '');
 
-  console.log('RESULT ROW:::');
-  console.log(item.accessRestrictionSummary);
-
   const classBadge =
     item.class && item.class[0]
       ? item.class[0].replace('https://vocabs.acdh.oeaw.ac.at/schema#', 'acdh:')

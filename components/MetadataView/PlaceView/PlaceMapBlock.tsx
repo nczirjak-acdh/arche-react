@@ -16,8 +16,6 @@ export default function PlaceMapBlock({
   data: string;
   mapType: 'coordinates' | 'polygon' | 'multipolygon' | string;
 }) {
-  console.log('MAP OBJ:');
-  console.log(data);
   const divRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const [err, setErr] = useState<string | null>(null);

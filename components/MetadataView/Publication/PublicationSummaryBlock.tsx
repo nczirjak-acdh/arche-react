@@ -7,14 +7,11 @@ interface MetadataProps {
   data: Record<string, any[]>;
 }
 
-export default function OrganisationMemberBlock({ data }: MetadataProps) {
+export default function PublicationSummaryBlock({ data }: MetadataProps) {
   const { t } = useTranslation();
 
   return (
-    <div
-      className="w-full flex flex-col gap-5 pt-5"
-      id="organisation-member-block"
-    >
+    <div className="w-full flex flex-col gap-5 pt-5" id="map-description-block">
       <div>
         <ul className="list-disc pl-6 space-y-2 marker:text-slate-500">
           {Object.entries(data).map(([key, list]) => {

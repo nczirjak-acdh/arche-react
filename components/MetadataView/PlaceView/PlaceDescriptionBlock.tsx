@@ -10,8 +10,6 @@ interface MetadataProps {
 export default function PlaceDescriptionBlock({ data }: MetadataProps) {
   const { t } = useTranslation();
 
-  console.log(data);
-
   return (
     <div className="w-full flex flex-col gap-5 pt-5" id="map-description-block">
       <div className="w-full">

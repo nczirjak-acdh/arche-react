@@ -17,7 +17,7 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
   let mapData = '';
   const resourceMapType = dataJson.mapType;
   const acdhType = dataJson.acdhType;
-  console.log(acdhType);
+
   if (resourceMapType === 'multipolygon') {
     mapData = dataJson.mapPolygon;
   } else if (resourceMapType === 'polygon') {
@@ -25,9 +25,6 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
   } else if (resourceMapType === 'coordinates') {
     mapData = dataJson.mapCoordinates;
   }
-
-  console.log('TECHNOCAL DAZA');
-  console.log(dataJson.technicalData);
 
   return (
     <div className="flex flex-col w-full lg:w-[25%] gap-8">
