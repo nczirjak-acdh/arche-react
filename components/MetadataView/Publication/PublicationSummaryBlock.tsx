@@ -27,6 +27,19 @@ export default function PublicationSummaryBlock({ data }: MetadataProps) {
                     {list.map((val, idx) => {
                       const label = String(val?.value ?? '');
 
+                      if (
+                        val?.property ===
+                        'https://vocabs.acdh.oeaw.ac.at/schema#hasIssuedDate'
+                      ) {
+                        const year = new Date(label).getFullYear(); // 1995
+                        return (
+                          <React.Fragment key={idx}>
+                            {year}
+                            {idx < list.length - 1 && ', '}
+                          </React.Fragment>
+                        );
+                      }
+
                       if (val?.externalUrl) {
                         return (
                           <React.Fragment key={idx}>
@@ -42,7 +55,7 @@ export default function PublicationSummaryBlock({ data }: MetadataProps) {
                         );
                       }
 
-                      if (val?.id != null) {
+                      if (val?.id != null && val?.type === 'REL') {
                         return (
                           <React.Fragment key={idx}>
                             <a

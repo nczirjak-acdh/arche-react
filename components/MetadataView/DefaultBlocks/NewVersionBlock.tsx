@@ -32,6 +32,8 @@ export default function NewVersionBlock({
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
+        console.log('New version block');
+        console.log(json);
         setData(json);
       } catch (e: any) {
         if (e.name !== 'AbortError') setError(e.message ?? 'Unknown error');
@@ -67,7 +69,7 @@ export default function NewVersionBlock({
       )}
 
       {/* Data */}
-      {!loading && !error && data && (
+      {!loading && !error && data?.length > 0 && (
         <div className="flex flex-col lg:flex-row w-full">
           {data?.[0]?.id !== identifier && (
             <div
