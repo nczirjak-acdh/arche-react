@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Cite from 'citation-js';
 import Image from 'next/image';
 import loaderGif from '@/public/images/arche_logo_flip_47px.gif';
+import { PUBLIC_CONFIG } from '@/config/public';
 
 type Props = {
   /** URL that returns CSL-JSON (your example works out of the box) */
@@ -12,7 +13,13 @@ type Props = {
   lang?: string; // e.g., 'en-US'
 };
 
-type FormatKey = 'APA_6TH' | 'HARVARD' | 'VANCOUVER' | 'JSON_CSL' | 'BIBLATEX';
+type FormatKey =
+  | 'APA_6TH'
+  | 'ARCHE_CITE'
+  | 'HARVARD'
+  | 'VANCOUVER'
+  | 'JSON_CSL'
+  | 'BIBLATEX';
 
 const STYLE_URLS: Record<'APA_6TH' | 'HARVARD' | 'VANCOUVER', string> = {
   APA_6TH:
@@ -23,7 +30,7 @@ const STYLE_URLS: Record<'APA_6TH' | 'HARVARD' | 'VANCOUVER', string> = {
     'https://raw.githubusercontent.com/citation-style-language/styles/master/vancouver.csl',
 };
 
-export default function CiteBlock({ src, lang = 'en-US' }: Props) {
+export default function CiteBlock({ resourceID, lang = 'en-US' }: Props) {
   const [cslJson, setCslJson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -32,6 +39,13 @@ export default function CiteBlock({ src, lang = 'en-US' }: Props) {
   const [format, setFormat] = useState<FormatKey>('APA_6TH');
   const [output, setOutput] = useState('');
   const [copyOk, setCopyOk] = useState(false);
+
+  const [archeText, setArcheText] = useState<string>('');
+  const [loadingArche, setLoadingArche] = useState<boolean>(true);
+  const [archeErr, setArcheErr] = useState<string | null>(null);
+
+  const src = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${resourceID}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`;
+  const arche_cite_src = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${resourceID}&lang=en&format=arche-citation-style`;
 
   // 1) Load CSL-JSON
   useEffect(() => {
@@ -59,6 +73,35 @@ export default function CiteBlock({ src, lang = 'en-US' }: Props) {
       cancelled = true;
     };
   }, [src]);
+
+  // 1b) Load ARCHE_CITE text (plain text)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoadingArche(true);
+        setArcheErr(null);
+        const res = await fetch(arche_cite_src, {
+          cache: 'no-store',
+          headers: { Accept: 'text/plain,*/*' },
+        });
+        if (!res.ok)
+          throw new Error(`Failed to load ARCHE citation (HTTP ${res.status})`);
+        const txt = await res.text();
+        if (!cancelled) setArcheText(txt.trim());
+      } catch (e: any) {
+        if (!cancelled) {
+          setArcheErr(e?.message ?? 'Unknown error');
+          setArcheText('');
+        }
+      } finally {
+        if (!cancelled) setLoadingArche(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [arche_cite_src]);
 
   // 2) Fetch styles and REGISTER them with names
   useEffect(() => {
@@ -118,6 +161,14 @@ export default function CiteBlock({ src, lang = 'en-US' }: Props) {
           return;
         }
 
+        if (format === 'ARCHE_CITE') {
+          setOutput(
+            archeText ||
+              (loadingArche ? '// Loading ARCHE citation…' : '// No output')
+          );
+          return;
+        }
+
         if (!stylesLoaded) {
           setOutput('// Loading styles…');
           return;
@@ -154,6 +205,7 @@ export default function CiteBlock({ src, lang = 'en-US' }: Props) {
       { key: 'VANCOUVER' as const, label: 'Vancouver' },
       { key: 'JSON_CSL' as const, label: 'JSON-CSL' },
       { key: 'BIBLATEX' as const, label: 'BibLaTeX' },
+      { key: 'ARCHE_CITE' as const, label: 'ARCHE Citation' },
     ],
     []
   );

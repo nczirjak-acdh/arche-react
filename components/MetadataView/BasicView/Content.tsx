@@ -101,10 +101,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       <div className="flex flex-col lg:flex-row w-full">
         <h4>{dataJson.title}</h4>
       </div>
-      <CiteBlock
-        src={`${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
-        lang="en-US"
-      />
+      <CiteBlock resourceID={dataJson.id} lang="en-US" />
       {dataJson.summaryData && Object.keys(dataJson.summaryData).length > 0 && (
         <SummaryBlock data={dataJson.summaryData}></SummaryBlock>
       )}
