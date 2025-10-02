@@ -32,8 +32,7 @@ export default function NewVersionBlock({
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
-        console.log('New version block');
-        console.log(json);
+
         setData(json);
       } catch (e: any) {
         if (e.name !== 'AbortError') setError(e.message ?? 'Unknown error');
