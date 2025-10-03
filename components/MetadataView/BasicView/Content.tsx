@@ -55,7 +55,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       label: 'Associated Publications',
       content: (
         <AssociatedPublications
-          endpoint={`${PUBLIC_CONFIG.apiBase}/browser/api/publicationsDT/${encodeURIComponent(
+          endpoint={`${PUBLIC_CONFIG.apiBase}/publicationsDT/${encodeURIComponent(
             dataJson.id
           )}/${encodeURIComponent('en')}`}
           onDataStatus={onT2}
@@ -69,7 +69,7 @@ const Content = ({ dataJson = {} }: { dataJson?: Record<string, any[]> }) => {
       label: 'Associated Collections and Resources',
       content: (
         <AssociatedCollectionsAndResources
-          endpoint={`${PUBLIC_CONFIG.apiBase}/browser/api/rprDT/${encodeURIComponent(
+          endpoint={`${PUBLIC_CONFIG.apiBase}/rprDT/${encodeURIComponent(
             dataJson.id
           )}/${encodeURIComponent('en')}`}
           onDataStatus={onT3}

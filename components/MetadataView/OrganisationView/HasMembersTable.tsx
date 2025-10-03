@@ -49,8 +49,8 @@ export default function HasMembersTable({
     }
   });
 
-  const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/hasMembersDT/${resourceID}/${guiLang}`;
+  const base = process.env.NEXT_PUBLIC_BASE_BROWSER!;
+  const url = `${base}/api/hasMembersDT/${resourceID}/${guiLang}`;
   const { data, error, loading } = useApi<ApiResponse>(url);
 
   const rows = React.useMemo(() => {

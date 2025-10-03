@@ -35,7 +35,7 @@ const ViewShareCard = ({ data }: { data: any }) => {
           <div className="w-full" id="download-metadata-section">
             <div className="w-full pt-2 pb-2">
               <a
-                href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}/metadata`}
+                href={`${process.env.NEXT_PUBLIC_BASE_API}/${data.id}/metadata`}
                 className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
                 target="_blank"
               >

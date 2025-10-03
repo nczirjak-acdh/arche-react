@@ -49,8 +49,8 @@ export default function PublicationInverseTable({
     }
   });
 
-  const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/publicationInverseDT/${resourceID}/${guiLang}`;
+  const base = process.env.NEXT_PUBLIC_BASE_BROWSER_API!;
+  const url = `${base}/publicationInverseDT/${resourceID}/${guiLang}`;
   const { data, error, loading } = useApi<ApiResponse>(url);
 
   const rows = React.useMemo(() => {

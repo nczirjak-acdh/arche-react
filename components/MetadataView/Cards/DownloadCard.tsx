@@ -108,7 +108,7 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
             {data.binarySize > 0 && (
               <div className="w-full flex flex-col pt-2 pb-2">
                 <a
-                  href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}`}
+                  href={`${process.env.NEXT_PUBLIC_BASE_API}/${data.id}`}
                   className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
                   target="_blank"
                 >
@@ -149,7 +149,7 @@ const DownloadCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
           <div className="w-full" id="download-metadata-section">
             <div className="w-full pt-2 pb-2">
               <a
-                href={`${process.env.NEXT_PUBLIC_API_BASE}/api/${data.id}/metadata?format=text/turtle&readMode=relatives&parentProperty=https%3A%2F%2Fvocabs.acdh.oeaw.ac.at%2Fschema%23isPartOf`}
+                href={`${process.env.NEXT_PUBLIC_BASE_API}/${data.id}/metadata?format=text/turtle&readMode=relatives&parentProperty=https%3A%2F%2Fvocabs.acdh.oeaw.ac.at%2Fschema%23isPartOf`}
                 className="btn-arche-blue inline-flex items-center gap-2 pb-2 pt-2 pl-2 pr-2 text-white no-underline hover:no-underline"
                 target="_blank"
               >

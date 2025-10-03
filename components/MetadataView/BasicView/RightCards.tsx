@@ -30,7 +30,7 @@ const RightCards = ({ dataJson = {} }: { dataJson?: Record<string, []> }) => {
     <div className="flex flex-col w-full lg:w-[25%] gap-8">
       <div className={hasImage ? 'block' : 'hidden'}>
         <TitleImageCard
-          id={`${process.env.NEXT_PUBLIC_API_BASE}/api/${dataJson.id}`}
+          id={`${process.env.NEXT_PUBLIC_BASE_API}/${dataJson.id}`}
           onFound={setHasImage}
         />
       </div>

@@ -46,8 +46,8 @@ export default function AssociatedCollectionsTable({
     }
   });
 
-  const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/projectAssociatedDT/${resourceID}/${guiLang}`;
+  const base = process.env.NEXT_PUBLIC_BASE_BROWSER_API!;
+  const url = `${base}/projectAssociatedDT/${resourceID}/${guiLang}`;
   const { data, error, loading } = useApi<ApiResponse>(url);
 
   const rows = React.useMemo(() => {

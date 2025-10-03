@@ -19,8 +19,8 @@ export default function DiscoverPage() {
   const apiParams = new URLSearchParams(sp.toString());
   apiParams.set('page', String(apiPage));
 
-  const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/smartsearch/?${apiParams.toString()}`;
+  const base = process.env.NEXT_PUBLIC_BASE_BROWSER!;
+  const url = `${base}/api/smartsearch/?${apiParams.toString()}`;
 
   const { data, error, loading } = useApi<any>(url);
 

@@ -45,7 +45,7 @@ export default function AssociatedPublications({
   const [sortDir, setSortDir] = React.useState<'asc' | 'desc'>('asc');
   const [page, setPage] = React.useState(0);
   const [templateReady, setTemplateReady] = React.useState(false);
-  const baseApiUrl = process.env.NEXT_PUBLIC_API_BASE!;
+  const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API!;
   const citeServiceBase = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=`;
 
   // fetch data once

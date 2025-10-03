@@ -1,40 +1,41 @@
+// components/HtmlFromTemplate.tsx
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-// Optional (recommended if the API is not fully trusted):
-// import DOMPurify from 'dompurify';
-
-type Props = {
-  locale: 'en' | 'de';
-  name: string; // e.g. 'home'
-  base?: string; // default: '/api/home'
-};
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createRoot, Root } from 'react-dom/client';
+import HomeCarousel from '../FrontPage/HomeCarousel';
 
 type JsonData = Record<string, any>;
 
 function getByPath(obj: any, path: string) {
-  return path
-    .split('.')
-    .reduce((acc, key) => (acc == null ? acc : acc[key]), obj);
+  return path.split('.').reduce((acc, k) => (acc == null ? acc : acc[k]), obj);
 }
-
-function interpolate(template: string, data: JsonData) {
-  // {{ element_1.title_small }}
-  return template.replace(/{{\s*([^}]+?)\s*}}/g, (_m, rawPath) => {
-    const path = String(rawPath).trim();
-    const v = getByPath(data, path);
+function interpolate(tpl: string, data: JsonData) {
+  return tpl.replace(/{{\s*([^}]+?)\s*}}/g, (_m, p) => {
+    const v = getByPath(data, String(p).trim());
     if (v == null) return '';
-    if (Array.isArray(v)) return v.join(''); // arrays like ["<p>..</p>", "..."]
-    if (typeof v === 'object') return ''; // objects not supported here
+    if (Array.isArray(v)) return v.join('');
+    if (typeof v === 'object') return '';
     return String(v);
   });
 }
 
-export default function HtmlFromTemplate({ locale, name, base = '' }: Props) {
-  const [tpl, setTpl] = useState<string>('');
+export default function HtmlFromTemplate({
+  locale,
+  name,
+  base = '',
+}: {
+  locale: string;
+  name: string; // e.g. 'home'
+  base?: string; // e.g. 'http://localhost/api/home'
+}) {
+  const [tpl, setTpl] = useState('');
   const [json, setJson] = useState<JsonData | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rootsRef = useRef<Root[]>([]);
+  const baseBrowser = process.env.NEXT_PUBLIC_BASE_BROWSER;
 
   const htmlUrl = `${base}/${locale}/${name}.html`;
   const jsonUrl = `${base}/${locale}/${name}.json`;
@@ -42,23 +43,17 @@ export default function HtmlFromTemplate({ locale, name, base = '' }: Props) {
   useEffect(() => {
     let aborted = false;
     const ac = new AbortController();
-
-    async function run() {
+    (async () => {
       try {
         setLoading(true);
         setErr(null);
-        const [hRes, jRes] = await Promise.all([
+        const [h, j] = await Promise.all([
           fetch(htmlUrl, { cache: 'no-store', signal: ac.signal }),
           fetch(jsonUrl, { cache: 'no-store', signal: ac.signal }),
         ]);
-
-        if (!hRes.ok) throw new Error(`HTML ${hRes.status}`);
-        if (!jRes.ok) throw new Error(`JSON ${jRes.status}`);
-
-        const [htmlText, jsonData] = await Promise.all([
-          hRes.text(),
-          jRes.json(),
-        ]);
+        if (!h.ok) throw new Error(`HTML ${h.status}`);
+        if (!j.ok) throw new Error(`JSON ${j.status}`);
+        const [htmlText, jsonData] = await Promise.all([h.text(), j.json()]);
         if (!aborted) {
           setTpl(htmlText);
           setJson(jsonData);
@@ -68,35 +63,62 @@ export default function HtmlFromTemplate({ locale, name, base = '' }: Props) {
       } finally {
         if (!aborted) setLoading(false);
       }
-    }
-
-    run();
+    })();
     return () => {
       aborted = true;
       ac.abort();
     };
   }, [htmlUrl, jsonUrl]);
 
-  const rendered = useMemo(() => {
-    if (!tpl || !json) return '';
-    const out = interpolate(tpl, json);
-    // If the HTML content is NOT fully trusted, uncomment to sanitize:
-    // return DOMPurify.sanitize(out, { USE_PROFILES: { html: true } });
-    return out;
-  }, [tpl, json]);
+  const rendered = useMemo(
+    () => (tpl && json ? interpolate(tpl, json) : ''),
+    [tpl, json]
+  );
+
+  // Mount dynamic components into placeholders
+  useEffect(() => {
+    // cleanup previous mounts
+    rootsRef.current.forEach((r) => r.unmount());
+    rootsRef.current = [];
+
+    const host = containerRef.current;
+    if (!host) return;
+
+    const nodes = host.querySelectorAll<HTMLElement>(
+      '[data-component="carousel"]'
+    );
+    nodes.forEach((el) => {
+      const endpoint = el.dataset.endpoint || '';
+      console.log('ENDPOINT');
+      console.log(`${baseBrowser}${endpoint}`);
+      const root = createRoot(el);
+      rootsRef.current.push(root);
+
+      root.render(<HomeCarousel endpoint={`${baseBrowser}${endpoint}`} />);
+    });
+
+    return () => {
+      rootsRef.current.forEach((r) => r.unmount());
+      rootsRef.current = [];
+    };
+  }, [rendered]);
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-gray-600">
-        <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+      <div className="flex items-center gap-2 text-neutral-600">
+        <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-transparent" />
         <span>Loading…</span>
       </div>
     );
   }
 
-  if (err || !rendered) {
-    return null; // or show a small error box
-  }
+  if (err || !rendered) return null;
 
-  return <div dangerouslySetInnerHTML={{ __html: rendered }} />;
+  return (
+    <div
+      ref={containerRef}
+      // If the API is trusted, this is fine. If not, sanitize before.
+      dangerouslySetInnerHTML={{ __html: rendered }}
+    />
+  );
 }

@@ -49,8 +49,8 @@ export default function PublicationPartOfTable({
     }
   });
 
-  const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/isPartOfDT/${resourceID}/${guiLang}`;
+  const base = process.env.NEXT_PUBLIC_BASE_BROWSER_API!;
+  const url = `${base}/isPartOfDT/${resourceID}/${guiLang}`;
   const { data, error, loading } = useApi<ApiResponse>(url);
 
   const rows = React.useMemo(() => {

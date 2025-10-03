@@ -208,7 +208,7 @@ export default function VersionsBlock({
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const lang = Cookies.get('i18nextLng') || 'en';
-  const url = `${PUBLIC_CONFIG.apiBase}/browser/api/versions-list/${encodeURIComponent(
+  const url = `${PUBLIC_CONFIG.apiBase}/versions-list/${encodeURIComponent(
     endpoint
   )}/${encodeURIComponent(lang)}`;
 
@@ -240,7 +240,7 @@ export default function VersionsBlock({
   // Lazy children loader (called by TreeNode when a folder is opened)
   async function loadChildren(id: string): Promise<TreeItem[]> {
     const res = await fetch(
-      `${PUBLIC_CONFIG.apiBase}/browser/api/versions-list/${encodeURIComponent(
+      `${PUBLIC_CONFIG.apiBase}/versions-list/${encodeURIComponent(
         id
       )}/${encodeURIComponent(lang)}`,
       { cache: 'no-store' }

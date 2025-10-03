@@ -43,8 +43,8 @@ export default function InvolvedInTable({
     }
   });
 
-  const base = process.env.NEXT_PUBLIC_API_BASE!;
-  const url = `${base}/browser/api/involvedDT/${resourceID}/${guiLang}`;
+  const base = process.env.NEXT_PUBLIC_BASE_BROWSER_API!;
+  const url = `${base}/involvedDT/${resourceID}/${guiLang}`;
   const { data, error, loading } = useApi<ApiResponse>(url);
 
   type Row = {
