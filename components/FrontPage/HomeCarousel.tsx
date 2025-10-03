@@ -26,6 +26,22 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const hoverRef = useRef(false);
+  const [reduced, setReduced] = useState(false);
+  const autoPlay = true;
+  const intervalMs = 5000;
+  const pauseOnHover = true;
+  const loop = true;
+
+  // detect prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const m = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const set = () => setReduced(m.matches);
+    set();
+    m.addEventListener?.('change', set);
+    return () => m.removeEventListener?.('change', set);
+  }, []);
 
   useEffect(() => {
     let abort = false;
@@ -81,6 +97,60 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
       abort = true;
     };
   }, [endpoint]);
+
+  const scrollToChild = (index: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const children = Array.from(el.children) as HTMLElement[];
+    if (!children.length) return;
+    const target = children[Math.max(0, Math.min(index, children.length - 1))];
+    el.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
+  };
+
+  const currentIndex = () => {
+    const el = scrollerRef.current;
+    if (!el) return 0;
+    const children = Array.from(el.children) as HTMLElement[];
+    let idx = 0;
+    let minDelta = Infinity;
+    const left = el.scrollLeft;
+    for (let i = 0; i < children.length; i++) {
+      const d = Math.abs(children[i].offsetLeft - left);
+      if (d < minDelta) {
+        minDelta = d;
+        idx = i;
+      }
+    }
+    return idx;
+  };
+
+  const next = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const children = Array.from(el.children) as HTMLElement[];
+    if (!children.length) return;
+    const idx = currentIndex();
+    const isLast = idx >= children.length - 1;
+    const nextIdx = isLast ? (loop ? 0 : idx) : idx + 1;
+    if (isLast && !loop) {
+      // optional: bounce back to start
+      el.scrollTo({ left: 0, behavior: 'smooth' });
+      return;
+    }
+    scrollToChild(nextIdx);
+  };
+
+  // auto-play
+  useEffect(() => {
+    if (!autoPlay || reduced || slides.length < 2) return;
+    const id = window.setInterval(
+      () => {
+        if (!pauseOnHover || !hoverRef.current) next();
+      },
+      Math.max(1500, intervalMs)
+    );
+    return () => window.clearInterval(id);
+  }, [autoPlay, intervalMs, pauseOnHover, reduced, slides.length]);
 
   const by = () => scrollerRef.current?.clientWidth ?? 0;
   const scroll = (dir: -1 | 1) => {
