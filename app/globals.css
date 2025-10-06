@@ -90,6 +90,16 @@ input::-ms-input-placeholder {
   opacity: 0.3;
 }
 
+@layer utilities {
+  /* Hide ALL scrollbars (while keeping scrollable) */
+  .no-scrollbar {
+    -ms-overflow-style: none;     /* IE/Edge legacy */
+    scrollbar-width: none;        /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;                /* Chrome/Safari */
+  }
+}
 
 
 @layer components {

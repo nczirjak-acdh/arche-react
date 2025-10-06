@@ -1,20 +1,19 @@
-// components/Carousel.tsx
+// components/HomeCarousel.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
 
 type ApiItem = {
-  identifier?: string; // may be an external URL
+  identifier?: string;
   title?: string;
   description?: string;
   modifyDate?: string;
   avDate?: string;
 };
-
 type ApiResponse = Record<string, ApiItem>;
 
 type Slide = {
-  id: string | number;
+  id: string;
   title: string;
   href: string;
   image: string;
@@ -25,67 +24,47 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+
   const scrollerRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef(false);
-  const [reduced, setReduced] = useState(false);
+
   const autoPlay = true;
   const intervalMs = 5000;
   const pauseOnHover = true;
   const loop = true;
+  const perView = 4; // ← always 4 visible
 
-  // detect prefers-reduced-motion
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const m = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const set = () => setReduced(m.matches);
-    set();
-    m.addEventListener?.('change', set);
-    return () => m.removeEventListener?.('change', set);
-  }, []);
-
+  // fetch
   useEffect(() => {
     let abort = false;
     (async () => {
       try {
         setLoading(true);
         setErr(null);
+
         const r = await fetch(endpoint, { cache: 'no-store' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
-
         const data: ApiResponse = await r.json();
 
-        // Convert object -> array with sorting by modifyDate/avDate (desc)
         const entries = Object.entries(data);
-
         const ts = (s?: string) => (s ? Date.parse(s) || 0 : 0);
         entries.sort(([, a], [, b]) => {
           const ta = ts(a.modifyDate) || ts(a.avDate);
           const tb = ts(b.modifyDate) || ts(b.avDate);
-          return tb - ta; // newest first
+          return tb - ta;
         });
 
-        const mapped: Slide[] = entries.map(([id, item]) => {
-          const title = item.title || 'Untitled';
-          const description = item.description
-            ? item.description.replace(/\s+/g, ' ').trim()
-            : '';
+        const thumbBase = process.env.NEXT_PUBLIC_THUMBNAILS_URL!;
+        const baseApi = process.env.NEXT_PUBLIC_BASE_API!;
 
-          // Link: prefer full URL in `identifier`, else fall back to /browser/metadata/{id}
-          const defaultHref =
-            item.identifier && /^https?:\/\//i.test(item.identifier)
-              ? item.identifier
-              : `/browser/metadata/${id}`;
+        const mapped: Slide[] = entries.map(([id, item]) => ({
+          id,
+          title: item.title || 'Untitled',
+          href: `/browser/metadata/${id}`,
+          image: `${thumbBase}${baseApi}/${id}&width=600`, // image URL (your service)
+          description: item.description?.replace(/\s+/g, ' ').trim(),
+        }));
 
-          const href = `browser/metadata/${id}`;
-
-          // Image: let caller supply a resolver; otherwise placeholder
-          const thumbBase = process.env.NEXT_PUBLIC_THUMBNAILS_URL!;
-          const baseApi = process.env.NEXT_PUBLIC_BASE_API!;
-          const image = `${thumbBase}${baseApi}/${id}&width=350`;
-          console.log(image);
-          // https://arche-thumbnails.acdh.oeaw.ac.at?id=https://arche-dev.acdh-dev.oeaw.ac.at/api/258020&width=350
-          return { id, title, href, image, description };
-        });
         if (!abort) setSlides(mapped);
       } catch (e: any) {
         if (!abort) setErr(e?.message ?? 'Failed to load');
@@ -98,7 +77,28 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
     };
   }, [endpoint]);
 
-  const scrollToChild = (index: number) => {
+  // helpers
+  const currentStartIndex = () => {
+    const el = scrollerRef.current;
+    if (!el) return 0;
+    const children = Array.from(el.children) as HTMLElement[];
+    if (!children.length) return 0;
+
+    // find nearest child to current scrollLeft, then snap to page start (multiple of perView)
+    const left = el.scrollLeft;
+    let idx = 0;
+    let minDelta = Infinity;
+    for (let i = 0; i < children.length; i++) {
+      const d = Math.abs(children[i].offsetLeft - left);
+      if (d < minDelta) {
+        minDelta = d;
+        idx = i;
+      }
+    }
+    return Math.floor(idx / perView) * perView;
+  };
+
+  const scrollToIndex = (index: number) => {
     const el = scrollerRef.current;
     if (!el) return;
     const children = Array.from(el.children) as HTMLElement[];
@@ -107,57 +107,51 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
     el.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
   };
 
-  const currentIndex = () => {
-    const el = scrollerRef.current;
-    if (!el) return 0;
-    const children = Array.from(el.children) as HTMLElement[];
-    let idx = 0;
-    let minDelta = Infinity;
-    const left = el.scrollLeft;
-    for (let i = 0; i < children.length; i++) {
-      const d = Math.abs(children[i].offsetLeft - left);
-      if (d < minDelta) {
-        minDelta = d;
-        idx = i;
-      }
-    }
-    return idx;
-  };
-
-  const next = () => {
+  const nextPage = () => {
     const el = scrollerRef.current;
     if (!el) return;
-    const children = Array.from(el.children) as HTMLElement[];
-    if (!children.length) return;
-    const idx = currentIndex();
-    const isLast = idx >= children.length - 1;
-    const nextIdx = isLast ? (loop ? 0 : idx) : idx + 1;
-    if (isLast && !loop) {
-      // optional: bounce back to start
-      el.scrollTo({ left: 0, behavior: 'smooth' });
-      return;
+    const total = slides.length;
+    if (total === 0) return;
+
+    const start = currentStartIndex();
+    const nextStart = start + perView;
+    if (nextStart >= total) {
+      if (loop) scrollToIndex(0);
+      else scrollToIndex(start); // stay
+    } else {
+      scrollToIndex(nextStart);
     }
-    scrollToChild(nextIdx);
   };
 
-  // auto-play
+  const prevPage = () => {
+    const start = currentStartIndex();
+    const prevStart = start - perView;
+    if (prevStart < 0) {
+      if (loop) {
+        // go to last full page (or the last chunk)
+        const remainder = slides.length % perView;
+        const lastStart =
+          remainder === 0 ? slides.length - perView : slides.length - remainder;
+        scrollToIndex(Math.max(0, lastStart));
+      } else {
+        scrollToIndex(start);
+      }
+    } else {
+      scrollToIndex(prevStart);
+    }
+  };
+
+  // autoplay by page
   useEffect(() => {
-    if (!autoPlay || reduced || slides.length < 2) return;
+    if (!autoPlay || slides.length <= perView) return;
     const id = window.setInterval(
       () => {
-        if (!pauseOnHover || !hoverRef.current) next();
+        if (!pauseOnHover || !hoverRef.current) nextPage();
       },
       Math.max(1500, intervalMs)
     );
     return () => window.clearInterval(id);
-  }, [autoPlay, intervalMs, pauseOnHover, reduced, slides.length]);
-
-  const by = () => scrollerRef.current?.clientWidth ?? 0;
-  const scroll = (dir: -1 | 1) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * by() * 0.9, behavior: 'smooth' });
-  };
+  }, [autoPlay, intervalMs, pauseOnHover, slides.length]);
 
   if (loading)
     return (
@@ -170,24 +164,33 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
   if (!slides.length) return null;
 
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onMouseEnter={() => (hoverRef.current = true)}
+      onMouseLeave={() => (hoverRef.current = false)}
+    >
       <button
         aria-label="Previous"
-        onClick={() => scroll(-1)}
+        onClick={prevPage}
         className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow ring-1 ring-black/10 hover:bg-white"
       >
         ‹
       </button>
 
+      {/*
+        Important:
+        - gap-x-4 = 1rem gaps → width per slide = (100% - 3 * 1rem) / 4
+        - basis-[calc((100%-3rem)/4)] ensures exactly 4 slides fit, no partials
+      */}
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4"
+        className="flex snap-x snap-mandatory gap-x-4 overflow-x-auto scroll-smooth pb-4 no-scrollbar"
       >
         {slides.map((s) => (
           <a
             key={s.id}
             href={s.href}
-            className="snap-start shrink-0 w-72 rounded-xl border bg-white shadow-sm transition hover:shadow-md"
+            className="flex-none snap-start basis-[calc((100%-3rem)/4)] rounded-xl border bg-white shadow-sm transition hover:shadow-md"
           >
             <div className="aspect-[4/3] overflow-hidden rounded-t-xl">
               <img
@@ -199,7 +202,7 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
             <div className="p-4">
               <h3 className="text-base font-semibold">{s.title}</h3>
               {s.description && (
-                <p className="mt-1 line-clamp-2 text-sm text-neutral-600">
+                <p className="mt-1 text-sm text-neutral-600 line-clamp-2">
                   {s.description}
                 </p>
               )}
@@ -210,7 +213,7 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
 
       <button
         aria-label="Next"
-        onClick={() => scroll(1)}
+        onClick={nextPage}
         className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow ring-1 ring-black/10 hover:bg-white"
       >
         ›
