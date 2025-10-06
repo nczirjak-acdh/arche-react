@@ -30,7 +30,7 @@ export default function NextPrevItem({
         setError(null);
 
         const res = await fetch(
-          `${PUBLIC_CONFIG.apiBase}/nextPrevItem/${parentId}/${identifier}/${lang}`
+          `${PUBLIC_CONFIG.browserApiBase}/nextPrevItem/${parentId}/${identifier}/${lang}`
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();

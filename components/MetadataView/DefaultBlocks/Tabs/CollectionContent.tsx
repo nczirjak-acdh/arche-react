@@ -216,7 +216,7 @@ export default function CollectionContent({
         setError(null);
 
         const res = await fetch(
-          `${PUBLIC_CONFIG.apiBase}/child-tree/${encodeURIComponent(
+          `${PUBLIC_CONFIG.browserApiBase}/child-tree/${encodeURIComponent(
             identifier
           )}/${encodeURIComponent(lang)}`,
           { signal: ac.signal, cache: 'no-store' }
@@ -244,7 +244,7 @@ export default function CollectionContent({
   // Lazy children loader (called by TreeNode when a folder is opened)
   async function loadChildren(id: string): Promise<TreeItem[]> {
     const res = await fetch(
-      `${PUBLIC_CONFIG.apiBase}/child-tree/${encodeURIComponent(
+      `${PUBLIC_CONFIG.browserApiBase}/child-tree/${encodeURIComponent(
         id
       )}/${encodeURIComponent(lang)}`,
       { cache: 'no-store' }

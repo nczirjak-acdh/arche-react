@@ -28,7 +28,7 @@ export default function NewVersionBlock({
         setError(null);
 
         const res = await fetch(
-          `${PUBLIC_CONFIG.apiBase}/versions-list/${identifier}/${lang}`
+          `${PUBLIC_CONFIG.browserApiBase}/versions-list/${identifier}/${lang}`
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();

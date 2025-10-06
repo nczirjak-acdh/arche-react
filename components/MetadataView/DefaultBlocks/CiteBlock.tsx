@@ -44,8 +44,8 @@ export default function CiteBlock({ resourceID, lang = 'en-US' }: Props) {
   const [loadingArche, setLoadingArche] = useState<boolean>(true);
   const [archeErr, setArcheErr] = useState<string | null>(null);
 
-  const src = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${resourceID}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`;
-  const arche_cite_src = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${resourceID}&lang=en&format=arche-citation-style`;
+  const src = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/${resourceID}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`;
+  const arche_cite_src = `${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/${resourceID}&lang=en&format=arche-citation-style`;
 
   // 1) Load CSL-JSON
   useEffect(() => {

@@ -28,7 +28,7 @@ export default function BreadcrumbBlock({
         setError(null);
 
         const res = await fetch(
-          `${PUBLIC_CONFIG.apiBase}/breadcrumb/${identifier}/${lang}`
+          `${PUBLIC_CONFIG.browserApiBase}/breadcrumb/${identifier}/${lang}`
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();

@@ -208,7 +208,7 @@ export default function CollectionContentTab({
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const lang = Cookies.get('i18nextLng') || 'en';
-  const url = `${PUBLIC_CONFIG.apiBase}/child-tree/${encodeURIComponent(
+  const url = `${PUBLIC_CONFIG.browserApiBase}/child-tree/${encodeURIComponent(
     endpoint
   )}/${encodeURIComponent(lang)}`;
 
@@ -240,7 +240,7 @@ export default function CollectionContentTab({
   // Lazy children loader (called by TreeNode when a folder is opened)
   async function loadChildren(id: string): Promise<TreeItem[]> {
     const res = await fetch(
-      `${PUBLIC_CONFIG.apiBase}/child-tree/${encodeURIComponent(
+      `${PUBLIC_CONFIG.browserApiBase}/child-tree/${encodeURIComponent(
         id
       )}/${encodeURIComponent(lang)}`,
       { cache: 'no-store' }

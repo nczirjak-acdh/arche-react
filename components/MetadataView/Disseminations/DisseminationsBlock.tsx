@@ -18,20 +18,22 @@ const DisseminationsBlock = ({
   switch (acdhCategory) {
     case 'pdf':
       return (
-        <DisseminationPdf url={`${PUBLIC_CONFIG.apiBase}/api/${identifier}`} />
+        <DisseminationPdf
+          url={`${PUBLIC_CONFIG.browserApiBase}${identifier}`}
+        />
       );
 
     case 'audio':
       return (
         <DisseminationAudio
-          src={`${PUBLIC_CONFIG.apiBase}/api/${identifier}`}
+          src={`${PUBLIC_CONFIG.browserApiBase}${identifier}`}
         />
       );
 
     case 'glb':
       return (
         <DisseminationGlb
-          src={`${PUBLIC_CONFIG.apiBase}/api/${identifier}`}
+          src={`${PUBLIC_CONFIG.browserApiBase}${identifier}`}
           autoRotate
           cameraControls
           className="rounded-xl shadow"
@@ -41,7 +43,7 @@ const DisseminationsBlock = ({
     case 'image':
       return (
         <DisseminationIIIF
-          endpoint={`https://arche-iiifmanifest.acdh.oeaw.ac.at/?id=${PUBLIC_CONFIG.apiBase}/api/${identifier}&mode=images`}
+          endpoint={`https://arche-iiifmanifest.acdh.oeaw.ac.at/?id=${PUBLIC_CONFIG.apiBase}${identifier}&mode=images`}
           height={600}
         />
       );
@@ -59,7 +61,7 @@ const DisseminationsBlock = ({
     case 'tei':
       return (
         <DisseminationTEI
-          url={`${PUBLIC_CONFIG.apiBase}/api/${identifier}?skipContentDisposition=true`}
+          url={`${PUBLIC_CONFIG.apiBase}${identifier}?skipContentDisposition=true`}
         />
       );
 

@@ -42,7 +42,7 @@ const PublicationBlock = ({
         </div>
       )}
       <CiteBlock
-        src={`${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}/api/${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
+        src={`${process.env.NEXT_PUBLIC_BIBLATEX_URL}/?id=${PUBLIC_CONFIG.apiBase}${dataJson.id}&lang=en&format=application%2Fvnd.citationstyles.csl%2Bjson`}
         lang="en-US"
       />
       <PublicationSummaryBlock data={dataJson.publicationSummary} />
