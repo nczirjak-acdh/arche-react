@@ -14,6 +14,65 @@ function HomePage() {
   );
 
   return (
+    <div className="w-full flex justify-center">
+      <div className="container">
+        <div className="grid grid-cols-6 gap-4">
+          <div className="col-span-4 col-start-2">
+            <div className="w-full">
+              <div className="my-12 text-center">
+                <p className="section-header-title-small">TITLE</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-4 col-start-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-stretch">
+              {/* Card 1 */}
+              <div className="h-full rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
+                <h3 className="text-lg font-semibold text-center">Card 1</h3>
+                <p className="mt-2 text-sm text-neutral-600 text-center">
+                  Some description…
+                </p>
+                <div className="mt-auto text-center">
+                  <a className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-neutral-50">
+                    Show
+                  </a>
+                </div>
+              </div>
+
+              {/* Card 2 */}
+              <div className="h-full rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
+                <h3 className="text-lg font-semibold text-center">Card 2</h3>
+                <p className="mt-2 text-sm text-neutral-600 text-center">
+                  Some description…
+                </p>
+                <div className="mt-auto text-center">
+                  <a className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-neutral-50">
+                    Show
+                  </a>
+                </div>
+              </div>
+
+              {/* Card 3 */}
+              <div className="h-full rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
+                <h3 className="text-lg font-semibold text-center">Card 3</h3>
+                <p className="mt-2 text-sm text-neutral-600 text-center">
+                  Some description…
+                </p>
+                <div className="mt-auto text-center">
+                  <a className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-neutral-50">
+                    Show
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
     <div className="w-full justify-center">
       <div className="grid grid-cols-6 gap-4">
         <div className="col-span-4 col-start-2">
