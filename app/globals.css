@@ -94,6 +94,102 @@ input::-ms-input-placeholder {
   opacity: 0.3;
 }
 
+.arche-footer-cta {
+	padding: 24px;
+	border-radius: 12px;
+	border: 2px solid #e1edf3;
+	background: #FFF;
+	top: -40px;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+	color: #666;
+	max-width: 980px;
+}
+.arche-footer-content {
+  margin-top: -130px;
+}
+.arche-footer-content ul {
+  padding-left: 0px !important;
+}
+.arche-footer p, .arche-footer a {
+  color: #FFF;
+  /* Paragraph Small */
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  /* 142.857% */
+}
+.arche-footer-sub-title {
+  font-family: Lato;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 28px !important;
+}
+.arche-footer h4 {
+  color: #FFF;
+  font-family: Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.arche-footer {
+  position: relative;
+  color: #fff;
+  padding: 2rem 0;
+  background-color: #069;
+  padding-top: 150px;
+}
+.arche-footer .container {
+  position: relative;
+}
+.arche-footer h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  margin-top: 0;
+  line-height: 1.5;
+}
+.arche-footer .links li a {
+  color: #fff;
+}
+.arche-footer .links li a:hover {
+  color: #fff;
+}
+.arche-footer .social li {
+  display: inline-block;
+  position: relative;
+}
+.arche-footer .social li a {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  background-color: #8186d5;
+  color: #fff;
+}
+.arche-footer .social li a > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.arche-footer .footer-logo {
+  color: #fff;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+.arche-footer .copyright {
+  color: #666873;
+}
 
   .resources-container-home {
 	background-image: url("/browser/images/common/resource_bottom_bubble.svg");
@@ -103,6 +199,21 @@ input::-ms-input-placeholder {
 	margin-right: 0px !important;
 	padding-left: 0px !important;
 	padding-right: 0px !important;
+  padding-top:  3rem;
+  padding-bottom: 3rem;
+}
+
+.mission-container-home {
+  background-image: url("/browser/images/common/mission_bottom_bubble.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 60px;
+  padding-bottom: 150px;
+  background-color: #F8F9FA;
 }
 
 .background-image-div, .background-image-front-div {

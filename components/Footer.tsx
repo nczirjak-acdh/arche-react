@@ -9,13 +9,13 @@ const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <footer className="relative bg-[#069] text-white text-sm mt-30">
+    <footer className="flex flex-col bg-[#069] text-white text-sm mt-30 items-center">
       {/* CTA Section */}
 
       <FooterContactBox></FooterContactBox>
 
       {/* Footer Main Grid */}
-      <div className="max-w-7xl mx-auto px-4 py-8 pt-35">
+      <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-[100px_repeat(4,_1fr)] gap-4">
           {/* Logo & Address */}
           <div className="">
@@ -136,8 +136,7 @@ const Footer = () => {
             © Copyright OEAW |{' '}
             <a href="/browser/imprint" className="underline">
               Impressum
-            </a>{' '}
-            |{' '}
+            </a>
             <a href="#" id="footer-versions-btn" className="underline">
               Software-Versionen
             </a>
@@ -146,61 +145,7 @@ const Footer = () => {
 
         {/* Optional hidden version info section */}
         <div className="hidden mt-4 text-center text-xs space-x-2">
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche-assets"
-            target="_blank"
-          >
-            arche-assets : 3.25.0.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche-lib"
-            target="_blank"
-          >
-            arche-lib : 7.4.0.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche-lib-disserv"
-            target="_blank"
-          >
-            arche-lib-disserv : 4.0.6.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche-lib-schema"
-            target="_blank"
-          >
-            arche-lib-schema : 7.1.2.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche-theme-bs"
-            target="_blank"
-          >
-            arche-theme-bs : 0.8.7.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche_core_gui"
-            target="_blank"
-          >
-            arche_core_gui : 1.9.9.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche_core_gui_api"
-            target="_blank"
-          >
-            arche_core_gui_api : 0.9.3.
-          </a>
-          |
-          <a
-            href="https://packagist.org/packages/acdh-oeaw/arche_core_gui_static"
-            target="_blank"
-          >
-            arche_core_gui_static : 1.0.0.
-          </a>
+          arche lib versions
         </div>
       </div>
     </footer>
