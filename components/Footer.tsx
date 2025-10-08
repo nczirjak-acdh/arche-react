@@ -9,7 +9,7 @@ const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <footer className="flex flex-col bg-[#069] text-white text-sm mt-30 items-center">
+    <footer className="flex flex-col bg-[#069] text-white text-sm items-center">
       {/* CTA Section */}
 
       <FooterContactBox></FooterContactBox>

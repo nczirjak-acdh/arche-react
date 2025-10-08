@@ -27,12 +27,24 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef(false);
+  const [reduced, setReduced] = useState(false);
+  const [page, setPage] = useState(0);
 
   const autoPlay = true;
   const intervalMs = 5000;
   const pauseOnHover = true;
   const loop = true;
-  const perView = 4; // ← always 4 visible
+  const perView = 4; // always 4 visible
+
+  // prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const m = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduced(m.matches);
+    update();
+    m.addEventListener?.('change', update);
+    return () => m.removeEventListener?.('change', update);
+  }, []);
 
   // fetch
   useEffect(() => {
@@ -61,7 +73,7 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
           id,
           title: item.title || 'Untitled',
           href: `/browser/metadata/${id}`,
-          image: `${thumbBase}${baseApi}/${id}&width=600`, // image URL (your service)
+          image: `${thumbBase}${baseApi}/${id}&width=600`,
           description: item.description?.replace(/\s+/g, ' ').trim(),
         }));
 
@@ -77,6 +89,8 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
     };
   }, [endpoint]);
 
+  const totalPages = Math.max(1, Math.ceil(slides.length / perView));
+
   // helpers
   const currentStartIndex = () => {
     const el = scrollerRef.current;
@@ -84,7 +98,6 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
     const children = Array.from(el.children) as HTMLElement[];
     if (!children.length) return 0;
 
-    // find nearest child to current scrollLeft, then snap to page start (multiple of perView)
     const left = el.scrollLeft;
     let idx = 0;
     let minDelta = Infinity;
@@ -107,19 +120,20 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
     el.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
   };
 
-  const nextPage = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const total = slides.length;
-    if (total === 0) return;
+  const goToPage = (p: number) => {
+    const clamped = Math.max(0, Math.min(p, totalPages - 1));
+    scrollToIndex(clamped * perView);
+    setPage(clamped);
+  };
 
+  const nextPage = () => {
+    if (slides.length === 0) return;
     const start = currentStartIndex();
     const nextStart = start + perView;
-    if (nextStart >= total) {
-      if (loop) scrollToIndex(0);
-      else scrollToIndex(start); // stay
+    if (nextStart >= slides.length) {
+      loop ? goToPage(0) : goToPage(Math.floor(start / perView));
     } else {
-      scrollToIndex(nextStart);
+      goToPage(Math.floor(nextStart / perView));
     }
   };
 
@@ -128,30 +142,49 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
     const prevStart = start - perView;
     if (prevStart < 0) {
       if (loop) {
-        // go to last full page (or the last chunk)
         const remainder = slides.length % perView;
         const lastStart =
           remainder === 0 ? slides.length - perView : slides.length - remainder;
-        scrollToIndex(Math.max(0, lastStart));
+        goToPage(Math.floor(Math.max(0, lastStart) / perView));
       } else {
-        scrollToIndex(start);
+        goToPage(Math.floor(start / perView));
       }
     } else {
-      scrollToIndex(prevStart);
+      goToPage(Math.floor(prevStart / perView));
     }
   };
 
-  // autoplay by page
+  // Update page indicator on manual scroll
   useEffect(() => {
-    if (!autoPlay || slides.length <= perView) return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const start = currentStartIndex();
+        setPage(Math.floor(start / perView));
+      });
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [slides.length]);
+
+  // autoplay by page (respects reduced motion and hidden tab)
+  useEffect(() => {
+    if (!autoPlay || reduced || slides.length <= perView) return;
     const id = window.setInterval(
       () => {
-        if (!pauseOnHover || !hoverRef.current) nextPage();
+        if ((pauseOnHover && hoverRef.current) || document.hidden) return;
+        nextPage();
       },
       Math.max(1500, intervalMs)
     );
     return () => window.clearInterval(id);
-  }, [autoPlay, intervalMs, pauseOnHover, slides.length]);
+  }, [autoPlay, intervalMs, pauseOnHover, reduced, slides.length]);
 
   if (loading)
     return (
@@ -164,42 +197,58 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
   if (!slides.length) return null;
 
   return (
-    <div
+    <section
+      aria-roledescription="carousel"
+      aria-label="Featured collections"
       className="relative"
       onMouseEnter={() => (hoverRef.current = true)}
       onMouseLeave={() => (hoverRef.current = false)}
     >
+      {/* Prev */}
       <button
         aria-label="Previous"
         onClick={prevPage}
-        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow ring-1 ring-black/10 hover:bg-white"
+        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow ring-1 ring-black/10 hover:bg-white z-10"
       >
         ‹
       </button>
 
-      {/*
-        Important:
-        - gap-x-4 = 1rem gaps → width per slide = (100% - 3 * 1rem) / 4
-        - basis-[calc((100%-3rem)/4)] ensures exactly 4 slides fit, no partials
-      */}
+      {/* Scroller: EXACT 4 per view, equal heights, no scrollbar */}
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-x-4 overflow-x-auto scroll-smooth pb-4 no-scrollbar"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            nextPage();
+          }
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevPage();
+          }
+        }}
+        className="flex items-stretch snap-x snap-mandatory gap-x-5 overflow-x-auto scroll-smooth p-4 no-scrollbar focus:outline-none focus:ring-2 focus:ring-black/10 rounded-xl"
+        role="list"
       >
         {slides.map((s) => (
-          <a
+          <article
+            role="listitem"
             key={s.id}
-            href={s.href}
-            className="flex-none snap-start basis-[calc((100%-3rem)/4)] rounded-xl border bg-white shadow-sm transition hover:shadow-md"
+            className="flex-none snap-start basis-[calc((100%-3rem)/4)]
+                       rounded-xl bg-white shadow-[0_20px_60px_-20px_rgba(2,6,23,0.2)] ring-1 ring-black/5
+                       p-4 flex flex-col h-full min-h-[25rem]"
           >
-            <div className="aspect-[4/3] overflow-hidden rounded-t-xl">
+            <div className="aspect-[4/3] overflow-hidden rounded-md">
               <img
                 src={s.image}
                 alt={s.title}
                 className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
-            <div className="p-4">
+
+            <div className="mt-4 flex-1">
               <h3 className="text-base font-semibold">{s.title}</h3>
               {s.description && (
                 <p className="mt-1 text-sm text-neutral-600 line-clamp-2">
@@ -207,17 +256,44 @@ export default function HomeCarousel({ endpoint }: { endpoint: string }) {
                 </p>
               )}
             </div>
-          </a>
+
+            <a
+              href={s.href}
+              className="mt-auto basic-arche-btn home-collections-btn"
+            >
+              More
+            </a>
+          </article>
         ))}
       </div>
 
+      {/* Next */}
       <button
         aria-label="Next"
         onClick={nextPage}
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow ring-1 ring-black/10 hover:bg-white"
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow ring-1 ring-black/10 hover:bg-white z-10"
       >
         ›
       </button>
-    </div>
+
+      {/* Page dots */}
+      {totalPages > 1 && (
+        <div className="mt-2 flex items-center justify-center gap-2">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Go to slide group ${i + 1}`}
+              aria-current={i === page}
+              onClick={() => goToPage(i)}
+              className={`h-2 w-2 rounded-full transition ${
+                i === page
+                  ? 'bg-neutral-800'
+                  : 'bg-neutral-300 hover:bg-neutral-400'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

@@ -215,6 +215,33 @@ input::-ms-input-placeholder {
   padding-bottom: 150px;
   background-color: #F8F9FA;
 }
+.mission-container {
+  display: flex;
+  padding: 24px;
+  align-items: flex-start;
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  background: #fff;
+  max-width: 980px;
+  gap: 24px;
+  flex-direction: column;
+}
+
+.mission-main-img {
+  border-radius: 16px;
+}
+.mission-container .section-header-title-small, .mission-container .section-header-title {
+  text-align: left;
+}
+.mission-container .lead {
+  color: #666;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+}
 
 .background-image-div, .background-image-front-div {
   position: relative;
@@ -294,11 +321,11 @@ input::-ms-input-placeholder {
     color: #fff;
   }
 
+
   .btn-arche-blue {
     
     font-size: 16px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 16px;
     gap: 8px; 
     border-radius: 6px;
     background-color: #3B89AD;
@@ -312,8 +339,9 @@ input::-ms-input-placeholder {
   }
 
   a.btn-arche-blue:hover {
-    background-color: #5CA3C6;
+      background-color: rgba(59, 137, 173, 0.5);
     text-decoration: none;
+    color: white;
   }
 
   a.header-nav-text {
@@ -339,6 +367,10 @@ input::-ms-input-placeholder {
 .home-resources-text {
   text-align: center;
 }
+.arche-home-collections-slider {
+  background-color: #F8F9FA;
+}
+
 .basic-arche-btn {
   display: flex;
   width: 100%;
@@ -348,12 +380,13 @@ input::-ms-input-placeholder {
   gap: 8px;
   background: #3B89AD;
   margin-top: auto;
-  color: #FFF;
+  color: #FFF !important;
   font-family: Lato;
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
   line-height: 18px;
+  border-radius: 0.375rem;
 }
 .basic-arche-btn:hover {
   background-color: rgba(59, 137, 173, 0.8);
