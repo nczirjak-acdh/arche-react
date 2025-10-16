@@ -9,11 +9,15 @@ const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <footer className="flex flex-col bg-[#069] text-white text-sm items-center">
+    <footer className="flex flex-col bg-[#069] text-white text-sm items-center arche-footer">
       {/* CTA Section */}
-
-      <FooterContactBox></FooterContactBox>
-
+      <div className="grid grid-cols-6 gap-4">
+        <div className="col-span-4 col-start-2">
+          <div className="w-full">
+            <FooterContactBox></FooterContactBox>
+          </div>
+        </div>
+      </div>
       {/* Footer Main Grid */}
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-[100px_repeat(4,_1fr)] gap-4">

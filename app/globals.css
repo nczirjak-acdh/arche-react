@@ -32,6 +32,31 @@ a:hover {
   text-decoration: none;
 }
 
+
+.section-header-title-small {
+  color: #069 !important;
+  text-align: center;
+  /* Paragraph Bold */
+  font-family: Lato !important;
+  font-size: 16px !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  line-height: 28px !important;
+  /* 175% */
+}
+.section-header-title {
+  color: #333 !important;
+  text-align: center;
+  /* h2 Bold */
+  font-family: Lato !important;
+  font-size: 32px !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  line-height: normal !important;
+}
+
+
+
 h4 {
 	
 	font-family: Lato;
@@ -57,6 +82,16 @@ h6 {
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+p, span {
+	color: #666;
+	font-family: Lato;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 25px;
+	word-wrap: break-word;
 }
 footer a {
   color: white;
@@ -141,7 +176,8 @@ input::-ms-input-placeholder {
   color: #fff;
   padding: 2rem 0;
   background-color: #069;
-  padding-top: 150px;
+  padding-top: 0px;
+  margin: 0px;
 }
 .arche-footer .container {
   position: relative;
@@ -281,6 +317,11 @@ input::-ms-input-placeholder {
   z-index: 0;
 }
 
+
+.cards-container {
+  padding-bottom: 100px;
+}
+
 @layer utilities {
   /* Hide ALL scrollbars (while keeping scrollable) */
   .no-scrollbar {
@@ -296,8 +337,6 @@ input::-ms-input-placeholder {
 
 
 @layer components {
-  
-
 
 .btn-toolbar-public { background-color:#1dd1a1; color:#fff; }
 .btn-toolbar-academic { background-color:#ff9f43; color:#fff; }
@@ -371,6 +410,176 @@ input::-ms-input-placeholder {
   background-color: #F8F9FA;
 }
 
+
+.arche-footer-content {
+  margin-top: -130px;
+}
+.arche-footer-content ul {
+  padding-left: 0px !important;
+}
+.arche-footer p, .arche-footer a {
+  color: #FFF;
+  /* Paragraph Small */
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  /* 142.857% */
+}
+.arche-footer-sub-title {
+  font-family: Lato;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 28px !important;
+}
+.arche-footer h4 {
+  color: #FFF;
+  font-family: Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.arche-footer {
+  position: relative;
+  color: #fff;
+  padding: 2rem 0;
+  background-color: #069;
+  padding-top: 150px;
+  margin-top: 40px;
+}
+.arche-footer .container {
+  position: relative;
+}
+.arche-footer h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  margin-top: 0;
+  line-height: 1.5;
+
+}
+.arche-footer .links li a {
+  color: #fff;
+}
+.arche-footer .links li a:hover {
+  color: #fff;
+}
+.arche-footer .social li {
+  display: inline-block;
+  position: relative;
+}
+.arche-footer .social li a {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  background-color: #8186d5;
+  color: #fff;
+}
+.arche-footer .social li a > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.arche-footer .footer-logo {
+  color: #fff;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+.arche-footer .copyright {
+  color: #666873;
+}
+.contact-us-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.cta-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.cta-item {
+  flex: 1 0;
+  display: flex;
+  flex-direction: row;
+}
+.cta-item.text {
+  flex: 1;
+}
+.cta-item.button {
+  flex: 0;
+  align-self: flex-start;
+}
+.container-w980 {
+  max-width: 980px !important;
+}
+.arche-footer .cta {
+  padding: 24px;
+  border-radius: 12px;
+  border: 2px solid #e1edf3;
+  background: #FFF;
+  top: -60px;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+  max-width: 980px;
+}
+.cta-item {
+  color: #666 !important;
+  font-family: Lato !important;
+  font-size: 14px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+}
+.arche-footer .cta h2, .arche-footer .cta h3 {
+  line-height: 1.5;
+}
+.arche-footer .cta h3 {
+  font-size: 20px;
+  color: hwb(210 12.9% 83.9%);
+}
+.arche-footer::before, .arche-footer::after {
+  content: "";
+  position: absolute;
+  width: 250px;
+  /* Adjust the width of the logos */
+  height: 250px;
+  /* Adjust the height of the logos */
+}
+.arche-footer::before {
+  top: 0;
+  right: 0;
+  background-image: url("/browser/images/common/footer_top_right_bubble.svg");
+  /* Replace with your top logo */
+  background-size: cover;
+  z-index: 0;
+  width: 204px;
+  height: 238px;
+}
+.arche-footer::after {
+  bottom: 0;
+  left: 0;
+  background-image: url("/browser/images/common/footer_left_bottom_bubble.svg");
+  /* Replace with your bottom logo */
+  background-size: cover;
+  z-index: 0;
+}
+.arche-footer .cta h3 {
+  font-size: 20px !important;
+}
+
 .basic-arche-btn {
   display: flex;
   width: 100%;
@@ -403,27 +612,7 @@ input::-ms-input-placeholder {
 	background: #EEF5F8;
 }
 
-.section-header-title-small {
-  color: #069;
-  text-align: center;
-  /* Paragraph Bold */
-  font-family: Lato;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 28px;
-  /* 175% */
-}
-.section-header-title {
-  color: #333;
-  text-align: center;
-  /* h2 Bold */
-  font-family: Lato;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-}
+
 
 
 

@@ -7,24 +7,20 @@ const FooterContactBox = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="arche-footer-cta">
+    <div className="cta">
       <div className="w-full justify-center">
-        <div className="container cta">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-              <div>
-                <h3 className="text-xl font-semibold text-black mb-2">
-                  {t('contact_us')}
-                </h3>
-                <p className="text-[#5B595B]">{t('footer_contact_text')}</p>
-              </div>
-              <a
-                href="mailto:acdh-helpdesk@oeaw.ac.at"
-                className="bg-[#3B89AD] text-white px-6 py-2 rounded-md w-fit"
-              >
-                {t('contact')}
-              </a>
+            <div>
+              <h3 className="">{t('contact_us')}</h3>
+              <p className="cta-item">{t('footer_contact_text')}</p>
             </div>
+            <a
+              href="mailto:acdh-helpdesk@oeaw.ac.at"
+              className="bg-[#3B89AD] text-white px-6 py-2 rounded-md w-fit"
+            >
+              {t('contact')}
+            </a>
           </div>
         </div>
       </div>

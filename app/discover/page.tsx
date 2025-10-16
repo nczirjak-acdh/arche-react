@@ -24,7 +24,12 @@ export default function DiscoverPage() {
 
   const { data, error, loading } = useApi<any>(url);
 
-  if (loading) return <Loader label="Loading…" />;
+  if (loading)
+    return (
+      <div className="w-full pt-8 pb-8 mb-8 mt-8 text-center">
+        <Loader label="Loading…" />
+      </div>
+    );
   if (error) {
     return (
       <div className="mx-auto max-w-4xl rounded-md border border-red-200 bg-red-50 p-4 text-red-700">

@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import HomeCarousel from '../FrontPage/HomeCarousel';
+import Loader from '../Loader';
 
 type JsonData = Record<string, any>;
 
@@ -105,9 +106,8 @@ export default function HtmlFromTemplate({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-neutral-600">
-        <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-transparent" />
-        <span>Loading…</span>
+      <div className="pt-8 pb-8 mb-8">
+        <Loader></Loader>
       </div>
     );
   }

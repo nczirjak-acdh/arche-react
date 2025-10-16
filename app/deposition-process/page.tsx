@@ -1,12 +1,14 @@
-
+import HtmlFromTemplate from '@/components/StaticPages/HtmlFromTemplate';
+import Cookies from 'js-cookie';
 
 export default function metadata() {
+  const lang = Cookies.get('i18nextLng') || 'en';
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      DEPOSITION PROCESS
-      <div className="bg-red-500">
-      DEPOSITION END
-       </div>
-    </div>
+    <HtmlFromTemplate
+      locale={lang}
+      name="deposition-process"
+      base="https://raw.githubusercontent.com/nczirjak-acdh/arche-react-static-test/refs/heads/main/arche-react"
+    />
   );
 }
