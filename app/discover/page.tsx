@@ -51,6 +51,13 @@ export default function DiscoverPage() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4  gap-6">
+        <div>Card 1 </div>
+        <div>Card 2 </div>
+        <div>Card 3 </div>
+        <div>Card 4 </div>
+      </div>
+
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* LEFT: facets (30%) */}
         <aside className="w-full lg:w-[30%] space-y-4">

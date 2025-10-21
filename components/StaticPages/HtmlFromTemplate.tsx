@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import HomeCarousel from '../FrontPage/HomeCarousel';
 import Loader from '../Loader';
+import TwTokens from './TwTokens';
 
 type JsonData = Record<string, any>;
 
@@ -115,10 +116,13 @@ export default function HtmlFromTemplate({
   if (err || !rendered) return null;
 
   return (
-    <div
-      ref={containerRef}
-      // If the API is trusted, this is fine. If not, sanitize before.
-      dangerouslySetInnerHTML={{ __html: rendered }}
-    />
+    <div>
+      <TwTokens />
+      <div
+        ref={containerRef}
+        // If the API is trusted, this is fine. If not, sanitize before.
+        dangerouslySetInnerHTML={{ __html: rendered }}
+      />
+    </div>
   );
 }
