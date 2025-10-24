@@ -327,7 +327,6 @@ input::-ms-input-placeholder {
 }
 
 
-
 .accordion-static {
   margin: 20px auto;
   font-family: Arial, sans-serif;
@@ -379,6 +378,8 @@ details p {
   font-size: 14px;
   line-height: 1.5;
 }
+
+
 
 
 @layer utilities {
