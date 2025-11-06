@@ -32,7 +32,7 @@ export default async function metadata({ params }: MetadataPageProps) {
   }
 
   return (
-    <div className="p-8 bg-white">
+    <div className="p-8 bg-white mb-[100px]">
       <BasicBlock data={data} />
     </div>
   );

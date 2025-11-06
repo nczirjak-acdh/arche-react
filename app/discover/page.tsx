@@ -50,7 +50,7 @@ export default function DiscoverPage() {
   };
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8">
+    <section className="mx-auto max-w-7xl px-4 py-8 mb-[100px]">
       <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4  gap-6">
         <div>Card 1 </div>
         <div>Card 2 </div>

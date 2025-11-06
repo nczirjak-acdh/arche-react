@@ -380,6 +380,23 @@ details p {
 }
 
 
+  .btn-detail-type-gray {
+	border-radius: 12px ;
+	background: #5B595B ;
+	color: #fff;
+	text-align: center;
+	font-family: Lato;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 16px;
+	display: flex;
+	padding: 4px 8px;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 0px;
+}
+
 
 
 @layer utilities {
@@ -669,6 +686,8 @@ details p {
 	border-radius: 12px;
 	background: #EEF5F8;
 }
+
+
 
 
 

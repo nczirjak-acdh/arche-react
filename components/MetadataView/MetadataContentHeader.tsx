@@ -22,7 +22,7 @@ const MetadataContentHeader = ({
         )}
       </div>
       <div className="w-full lg:w-[30%] flex justify-end">
-        <span className="w-max flex p-[4px_8px] items-start gap-[8px] rounded-[12px] bg-[#5B595B] text-white text-xs">
+        <span className="w-max flex btn-detail-type-gray">
           {data.acdhTypeNiceFormat}
         </span>
       </div>

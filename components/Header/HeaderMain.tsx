@@ -4,8 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
-import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import Cookies from 'js-cookie';
 
 interface HeaderProps {
   mainNavigation: React.ReactNode;
@@ -18,6 +18,7 @@ export default function HeaderMain({
 }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
+  const lang = Cookies.get('i18nextLng') || 'en';
 
   return (
     <div className=" bg-[#e4eff5] max-h-[300px]">

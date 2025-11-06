@@ -5,6 +5,7 @@ import Cite from 'citation-js';
 import Image from 'next/image';
 import loaderGif from '@/public/images/arche_logo_flip_47px.gif';
 import { PUBLIC_CONFIG } from '@/config/public';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   /** URL that returns CSL-JSON (your example works out of the box) */
@@ -31,6 +32,8 @@ const STYLE_URLS: Record<'APA_6TH' | 'HARVARD' | 'VANCOUVER', string> = {
 };
 
 export default function CiteBlock({ resourceID, lang = 'en-US' }: Props) {
+  const { t } = useTranslation();
+
   const [cslJson, setCslJson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -243,7 +246,7 @@ export default function CiteBlock({ resourceID, lang = 'en-US' }: Props) {
 
   return (
     <div className="w-full space-y-3 pt-6">
-      <h5>Cite Resource</h5>
+      <h5>{t('Cite Resource')}</h5>
       <div className="flex flex-col items-start gap-6 self-stretch rounded-[12px] bg-[#EEF5F8] p-6">
         <div className="whitespace-pre-wrap">{output || '// No output'}</div>
 

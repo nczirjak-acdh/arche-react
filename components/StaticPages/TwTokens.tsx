@@ -11,11 +11,14 @@ export default function TwTokens() {
       col-span-full 
       col-start-2
       gap-4
+      btn-arche-blue
+      mission-container
       justify-center
       w-full max-w-none
       lg:col-start-2 lg:col-span-10 
       xl:col-start-3 xl:col-span-8
       gap-6
+      mb-[100px]
       "
       style={{ display: 'none' }}
     />

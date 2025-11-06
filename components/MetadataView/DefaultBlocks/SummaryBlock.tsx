@@ -1,4 +1,6 @@
 'use client';
+import DisplayField from '@/components/Helper/DisplayField';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,28 +29,30 @@ export default function SummaryBlock({ data }: MetadataProps) {
         {/* Research Discipline */}
         {hasKey('acdh:hasRelatedDiscipline') && (
           <li>
-            <strong>{t('Research Discipline')}:</strong>{' '}
-            {data['acdh:hasRelatedDiscipline']
-              .map((item) => item.value)
-              .join(', ')}
+            <DisplayField
+              title="Research Discipline"
+              items={data['acdh:hasRelatedDiscipline']}
+            ></DisplayField>
           </li>
         )}
 
         {/* Subject */}
         {hasKey('acdh:hasSubject') && (
           <li>
-            <strong>{t('Subject')}:</strong>{' '}
-            {data['acdh:hasSubject'].map((item) => item.value).join(', ')}
+            <DisplayField
+              title="Subject"
+              items={data['acdh:hasSubject']}
+            ></DisplayField>
           </li>
         )}
 
         {/* Spatial Coverage */}
         {hasKey('acdh:hasSpatialCoverage') && (
           <li>
-            <strong>{t('Spatial Coverage')}:</strong>{' '}
-            {data['acdh:hasSpatialCoverage']
-              .map((item) => item.value)
-              .join(', ')}
+            <DisplayField
+              title="Spatial Coverage"
+              items={data['acdh:hasSpatialCoverage']}
+            ></DisplayField>
           </li>
         )}
 

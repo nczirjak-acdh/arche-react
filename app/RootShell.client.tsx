@@ -168,6 +168,7 @@ export default function RootShell({
                 <a
                   href={MENU_URLS.discover[L] ?? '#'}
                   className="header-nav-text"
+                  aria-label={t('Discover')}
                 >
                   {t('Discover')}
                 </a>
@@ -181,6 +182,7 @@ export default function RootShell({
                   aria-haspopup="menu"
                   aria-expanded={open === 'deposit'}
                   onClick={() => toggle('deposit')}
+                  aria-label={t('Deposit')}
                 >
                   {t('Deposit')}
                   <span aria-hidden>▾</span>
@@ -195,6 +197,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Deposition Process')}
                     >
                       {t('Deposition Process')}
                     </a>
@@ -204,6 +207,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Deposition Agreement')}
                     >
                       {t('Deposition Agreement')}
                     </a>
@@ -213,6 +217,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Filenames, Fomats, and Metadata')}
                     >
                       {t('Filenames, Fomats, and Metadata')}
                     </a>
@@ -222,6 +227,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('FAQ')}
                     >
                       {t('FAQ')}
                     </a>
@@ -231,6 +237,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Further Guidance')}
                     >
                       {t('Further Guidance')}
                     </a>
@@ -240,6 +247,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Technical Setup')}
                     >
                       {t('Technical Setup')}
                     </a>
@@ -249,6 +257,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('API Access')}
                     >
                       {t('API Access')}
                     </a>
@@ -264,6 +273,7 @@ export default function RootShell({
                   aria-haspopup="menu"
                   aria-expanded={open === 'policies'}
                   onClick={() => toggle('policies')}
+                  aria-label={t('Policies')}
                 >
                   {t('Policies')}
                   <span aria-hidden>▾</span>
@@ -278,6 +288,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Collection Policy')}
                     >
                       {t('Collection Policy')}
                     </a>
@@ -288,6 +299,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Preservation Policy')}
                     >
                       {t('Preservation Policy')}
                     </a>
@@ -297,6 +309,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Privacy Policy')}
                     >
                       {t('Privacy Policy')}
                     </a>
@@ -306,6 +319,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Terms of Use')}
                     >
                       {t('Terms of Use')}
                     </a>
@@ -314,7 +328,11 @@ export default function RootShell({
               </li>
 
               <li>
-                <a href="#" className="header-nav-text">
+                <a
+                  href="#"
+                  className="header-nav-text"
+                  aria-label={t('About Arche')}
+                >
                   {t('About Arche')}
                 </a>
               </li>
@@ -339,6 +357,7 @@ export default function RootShell({
                 <a
                   href={MENU_URLS.discover[L] ?? '#'}
                   className="header-nav-text"
+                  aria-label={t('Discover')}
                 >
                   {t('Discover')}
                 </a>
@@ -352,6 +371,7 @@ export default function RootShell({
                   aria-haspopup="menu"
                   aria-expanded={open === 'deposit'}
                   onClick={() => toggle('deposit')}
+                  aria-label={t('Deposit')}
                 >
                   {t('Deposit')}
                   <span aria-hidden>▾</span>
@@ -366,6 +386,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Deposition Process')}
                     >
                       {t('Deposition Process')}
                     </a>
@@ -375,6 +396,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Deposition Agreement')}
                     >
                       {t('Deposition Agreement')}
                     </a>
@@ -384,6 +406,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Filenames, Fomats, and Metadata')}
                     >
                       {t('Filenames, Fomats, and Metadata')}
                     </a>
@@ -393,6 +416,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('FAQ')}
                     >
                       {t('FAQ')}
                     </a>
@@ -402,6 +426,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Further Guidance')}
                     >
                       {t('Further Guidance')}
                     </a>
@@ -411,6 +436,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Technical Setup')}
                     >
                       {t('Technical Setup')}
                     </a>
@@ -420,6 +446,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('API Access')}
                     >
                       {t('API Access')}
                     </a>
@@ -435,6 +462,7 @@ export default function RootShell({
                   aria-haspopup="menu"
                   aria-expanded={open === 'policies'}
                   onClick={() => toggle('policies')}
+                  aria-label={t('Policies')}
                 >
                   {t('Policies')}
                   <span aria-hidden>▾</span>
@@ -449,6 +477,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Collection Policy')}
                     >
                       {t('Collection Policy')}
                     </a>
@@ -459,6 +488,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Preservation Policy')}
                     >
                       {t('Preservation Policy')}
                     </a>
@@ -468,6 +498,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Privacy Policy')}
                     >
                       {t('Privacy Policy')}
                     </a>
@@ -477,6 +508,7 @@ export default function RootShell({
                       role="menuitem"
                       className="block px-3 py-2 hover:bg-gray-50"
                       href="#"
+                      aria-label={t('Terms of Use')}
                     >
                       {t('Terms of Use')}
                     </a>
@@ -485,7 +517,11 @@ export default function RootShell({
               </li>
 
               <li>
-                <a href="#" className="header-nav-text">
+                <a
+                  href="#"
+                  className="header-nav-text"
+                  aria-label={t('About Arche')}
+                >
                   {t('About Arche')}
                 </a>
               </li>
