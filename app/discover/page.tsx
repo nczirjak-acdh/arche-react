@@ -14,7 +14,7 @@ export default function DiscoverPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // 1-based for UI
+  // UI vs API page
   const uiPage = toNumber(sp.get('page'), 1);
   const apiPage = Math.max(0, uiPage - 1);
 
@@ -33,7 +33,6 @@ export default function DiscoverPage() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="mx-auto max-w-4xl rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
@@ -41,10 +40,8 @@ export default function DiscoverPage() {
       </div>
     );
   }
-
   if (!data) return null;
 
-  // fix for UI
   data.page = uiPage;
 
   const pagerData: PagerItem = {
@@ -55,72 +52,83 @@ export default function DiscoverPage() {
     messages: JSON.stringify(data.messages, null, 2) ?? '',
   };
 
-  // ---------- READ selected facets from URL ----------
-  // URL looks like: facets[<encoded-uri>][]=value
+  // ---- read selected facets from URL ----
   const selectedFilters: Record<string, string[]> = {};
   for (const [key, value] of sp.entries()) {
-    const m = key.match(/^facets\[(.+)\]\[\]$/); // facets[URI][]
+    const m = key.match(/^facets\[(.+)\]\[\]$/);
     if (m) {
       const facetUri = decodeURIComponent(m[1]);
-      if (!selectedFilters[facetUri]) {
-        selectedFilters[facetUri] = [];
-      }
+      if (!selectedFilters[facetUri]) selectedFilters[facetUri] = [];
       selectedFilters[facetUri].push(value);
     }
   }
 
-  console.log('FACETS RESULT: ');
-  console.log(data.facets);
+  // also read current text query
+  const currentQ = sp.get('q') ?? '';
 
-  // helper to build the param name
   const facetParamName = (facetKey: string) =>
     `facets[${encodeURIComponent(facetKey)}][]`;
 
-  // ---------- WRITE changes back to URL ----------
-  const updateFilters = (partial: Record<string, string[] | null>) => {
-    // start from current query
+  // this now supports *both* facets and plain params like q
+  const updateFilters = (partial: Record<string, string[] | null | string>) => {
     const params = new URLSearchParams(sp.toString());
 
-    console.log('PARAMS');
-    console.log(params);
-    Object.entries(partial).forEach(([facetKey, values]) => {
-      const paramName = facetParamName(facetKey);
+    Object.entries(partial).forEach(([key, value]) => {
+      const isFacetKey =
+        key.startsWith('http://') || key.startsWith('https://');
 
-      // 1) remove ALL occurrences of this facet from the query
-      // (URLSearchParams.delete should do that, but let's be explicit)
-      // first delete the exact key:
-      params.delete(paramName);
+      if (isFacetKey) {
+        // facet
+        const paramName = facetParamName(key);
+        params.delete(paramName);
 
-      // 2) if we still have values -> re-add them
-      if (values && values.length) {
-        values.forEach((v) => params.append(paramName, v));
+        if (Array.isArray(value) && value.length) {
+          value.forEach((v) => params.append(paramName, v));
+        } else {
+          params.delete('page');
+        }
       } else {
-        // facet completely removed -> also reset page
-        params.delete('page');
+        // plain param, e.g. q
+        params.delete(key);
+        if (typeof value === 'string') {
+          const v = value.trim();
+          if (v !== '') {
+            params.set(key, v);
+            params.delete('page');
+          }
+        } else if (Array.isArray(value) && value.length) {
+          // in case you ever pass an array for a normal key
+          value.forEach((v) => params.append(key, v));
+          params.delete('page');
+        } else {
+          // removed → also reset page
+          params.delete('page');
+        }
       }
     });
 
     const qs = params.toString();
     const nextUrl = qs ? `${pathname}?${qs}` : pathname;
-
     router.replace(nextUrl, { scroll: false });
   };
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 mb-[100px]">
       <div className="flex flex-col gap-6 lg:flex-row">
-        {/* LEFT: facets */}
         <aside className="w-full lg:w-[25%] space-y-4">
           <FacetsBlock
             data={data.facets}
             selected={selectedFilters}
+            searchQuery={currentQ}
             onChangeFilters={updateFilters}
           />
         </aside>
-
-        {/* RIGHT: results */}
         <div className="w-full lg:w-[75%] space-y-4">
-          <ResultBlock data={data.results} pagerData={pagerData} />
+          <ResultBlock
+            data={data.results}
+            pagerData={pagerData}
+            messages={data.messages}
+          />
         </div>
       </div>
     </section>

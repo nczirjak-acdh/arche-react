@@ -85,7 +85,7 @@ const FacetMultiSelect: React.FC<FacetMultiSelectProps> = ({
         })}
 
         <input
-          className="flex-1 min-w-[80px] border-0 focus:ring-0 text-sm"
+          className="flex-1 min-w-[80px]  focus:ring-0 text-sm !border-none"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           onFocus={() => setOpen(true)}
@@ -93,7 +93,7 @@ const FacetMultiSelect: React.FC<FacetMultiSelectProps> = ({
         />
       </div>
       {open && (
-        <div className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-gray-200 bg-white shadow">
+        <div className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md  bg-white shadow">
           {available.length === 0 ? (
             <div className="px-3 py-2 text-sm text-gray-400">
               No more options

@@ -1,3 +1,4 @@
+// components/Discover/FacetsBlock.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
@@ -19,22 +20,28 @@ type FacetItem = Record<string, Facet>;
 
 type FacetsBlockProps = {
   data?: FacetItem;
-  // comes from URL
   selected?: Record<string, string[]>;
-  // sends changes up → parent updates URL
-  onChangeFilters?: (next: Record<string, string[] | null>) => void;
+  onChangeFilters?: (next: Record<string, string[] | null | string>) => void;
+  // NEW: current q from URL
+  searchQuery?: string;
 };
 
 const FacetsBlock: React.FC<FacetsBlockProps> = ({
   data = {} as FacetItem,
   selected = {},
   onChangeFilters,
+  searchQuery = '',
 }) => {
   const lang = Cookies.get('i18nextLng') || 'en';
   const { t } = useTranslation();
 
   const [open, setOpen] = useState<Record<string, boolean>>({});
-  const [topSearch, setTopSearch] = useState('');
+  const [topSearch, setTopSearch] = useState(searchQuery);
+
+  // if URL changes (back/forward), update the input too
+  useEffect(() => {
+    setTopSearch(searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
     const initial: Record<string, boolean> = {};
@@ -52,8 +59,9 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
 
   const handleTopSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmed = topSearch.trim();
     onChangeFilters?.({
-      q: topSearch.trim() === '' ? null : topSearch.trim(),
+      q: trimmed === '' ? null : trimmed,
     });
   };
 
@@ -91,6 +99,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
           </button>
         </form>
       </div>
+
       {Object.entries(data).map(([key, fd]) => (
         <div
           key={key}
@@ -101,6 +110,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
             <button
               onClick={() => toggle(key)}
               className="ml-auto flex px-2 py-1 focus:outline-none"
+              aria-expanded={!!open[key]}
             >
               {open[key] ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-600" />
@@ -109,19 +119,10 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
               )}
             </button>
           </div>
-          {fd.type}
-          {open[key] && (
-            <div className="p-3 border-t border-[#E1EDF3] space-y-2">
-              {fd.type === 'literal' && (
-                <FacetMultiSelect
-                  facetKey={key}
-                  options={fd.values ?? []}
-                  selected={selected[key] ?? []}
-                  onChange={handleLiteralChange}
-                />
-              )}
 
-              {fd.type === 'object' && (
+          {open[key] && (
+            <div className="p-3 space-y-2">
+              {(fd.type === 'literal' || fd.type === 'object') && (
                 <FacetMultiSelect
                   facetKey={key}
                   options={fd.values ?? []}
@@ -129,24 +130,6 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
                   onChange={handleLiteralChange}
                 />
               )}
-              {/*
-              {fd.type === 'object' && (
-                <input
-                  type="text"
-                  className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
-                  placeholder={`Search ${fd.label}`}
-                  // IMPORTANT: only update when user presses Enter
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      const value = (e.target as HTMLInputElement).value.trim();
-                      onChangeFilters?.({
-                        [key]: value ? [value] : null,
-                      });
-                    }
-                  }}
-                />
-              )}
-              */}
 
               {fd.type === 'continuous' && (
                 <div className="flex gap-2">
@@ -177,40 +160,14 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
         </div>
       ))}
 
-      {/* Extra card */}
-      <div className="border border-[#E1E1E1] rounded-[8px] w-full">
-        <div className="flex items-center gap-[10px] bg-[#FAFAFA] px-[24px] py-[10px]">
-          <span className="facet-title">{t('Extended Search')}</span>
-        </div>
-        <div className="flex p-[12px] gap-[24px] border-t border-[#E1EDF3]">
-          Body
-        </div>
-      </div>
-
-      {/* Reset / Search buttons */}
+      {/* Reset */}
       <div className="w-full">
         <button
-          onClick={() => onChangeFilters?.({})}
+          onClick={() => onChangeFilters?.({ q: null })}
           className="block btn-arche-blue text-white w-full text-center"
         >
           {t('Reset filters')}
         </button>
-      </div>
-
-      <div className="w-full">
-        <button className="block btn-arche-blue text-white w-full text-center">
-          {t('Search')}
-        </button>
-      </div>
-
-      <div className="w-full">
-        <Link
-          href="#"
-          target="_blank"
-          className="block btn-arche-blue text-white w-full text-center"
-        >
-          Add to CLARIN Virtual Collection
-        </Link>
       </div>
     </div>
   );

@@ -8,10 +8,13 @@ import AccessRestrictionBlock from './AccessRestrictionBlock';
 export default function ResultBlock({
   data = [] as ResultItem[],
   pagerData = [] as PagerItem[],
+  messages = '',
 }: {
   data?: ResultItem[];
   pagerData?: PagerItem[];
+  messages?: string;
 }) {
+  console.log(data);
   return (
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
       {/* Top row */}
@@ -35,7 +38,14 @@ export default function ResultBlock({
         <hr className="my-4 border-[#E1EDF3]" />
       </div>
 
+      {messages?.trim() && (
+        <div className="flex flex-col p-2 m-4 bg-amber-400 font-[#66666] w-[95%] text-center">
+          {messages}
+        </div>
+      )}
+
       {/* Results */}
+
       <div>
         {data.map((item) => (
           <ResultRow key={item.id} item={item} />
