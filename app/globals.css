@@ -397,6 +397,14 @@ details p {
 	margin-bottom: 0px;
 }
 
+.facet-title {
+	color: black !important;
+	font-family: Lato;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
 
 
 @layer utilities {
@@ -436,8 +444,7 @@ details p {
   }
 
 
-  .btn-arche-blue {
-    
+  .btn-arche-blue {    
     font-size: 16px;
     padding: 10px 16px;
     gap: 8px; 
@@ -445,8 +452,8 @@ details p {
     background-color: #3B89AD;
     width: fit-content;
     text-decoration: none;
-
   }
+  
   a.btn-arche-blue  {
     color: white !important;
     text-decoration: none;

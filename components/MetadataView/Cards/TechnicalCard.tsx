@@ -16,9 +16,7 @@ const TechnicalCard = ({ data = {} }: { data?: Record<string, any[]> }) => {
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex justify-between items-center px-4 py-3 focus:outline-none"
         >
-          <span className="text-[16px] font-semibold text-[#1A1A1A]">
-            {t('technical_info')}
-          </span>
+          <span className="facet-title">{t('technical_info')}</span>
           {isOpen ? (
             <ChevronUpIcon className="h-5 w-5 text-gray-600" />
           ) : (

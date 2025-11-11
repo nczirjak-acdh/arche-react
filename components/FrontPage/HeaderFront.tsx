@@ -3,8 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
-import Link from 'next/link';
-import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {

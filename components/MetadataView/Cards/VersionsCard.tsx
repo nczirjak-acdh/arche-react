@@ -27,9 +27,7 @@ const VersionsCard = ({ data }: { data: any }) => {
           className="w-full flex justify-between items-center px-4 py-3 focus:outline-none"
           aria-expanded={isOpen}
         >
-          <span className="text-[16px] font-semibold text-[#1A1A1A]">
-            {t('Versions')}
-          </span>
+          <span className="facet-title">{t('Versions')}</span>
           {isOpen ? (
             <ChevronUpIcon className="h-5 w-5 text-gray-600" />
           ) : (
