@@ -24,6 +24,7 @@ type FacetsBlockProps = {
   onChangeFilters?: (next: Record<string, string[] | null | string>) => void;
   // NEW: current q from URL
   searchQuery?: string;
+  onReset?: () => void;
 };
 
 const FacetsBlock: React.FC<FacetsBlockProps> = ({
@@ -31,6 +32,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
   selected = {},
   onChangeFilters,
   searchQuery = '',
+  onReset,
 }) => {
   const lang = Cookies.get('i18nextLng') || 'en';
   const { t } = useTranslation();
@@ -163,7 +165,13 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
       {/* Reset */}
       <div className="w-full">
         <button
-          onClick={() => onChangeFilters?.({ q: null })}
+          onClick={() => {
+            if (onReset) {
+              onReset(); // hard reset → URL becomes your base one
+            } else {
+              onChangeFilters?.({ q: null });
+            }
+          }}
           className="block btn-arche-blue text-white w-full text-center"
         >
           {t('Reset filters')}

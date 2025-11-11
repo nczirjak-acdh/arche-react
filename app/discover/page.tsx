@@ -25,7 +25,8 @@ export default function DiscoverPage() {
   const url = `${base}/api/smartsearch/?${apiParams.toString()}`;
 
   const { data, error, loading } = useApi<any>(url);
-
+  console.log('LOADING TEXT ..');
+  console.log(loading);
   if (loading) {
     return (
       <div className="w-full pt-8 pb-8 mb-8 mt-8 text-center">
@@ -52,11 +53,25 @@ export default function DiscoverPage() {
     messages: JSON.stringify(data.messages, null, 2) ?? '',
   };
 
+  const handleReset = () => {
+    const resetParams = new URLSearchParams();
+    resetParams.set('q', '');
+    resetParams.set('preferredLang', 'en');
+    resetParams.set('includeBinaries', '0');
+    resetParams.set('linkNamedEntities', '1');
+    resetParams.set('page', '1');
+    resetParams.set('pageSize', '10');
+    resetParams.set('noCache', '0');
+
+    router.replace(`${pathname}?${resetParams.toString()}`, { scroll: false });
+  };
+
   // ---- read selected facets from URL ----
   const selectedFilters: Record<string, string[]> = {};
   for (const [key, value] of sp.entries()) {
     const m = key.match(/^facets\[(.+)\]\[\]$/);
     if (m) {
+      // IMPORTANT: we decoded here earlier
       const facetUri = decodeURIComponent(m[1]);
       if (!selectedFilters[facetUri]) selectedFilters[facetUri] = [];
       selectedFilters[facetUri].push(value);
@@ -66,8 +81,7 @@ export default function DiscoverPage() {
   // also read current text query
   const currentQ = sp.get('q') ?? '';
 
-  const facetParamName = (facetKey: string) =>
-    `facets[${encodeURIComponent(facetKey)}][]`;
+  const facetParamName = (facetKey: string) => `facets[${facetKey}][]`;
 
   // this now supports *both* facets and plain params like q
   const updateFilters = (partial: Record<string, string[] | null | string>) => {
@@ -121,6 +135,7 @@ export default function DiscoverPage() {
             selected={selectedFilters}
             searchQuery={currentQ}
             onChangeFilters={updateFilters}
+            onReset={handleReset}
           />
         </aside>
         <div className="w-full lg:w-[75%] space-y-4">

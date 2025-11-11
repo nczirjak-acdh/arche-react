@@ -39,9 +39,10 @@ export default function ResultBlock({
       </div>
 
       {messages?.trim() && (
-        <div className="flex flex-col p-2 m-4 bg-amber-400 font-[#66666] w-[95%] text-center">
-          {messages}
-        </div>
+        <div
+          className="flex flex-col p-2 m-4 bg-amber-400 font-[#66666] w-[95%] text-center"
+          dangerouslySetInnerHTML={{ __html: messages }}
+        ></div>
       )}
 
       {/* Results */}
