@@ -25,8 +25,7 @@ export default function DiscoverPage() {
   const url = `${base}/api/smartsearch/?${apiParams.toString()}`;
 
   const { data, error, loading } = useApi<any>(url);
-  console.log('LOADING TEXT ..');
-  console.log(loading);
+
   if (loading) {
     return (
       <div className="w-full pt-8 pb-8 mb-8 mt-8 text-center">
@@ -129,10 +128,24 @@ export default function DiscoverPage() {
     router.replace(nextUrl, { scroll: false });
   };
 
-  const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-  const SCHEMA_PREFIX = 'https://vocabs.acdh.oeaw.ac.at/schema#';
-  console.log('FACETS:');
-  console.log(data.facets);
+  if (
+    data.facets &&
+    data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] &&
+    Array.isArray(
+      data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values
+    )
+  ) {
+    data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values =
+      data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values.map(
+        (v) => ({
+          ...v,
+          label: v.label.replace(
+            'https://vocabs.acdh.oeaw.ac.at/schema#',
+            'acdh:'
+          ),
+        })
+      );
+  }
 
   if (data.facets)
     return (

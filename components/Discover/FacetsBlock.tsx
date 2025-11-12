@@ -79,8 +79,6 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
     onChangeFilters?.({ linkNamedEntities: e.target.checked ? '1' : '0' });
   };
 
-  console.log('FacetsBlock:');
-  console.log(data);
   return (
     <div className="space-y-4">
       {/* Top search bar */}

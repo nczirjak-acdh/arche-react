@@ -14,7 +14,6 @@ export default function ResultBlock({
   pagerData?: PagerItem[];
   messages?: string;
 }) {
-  console.log(data);
   return (
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
       {/* Top row */}
