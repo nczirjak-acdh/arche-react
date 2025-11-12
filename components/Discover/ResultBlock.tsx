@@ -121,9 +121,7 @@ function ResultRow({ item }: { item: ResultItem }) {
       </div>
 
       <div className="flex items-center gap-2 pl-5 pt-2 pb-2">
-        <span className="inline-block px-2 py-1 rounded-[12px] bg-[#5B595B] text-white h-fit">
-          {classBadge}
-        </span>
+        <span className="w-max flex btn-detail-type-gray">{classBadge}</span>
         <span>
           <AccessRestrictionBlock
             value={accessRestrictionSummary}

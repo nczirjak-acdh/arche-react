@@ -46,10 +46,10 @@ export default function DiscoverPage() {
   data.page = uiPage;
 
   const pagerData: PagerItem = {
-    totalCount: data.totalCount ?? 0,
-    maxCount: data.maxCount ?? 0,
-    page: data.page ?? 0,
-    pageSize: data.pageSize ?? 0,
+    totalCount: Math.max(0, data.totalCount ?? 0),
+    maxCount: Math.max(0, data.maxCount ?? 0),
+    page: Math.max(0, data.page ?? 0),
+    pageSize: Math.max(0, data.pageSize ?? 0),
     messages: JSON.stringify(data.messages, null, 2) ?? '',
   };
 
@@ -80,6 +80,9 @@ export default function DiscoverPage() {
 
   // also read current text query
   const currentQ = sp.get('q') ?? '';
+  // read boolean flags (default to "0")
+  const includeBinaries = sp.get('includeBinaries') ?? '0';
+  const linkNamedEntities = sp.get('linkNamedEntities') ?? '0';
 
   const facetParamName = (facetKey: string) => `facets[${facetKey}][]`;
 
@@ -126,26 +129,34 @@ export default function DiscoverPage() {
     router.replace(nextUrl, { scroll: false });
   };
 
-  return (
-    <section className="mx-auto max-w-7xl px-4 py-8 mb-[100px]">
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <aside className="w-full lg:w-[25%] space-y-4">
-          <FacetsBlock
-            data={data.facets}
-            selected={selectedFilters}
-            searchQuery={currentQ}
-            onChangeFilters={updateFilters}
-            onReset={handleReset}
-          />
-        </aside>
-        <div className="w-full lg:w-[75%] space-y-4">
-          <ResultBlock
-            data={data.results}
-            pagerData={pagerData}
-            messages={data.messages}
-          />
+  const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+  const SCHEMA_PREFIX = 'https://vocabs.acdh.oeaw.ac.at/schema#';
+  console.log('FACETS:');
+  console.log(data.facets);
+
+  if (data.facets)
+    return (
+      <section className="mx-auto max-w-7xl px-4 py-8 mb-[100px]">
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <aside className="w-full lg:w-[25%] space-y-4">
+            <FacetsBlock
+              data={data.facets}
+              selected={selectedFilters}
+              searchQuery={currentQ}
+              onChangeFilters={updateFilters}
+              includeBinaries={includeBinaries}
+              linkNamedEntities={linkNamedEntities}
+              onReset={handleReset}
+            />
+          </aside>
+          <div className="w-full lg:w-[75%] space-y-4">
+            <ResultBlock
+              data={data.results}
+              pagerData={pagerData}
+              messages={data.messages}
+            />
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
 }

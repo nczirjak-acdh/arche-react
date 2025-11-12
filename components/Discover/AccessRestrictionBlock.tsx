@@ -79,7 +79,7 @@ export default function AccessRestrictionBlock({
   return (
     <div
       className={[
-        'inline-flex items-center rounded-[12px] px-2 py-1 text-sm font-medium shadow-sm',
+        'inline-flex items-center rounded-[12px] py-1 pl-2 pr-2 text-sm text-[12px] shadow-sm',
         dynamicClass,
         className,
       ]

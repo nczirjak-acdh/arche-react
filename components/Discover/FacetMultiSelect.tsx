@@ -23,6 +23,14 @@ const FacetMultiSelect: React.FC<FacetMultiSelectProps> = ({
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState('');
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  console.log('FACETKEY:');
+  console.log(facetKey);
+
+  console.log('options:');
+  console.log(options);
+
+  console.log('selected:');
+  console.log(selected);
 
   // close on outside click
   useEffect(() => {
@@ -39,6 +47,7 @@ const FacetMultiSelect: React.FC<FacetMultiSelectProps> = ({
   }, []);
 
   // available = options not yet selected
+  console.log(options);
   const available = options.filter(
     (o) =>
       !selected.includes(o.value) &&
