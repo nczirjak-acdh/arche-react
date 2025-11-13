@@ -77,6 +77,17 @@ export default function DiscoverPage() {
     }
   }
 
+  // ---- read continuous/range facets: facets[<prop>][min|max] ----
+  const selectedRanges: Record<string, { min?: string; max?: string }> = {};
+  for (const [key, value] of sp.entries()) {
+    const m = key.match(/^facets\[(.+)\]\[(min|max)\]$/);
+    if (m) {
+      const facetKey = decodeURIComponent(m[1]);
+      const bound = m[2] as 'min' | 'max';
+      selectedRanges[facetKey] ??= {};
+      selectedRanges[facetKey][bound] = value;
+    }
+  }
   // also read current text query
   const currentQ = sp.get('q') ?? '';
   // read boolean flags (default to "0")
