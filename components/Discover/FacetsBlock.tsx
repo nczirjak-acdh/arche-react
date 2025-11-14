@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
 import FacetMultiSelect from './FacetMultiSelect';
+import { MapView } from './MapView';
 
 type Facet = {
   type: 'literal' | 'object' | 'continuous' | string;
@@ -33,7 +34,8 @@ type FacetsBlockProps = {
   includeBinaries?: string;
   linkNamedEntities?: string;
   onReset?: () => void;
-  onApplySearch?: () => void; // NEW BUTTON
+  onApplySearch?: () => void; // Search button
+  onToggleMap?: () => void;
 };
 
 const FacetsBlock: React.FC<FacetsBlockProps> = ({
@@ -46,14 +48,17 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
   linkNamedEntities = '0',
   onReset,
   onApplySearch,
+  onToggleMap,
 }) => {
+  console.log('FACETSBLOCK INSIDE:');
+  console.log(data);
   const { t } = useTranslation();
   const lang = Cookies.get('i18nextLng') || 'en';
 
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [topSearch, setTopSearch] = useState(searchQuery);
 
-  // Keep input synced with pending searchQuery
+  // Keep input synced with searchQuery from parent
   useEffect(() => setTopSearch(searchQuery), [searchQuery]);
 
   // Initialize facets open state (indexed by property URI)
@@ -76,7 +81,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
     });
   };
 
-  // TEXT QUERY (top bar) — NO AUTO SUBMIT
+  // TEXT QUERY (top bar) — only updates pending, no search yet
   const handleTopSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTopSearch(e.target.value);
     onChangeFilters?.({ q: e.target.value });
@@ -125,11 +130,22 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
 
       {/* FACETS */}
       {Object.entries(data).map(([key, fd]) => {
+        console.log('INSIDE');
+        console.log(key);
+        console.log(fd);
         const facetProp = fd?.property || key;
         const safeId = facetProp.replace(/[^a-z0-9_-]/gi, '_');
-
+        console.log('FACET PROP: ');
+        console.log(facetProp);
+        console.log(Array.isArray(fd.values));
         // HIDE facets with empty values
-        if (!Array.isArray(fd.values) || fd.values.length === 0) return null;
+
+        if (
+          (Array.isArray(fd.values) && fd.values.length === 0) || // empty array
+          (!Array.isArray(fd.values) && String(fd.values).trim() === '') // empty string/null/undefined
+        ) {
+          return null;
+        }
 
         return (
           <div
@@ -154,6 +170,18 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
 
             {open[facetProp] && (
               <div id={`facet-body-${safeId}`} className="p-3 space-y-2">
+                {fd.type === 'map' && (
+                  <div className="">
+                    <button
+                      type="button"
+                      onClick={onToggleMap}
+                      className="block btn-arche-blue text-white w-full text-center py-2 rounded-md"
+                    >
+                      {t('Open Map')}
+                    </button>
+                  </div>
+                )}
+
                 {/* CONTINUOUS (DATE RANGE) */}
                 {fd.type === 'continuous' && (
                   <div className="flex gap-2">
@@ -202,7 +230,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
               checked={includeBinaries === '1'}
               onChange={handleIncludeBinaries}
             />
-            <span>Search in file content</span>
+            <span>{t('Search in file content')}</span>
           </label>
 
           <label className="flex items-center gap-2 text-sm">
@@ -212,7 +240,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
               checked={linkNamedEntities === '1'}
               onChange={handleLinkNamedEntities}
             />
-            <span>Follow named entities</span>
+            <span>{t('Follow named entities')}</span>
           </label>
         </div>
       </div>

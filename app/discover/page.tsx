@@ -2,17 +2,30 @@
 'use client';
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect, useMemo } from 'react';
 import { useApi } from '@/lib/useApi';
 import Loader from '@/components/Loader';
 import FacetsBlock from '@/components/Discover/FacetsBlock';
 import ResultBlock from '@/components/Discover/ResultBlock';
 import { toNumber } from '@/lib/helpers/metadataHelper';
 import type { PagerItem } from '@/lib/types/types';
+import { MapView } from '@/components/Discover/MapView';
+
+type PendingFilters = {
+  facets: Record<string, string[]>;
+  ranges: Record<string, { min?: string; max?: string }>;
+  q: string;
+  includeBinaries: string;
+  linkNamedEntities: string;
+};
 
 export default function DiscoverPage() {
   const sp = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  // --- PENDING STATE (local, no URL updates until Search is pressed) ---
+  const [pending, setPending] = useState<PendingFilters | null>(null);
 
   // UI vs API page
   const uiPage = toNumber(sp.get('page'), 1);
@@ -25,6 +38,247 @@ export default function DiscoverPage() {
   const url = `${base}/api/smartsearch/?${apiParams.toString()}`;
 
   const { data, error, loading } = useApi<any>(url);
+
+  // --- map visibility state ---
+  const [showMap, setShowMap] = useState(false);
+
+  // ---- read selected facets (multi) from URL: facets[<prop>][] ----
+  const selectedFiltersFromUrl: Record<string, string[]> = {};
+  for (const [key, value] of sp.entries()) {
+    const m = key.match(/^facets\[(.+)\]\[\]$/);
+    if (m) {
+      const facetUri = decodeURIComponent(m[1]);
+      if (!selectedFiltersFromUrl[facetUri])
+        selectedFiltersFromUrl[facetUri] = [];
+      selectedFiltersFromUrl[facetUri].push(value);
+    }
+  }
+
+  // ---- read continuous/range facets: facets[<prop>][min|max] ----
+  const selectedRangesFromUrl: Record<string, { min?: string; max?: string }> =
+    {};
+  for (const [key, value] of sp.entries()) {
+    const m = key.match(/^facets\[(.+)\]\[(min|max)\]$/);
+    if (m) {
+      const facetKey = decodeURIComponent(m[1]);
+      const bound = m[2] as 'min' | 'max';
+      selectedRangesFromUrl[facetKey] ??= {};
+      selectedRangesFromUrl[facetKey][bound] = value;
+    }
+  }
+
+  // text query + flags from URL
+  const currentQFromUrl = sp.get('q') ?? '';
+  const includeBinariesFromUrl = sp.get('includeBinaries') ?? '0';
+  const linkNamedEntitiesFromUrl = sp.get('linkNamedEntities') ?? '0';
+
+  // ---- keep local pending state in sync with URL ----
+  useEffect(() => {
+    setPending({
+      facets: selectedFiltersFromUrl,
+      ranges: selectedRangesFromUrl,
+      q: currentQFromUrl,
+      includeBinaries: includeBinariesFromUrl,
+      linkNamedEntities: linkNamedEntitiesFromUrl,
+    });
+  }, [
+    currentQFromUrl,
+    includeBinariesFromUrl,
+    linkNamedEntitiesFromUrl,
+    JSON.stringify(selectedFiltersFromUrl),
+    JSON.stringify(selectedRangesFromUrl),
+  ]);
+
+  // ---- RESET: reset URL to base state (pending will follow via effect) ----
+  const handleReset = () => {
+    const resetParams = new URLSearchParams();
+    resetParams.set('q', '');
+    resetParams.set('preferredLang', 'en');
+    resetParams.set('includeBinaries', '0');
+    resetParams.set('linkNamedEntities', '1');
+    resetParams.set('page', '1');
+    resetParams.set('pageSize', '10');
+    resetParams.set('noCache', '0');
+
+    router.replace(`${pathname}?${resetParams.toString()}`, { scroll: false });
+  };
+
+  const facetParamName = (facetKey: string) => `facets[${facetKey}][]`;
+
+  // ---- UPDATE PENDING ONLY (used by FacetsBlock on change, NO URL UPDATE) ----
+  const updateFilters = (
+    partial: Record<
+      string,
+      string[] | null | string | { min?: string | null; max?: string | null }
+    >
+  ) => {
+    setPending((prev) => {
+      const basePending: PendingFilters = prev ?? {
+        facets: selectedFiltersFromUrl,
+        ranges: selectedRangesFromUrl,
+        q: currentQFromUrl,
+        includeBinaries: includeBinariesFromUrl,
+        linkNamedEntities: linkNamedEntitiesFromUrl,
+      };
+
+      const next: PendingFilters = {
+        facets: { ...basePending.facets },
+        ranges: { ...basePending.ranges },
+        q: basePending.q,
+        includeBinaries: basePending.includeBinaries,
+        linkNamedEntities: basePending.linkNamedEntities,
+      };
+
+      Object.entries(partial).forEach(([key, value]) => {
+        // range object from continuous facet
+        const isRangeObj =
+          typeof value === 'object' &&
+          value !== null &&
+          ('min' in value || 'max' in value);
+
+        if (isRangeObj) {
+          const { min, max } = value as {
+            min?: string | null;
+            max?: string | null;
+          };
+          next.ranges[key] = {
+            ...(next.ranges[key] ?? {}),
+            ...(min !== undefined ? { min: min ?? '' } : {}),
+            ...(max !== undefined ? { max: max ?? '' } : {}),
+          };
+          return;
+        }
+
+        // facet keys (URIs or dateContent)
+        const isFacetKey =
+          key.startsWith('http://') ||
+          key.startsWith('https://') ||
+          key === 'dateContent';
+        console.log(FacetKey);
+        console.log(value);
+        if (isFacetKey) {
+          if (Array.isArray(value) && value.length) {
+            next.facets[key] = value;
+          } else {
+            delete next.facets[key];
+          }
+          return;
+        }
+
+        // normal params
+        if (key === 'q') {
+          next.q =
+            typeof value === 'string'
+              ? value
+              : Array.isArray(value)
+                ? (value[0] ?? '')
+                : '';
+          return;
+        }
+
+        if (key === 'includeBinaries') {
+          next.includeBinaries =
+            typeof value === 'string'
+              ? value
+              : Array.isArray(value)
+                ? (value[0] ?? '0')
+                : '0';
+          return;
+        }
+
+        if (key === 'linkNamedEntities') {
+          next.linkNamedEntities =
+            typeof value === 'string'
+              ? value
+              : Array.isArray(value)
+                ? (value[0] ?? '0')
+                : '0';
+          return;
+        }
+      });
+
+      return next;
+    });
+  };
+
+  // ---- APPLY PENDING TO URL (called only when Search button is pressed) ----
+  const handleApplySearch = () => {
+    if (!pending) return;
+
+    const params = new URLSearchParams(sp.toString());
+
+    // remove existing facets/ranges
+    [...params.keys()].forEach((k) => {
+      if (k.startsWith('facets[')) params.delete(k);
+    });
+
+    // plain params
+    params.set('q', pending.q ?? '');
+    params.set('includeBinaries', pending.includeBinaries ?? '0');
+    params.set('linkNamedEntities', pending.linkNamedEntities ?? '0');
+    params.set('page', '1');
+
+    // ranges: facets[dateContent][min/max]
+    Object.entries(pending.ranges).forEach(([facetKey, { min, max }]) => {
+      const minKey = `facets[${facetKey}][min]`;
+      const maxKey = `facets[${facetKey}][max]`;
+
+      if (min && min.trim() !== '') params.set(minKey, min.trim());
+      if (max && max.trim() !== '') params.set(maxKey, max.trim());
+    });
+
+    // multi facets: facets[<prop>][]
+    Object.entries(pending.facets).forEach(([facetKey, values]) => {
+      if (!values || values.length === 0) return;
+      const paramName = facetParamName(facetKey);
+      values.forEach((v) => params.append(paramName, v));
+    });
+
+    const qs = params.toString();
+    const nextUrl = qs ? `${pathname}?${qs}` : pathname;
+    router.replace(nextUrl, { scroll: false });
+  };
+
+  // ---- replace rdf:type labels in data.facets ----
+  if (
+    data?.facets &&
+    data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] &&
+    Array.isArray(
+      data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values
+    )
+  ) {
+    data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values =
+      data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values.map(
+        (v: any) => ({
+          ...v,
+          label:
+            typeof v.label === 'string'
+              ? v.label.replace(
+                  'https://vocabs.acdh.oeaw.ac.at/schema#',
+                  'acdh:'
+                )
+              : v.label,
+        })
+      );
+  }
+
+  // --- parse GeoJSON for the map once per `data` change ---
+  const mapGeoJson = useMemo(() => {
+    console.log('GEO JSONBA');
+    console.log(data);
+    const facet = data?.facets?.map;
+    if (!facet) return null;
+
+    // in your JSON `values` is a stringified GeoJSON
+    if (typeof facet.values === 'string') {
+      try {
+        return JSON.parse(facet.values); // GeoJSON object
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }, [data]);
 
   if (loading) {
     return (
@@ -52,111 +306,17 @@ export default function DiscoverPage() {
     messages: JSON.stringify(data.messages, null, 2) ?? '',
   };
 
-  const handleReset = () => {
-    const resetParams = new URLSearchParams();
-    resetParams.set('q', '');
-    resetParams.set('preferredLang', 'en');
-    resetParams.set('includeBinaries', '0');
-    resetParams.set('linkNamedEntities', '1');
-    resetParams.set('page', '1');
-    resetParams.set('pageSize', '10');
-    resetParams.set('noCache', '0');
+  // what to pass to FacetsBlock: pending if available, otherwise URL-derived
+  const selectedForUi = pending?.facets ?? selectedFiltersFromUrl;
+  const rangesForUi = pending?.ranges ?? selectedRangesFromUrl;
+  const qForUi = pending?.q ?? currentQFromUrl;
+  const includeBinariesForUi =
+    pending?.includeBinaries ?? includeBinariesFromUrl;
+  const linkNamedEntitiesForUi =
+    pending?.linkNamedEntities ?? linkNamedEntitiesFromUrl;
 
-    router.replace(`${pathname}?${resetParams.toString()}`, { scroll: false });
-  };
-
-  // ---- read selected facets from URL ----
-  const selectedFilters: Record<string, string[]> = {};
-  for (const [key, value] of sp.entries()) {
-    const m = key.match(/^facets\[(.+)\]\[\]$/);
-    if (m) {
-      // IMPORTANT: we decoded here earlier
-      const facetUri = decodeURIComponent(m[1]);
-      if (!selectedFilters[facetUri]) selectedFilters[facetUri] = [];
-      selectedFilters[facetUri].push(value);
-    }
-  }
-
-  // ---- read continuous/range facets: facets[<prop>][min|max] ----
-  const selectedRanges: Record<string, { min?: string; max?: string }> = {};
-  for (const [key, value] of sp.entries()) {
-    const m = key.match(/^facets\[(.+)\]\[(min|max)\]$/);
-    if (m) {
-      const facetKey = decodeURIComponent(m[1]);
-      const bound = m[2] as 'min' | 'max';
-      selectedRanges[facetKey] ??= {};
-      selectedRanges[facetKey][bound] = value;
-    }
-  }
-  // also read current text query
-  const currentQ = sp.get('q') ?? '';
-  // read boolean flags (default to "0")
-  const includeBinaries = sp.get('includeBinaries') ?? '0';
-  const linkNamedEntities = sp.get('linkNamedEntities') ?? '0';
-
-  const facetParamName = (facetKey: string) => `facets[${facetKey}][]`;
-
-  // this now supports *both* facets and plain params like q
-  const updateFilters = (partial: Record<string, string[] | null | string>) => {
-    const params = new URLSearchParams(sp.toString());
-
-    Object.entries(partial).forEach(([key, value]) => {
-      const isFacetKey =
-        key.startsWith('http://') || key.startsWith('https://');
-
-      if (isFacetKey) {
-        // facet
-        const paramName = facetParamName(key);
-        params.delete(paramName);
-
-        if (Array.isArray(value) && value.length) {
-          value.forEach((v) => params.append(paramName, v));
-        } else {
-          params.delete('page');
-        }
-      } else {
-        // plain param, e.g. q
-        params.delete(key);
-        if (typeof value === 'string') {
-          const v = value.trim();
-          if (v !== '') {
-            params.set(key, v);
-            params.delete('page');
-          }
-        } else if (Array.isArray(value) && value.length) {
-          // in case you ever pass an array for a normal key
-          value.forEach((v) => params.append(key, v));
-          params.delete('page');
-        } else {
-          // removed → also reset page
-          params.delete('page');
-        }
-      }
-    });
-
-    const qs = params.toString();
-    const nextUrl = qs ? `${pathname}?${qs}` : pathname;
-    router.replace(nextUrl, { scroll: false });
-  };
-
-  if (
-    data.facets &&
-    data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] &&
-    Array.isArray(
-      data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values
-    )
-  ) {
-    data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values =
-      data.facets['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'].values.map(
-        (v) => ({
-          ...v,
-          label: v.label.replace(
-            'https://vocabs.acdh.oeaw.ac.at/schema#',
-            'acdh:'
-          ),
-        })
-      );
-  }
+  console.log('FACETS::::');
+  console.log(data.facets);
 
   if (data.facets)
     return (
@@ -165,12 +325,15 @@ export default function DiscoverPage() {
           <aside className="w-full lg:w-[25%] space-y-4">
             <FacetsBlock
               data={data.facets}
-              selected={selectedFilters}
-              searchQuery={currentQ}
+              selected={selectedForUi}
+              selectedRanges={rangesForUi}
+              searchQuery={qForUi}
               onChangeFilters={updateFilters}
-              includeBinaries={includeBinaries}
-              linkNamedEntities={linkNamedEntities}
+              includeBinaries={includeBinariesForUi}
+              linkNamedEntities={linkNamedEntitiesForUi}
               onReset={handleReset}
+              onApplySearch={handleApplySearch}
+              onToggleMap={() => setShowMap((prev) => !prev)}
             />
           </aside>
           <div className="w-full lg:w-[75%] space-y-4">
@@ -178,9 +341,14 @@ export default function DiscoverPage() {
               data={data.results}
               pagerData={pagerData}
               messages={data.messages}
+              showMap={showMap}
+              mapGeoJson={mapGeoJson}
+              onCloseMap={() => setShowMap(false)}
             />
           </div>
         </div>
       </section>
     );
+
+  return null;
 }

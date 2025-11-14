@@ -4,15 +4,22 @@ import ResultImage from './ResultImage';
 import type { PagerItem, ResultItem } from '@/lib/types/types';
 import Pager from './Pager';
 import AccessRestrictionBlock from './AccessRestrictionBlock';
+import MapView from './MapView';
 
 export default function ResultBlock({
   data = [] as ResultItem[],
   pagerData = [] as PagerItem[],
   messages = '',
+  showMap = false,
+  mapGeoJson = null,
+  onCloseMap,
 }: {
   data?: ResultItem[];
   pagerData?: PagerItem[];
   messages?: string;
+  showMap?: boolean;
+  mapGeoJson?: any | null;
+  onCloseMap?: () => void;
 }) {
   return (
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
@@ -35,6 +42,29 @@ export default function ResultBlock({
 
       <div className="flex flex-col w-full p-2">
         <hr className="my-4 border-[#E1EDF3]" />
+      </div>
+
+      <div className="space-y-4">
+        {/* optional map panel */}
+        {showMap && mapGeoJson && (
+          <div className="border border-gray-200 rounded-md p-3 bg-white">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="font-semibold text-sm">Spatial coverage</h2>
+              {onCloseMap && (
+                <button
+                  type="button"
+                  onClick={onCloseMap}
+                  className="text-xs text-blue-600 hover:underline"
+                >
+                  Close map
+                </button>
+              )}
+            </div>
+            <MapView geoJson={mapGeoJson} />
+          </div>
+        )}
+
+        {/* your existing result list, pager, etc. */}
       </div>
 
       {messages?.trim() && (
