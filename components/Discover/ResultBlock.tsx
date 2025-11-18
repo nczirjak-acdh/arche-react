@@ -12,6 +12,8 @@ export default function ResultBlock({
   messages = '',
   showMap = false,
   mapGeoJson = null,
+  mapPolygon,
+  onPolygonChange,
   onCloseMap,
 }: {
   data?: ResultItem[];
@@ -19,6 +21,8 @@ export default function ResultBlock({
   messages?: string;
   showMap?: boolean;
   mapGeoJson?: any | null;
+  mapPolygon?: string | null;
+  onPolygonChange?: (polygon: string | null) => void;
   onCloseMap?: () => void;
 }) {
   return (
@@ -60,7 +64,11 @@ export default function ResultBlock({
                 </button>
               )}
             </div>
-            <MapView geoJson={mapGeoJson} />
+            <MapView
+              geoJson={mapGeoJson}
+              currentPolygon={mapPolygon}
+              onPolygonChange={onPolygonChange}
+            />
           </div>
         )}
 

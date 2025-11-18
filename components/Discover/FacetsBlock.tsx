@@ -9,7 +9,7 @@ import FacetMultiSelect from './FacetMultiSelect';
 import { MapView } from './MapView';
 
 type Facet = {
-  type: 'literal' | 'object' | 'continuous' | string;
+  type: 'literal' | 'object' | 'continuous' | 'map' | string;
   label: string;
   property: string;
   tooltip?: Record<string, string>;
@@ -35,8 +35,26 @@ type FacetsBlockProps = {
   linkNamedEntities?: string;
   onReset?: () => void;
   onApplySearch?: () => void; // Search button
+  mapPolygon?: string | null;
   onToggleMap?: () => void;
 };
+
+function formatPolygonLabel(polygon?: string | null): string {
+  if (!polygon) return '';
+  const m = polygon.match(/POLYGON\(\((.+)\)\)/i);
+  if (!m) return polygon;
+
+  const parts = m[1].split(',');
+  if (parts.length < 3) return polygon;
+
+  const [p1, p3] = [parts[0], parts[2]];
+  const [lon1, lat1] = p1.trim().split(/\s+/).map(Number);
+  const [lon2, lat2] = p3.trim().split(/\s+/).map(Number);
+
+  const f = (n: number) => n.toFixed(1);
+
+  return `${f(lon1)}, ${f(lat1)} - ${f(lon2)}, ${f(lat2)}`;
+}
 
 const FacetsBlock: React.FC<FacetsBlockProps> = ({
   data = {} as FacetItem,
@@ -48,6 +66,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
   linkNamedEntities = '0',
   onReset,
   onApplySearch,
+  mapPolygon,
   onToggleMap,
 }) => {
   console.log('FACETSBLOCK INSIDE:');
@@ -172,6 +191,18 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
               <div id={`facet-body-${safeId}`} className="p-3 space-y-2">
                 {fd.type === 'map' && (
                   <div className="">
+                    {mapPolygon && (
+                      <div className="inline-flex items-center gap-2 rounded bg-gray-200 px-3 py-1 text-sm">
+                        <span>{formatPolygonLabel(mapPolygon)}</span>
+                        <button
+                          type="button"
+                          onClick={() => onChangeFilters?.({ map: '' })}
+                          className="text-gray-600"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
                     <button
                       type="button"
                       onClick={onToggleMap}

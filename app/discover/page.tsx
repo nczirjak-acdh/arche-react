@@ -17,6 +17,7 @@ type PendingFilters = {
   q: string;
   includeBinaries: string;
   linkNamedEntities: string;
+  mapPolygon?: string | null;
 };
 
 export default function DiscoverPage() {
@@ -71,6 +72,7 @@ export default function DiscoverPage() {
   const currentQFromUrl = sp.get('q') ?? '';
   const includeBinariesFromUrl = sp.get('includeBinaries') ?? '0';
   const linkNamedEntitiesFromUrl = sp.get('linkNamedEntities') ?? '0';
+  const mapPolygonFromUrl = sp.get('facets[map]') ?? null;
 
   // ---- keep local pending state in sync with URL ----
   useEffect(() => {
@@ -80,6 +82,7 @@ export default function DiscoverPage() {
       q: currentQFromUrl,
       includeBinaries: includeBinariesFromUrl,
       linkNamedEntities: linkNamedEntitiesFromUrl,
+      mapPolygon: mapPolygonFromUrl,
     });
   }, [
     currentQFromUrl,
@@ -119,6 +122,7 @@ export default function DiscoverPage() {
         q: currentQFromUrl,
         includeBinaries: includeBinariesFromUrl,
         linkNamedEntities: linkNamedEntitiesFromUrl,
+        mapPolygon: mapPolygonFromUrl,
       };
 
       const next: PendingFilters = {
@@ -127,6 +131,7 @@ export default function DiscoverPage() {
         q: basePending.q,
         includeBinaries: basePending.includeBinaries,
         linkNamedEntities: basePending.linkNamedEntities,
+        mapPolygon: basePending.mapPolygon,
       };
 
       Object.entries(partial).forEach(([key, value]) => {
@@ -149,13 +154,22 @@ export default function DiscoverPage() {
           return;
         }
 
+        if (key === 'map') {
+          next.mapPolygon =
+            typeof value === 'string'
+              ? value
+              : Array.isArray(value)
+                ? (value[0] ?? null)
+                : null;
+          return;
+        }
+
         // facet keys (URIs or dateContent)
         const isFacetKey =
           key.startsWith('http://') ||
           key.startsWith('https://') ||
           key === 'dateContent';
-        console.log(FacetKey);
-        console.log(value);
+
         if (isFacetKey) {
           if (Array.isArray(value) && value.length) {
             next.facets[key] = value;
@@ -234,6 +248,11 @@ export default function DiscoverPage() {
       values.forEach((v) => params.append(paramName, v));
     });
 
+    // MAP facet: facets[map]=POLYGON(...)
+    if (pending.mapPolygon && pending.mapPolygon.trim() !== '') {
+      params.set('facets[map]', pending.mapPolygon.trim());
+    }
+
     const qs = params.toString();
     const nextUrl = qs ? `${pathname}?${qs}` : pathname;
     router.replace(nextUrl, { scroll: false });
@@ -264,12 +283,9 @@ export default function DiscoverPage() {
 
   // --- parse GeoJSON for the map once per `data` change ---
   const mapGeoJson = useMemo(() => {
-    console.log('GEO JSONBA');
-    console.log(data);
     const facet = data?.facets?.map;
     if (!facet) return null;
 
-    // in your JSON `values` is a stringified GeoJSON
     if (typeof facet.values === 'string') {
       try {
         return JSON.parse(facet.values); // GeoJSON object
@@ -314,11 +330,17 @@ export default function DiscoverPage() {
     pending?.includeBinaries ?? includeBinariesFromUrl;
   const linkNamedEntitiesForUi =
     pending?.linkNamedEntities ?? linkNamedEntitiesFromUrl;
+  const mapPolygonForUi = pending?.mapPolygon ?? mapPolygonFromUrl;
 
-  console.log('FACETS::::');
-  console.log(data.facets);
+  if (data.facets) {
+    /* let mapGeoJson = '';
+    if (data.facets.map) {
+      console.log('MAP::::');
+      console.log(data.facets.map.values);
 
-  if (data.facets)
+      mapGeoJson = JSON.parse(data.facets.map.values); // GeoJSON object
+    }
+*/
     return (
       <section className="mx-auto max-w-7xl px-4 py-8 mb-[100px]">
         <div className="flex flex-col gap-6 lg:flex-row">
@@ -333,6 +355,7 @@ export default function DiscoverPage() {
               linkNamedEntities={linkNamedEntitiesForUi}
               onReset={handleReset}
               onApplySearch={handleApplySearch}
+              mapPolygon={mapPolygonForUi}
               onToggleMap={() => setShowMap((prev) => !prev)}
             />
           </aside>
@@ -343,12 +366,14 @@ export default function DiscoverPage() {
               messages={data.messages}
               showMap={showMap}
               mapGeoJson={mapGeoJson}
-              onCloseMap={() => setShowMap(false)}
+              mapPolygon={mapPolygonForUi}
+              onPolygonChange={(poly) => updateFilters({ map: poly ?? '' })}
             />
           </div>
         </div>
       </section>
     );
+  }
 
   return null;
 }

@@ -139,14 +139,14 @@ export default function HeaderMain({
         {/* Logos */}
         <div className="flex gap-4 items-center mt-6">
           <Image
-            src="/images/partner-logos/CoreTrustSeal_32.png"
+            src="/browser/images/partner-logos/CoreTrustSeal_32.png"
             alt="Core Trust Seal"
             width={40}
             height={40}
             className="h-[32px] w-auto"
           />
           <Image
-            src="/images/partner-logos/clarin-b-centre-transparent_32.png"
+            src="/browser/images/partner-logos/clarin-b-centre-transparent_32.png"
             alt="Clarin B Centre"
             width={120}
             height={40}
