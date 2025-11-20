@@ -21,20 +21,18 @@ export default function HeaderMain({
   const lang = Cookies.get('i18nextLng') || 'en';
 
   return (
-    <div className=" bg-[#e4eff5] max-h-[300px]">
+    <div className="  bg-[#e4eff5] max-h-[300px] background-image-front-div front-header-div">
       {/* Header */}
       <header className="flex items-center justify-between px-8 pt-5 bg-transparent">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <Link href="/">
-            <Image
-              src="/browser/images/logos/arche_transparent_header.svg"
-              alt="ARCHE logo"
-              width={160}
-              height={40}
-              className="w-[160px] h-[40px]"
-            />
-          </Link>
+        <div className="flex items-center gap-2 z-40">
+          <Image
+            src="/browser/images/logos/arche_transparent_header.svg"
+            alt="ARCHE logo"
+            width={160}
+            height={40}
+            className="w-[160px] h-[40px]"
+          />
         </div>
 
         {/* Nav */}

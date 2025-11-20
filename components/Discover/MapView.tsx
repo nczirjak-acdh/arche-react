@@ -143,7 +143,7 @@ export default function MapView({
           }}
           className="rounded-md bg-white/90 px-3 py-1 text-sm shadow border"
         >
-          {drawing ? 'Rajzolás… (húzd az egeret)' : 'Téglalap rajzolása'}
+          {drawing ? 'Drawing… (Move the mouse)' : 'Draw a rectangle'}
         </button>
 
         <button

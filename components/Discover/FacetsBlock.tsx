@@ -149,20 +149,17 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
 
       {/* FACETS */}
       {Object.entries(data).map(([key, fd]) => {
-        console.log('INSIDE');
-        console.log(key);
-        console.log(fd);
         const facetProp = fd?.property || key;
         const safeId = facetProp.replace(/[^a-z0-9_-]/gi, '_');
-        console.log('FACET PROP: ');
-        console.log(facetProp);
-        console.log(Array.isArray(fd.values));
         // HIDE facets with empty values
 
         if (
           (Array.isArray(fd.values) && fd.values.length === 0) || // empty array
           (!Array.isArray(fd.values) && String(fd.values).trim() === '') // empty string/null/undefined
         ) {
+          console.log('EMPTY _----> ');
+          console.log(fd.label);
+          console.log(fd);
           return null;
         }
 
@@ -171,7 +168,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
             key={facetProp}
             className="border border-[#E1E1E1] rounded-[8px] w-full bg-white"
           >
-            <div className="flex items-center gap-2 bg-[#FAFAFA] px-4 py-2">
+            <div className="flex items-center gap-2 bg-[#FAFAFA] px-4 py-2 rounded-tr-[8px] rounded-tl-[8px]">
               <span className="font-medium text-sm">{fd.label}</span>
               <button
                 onClick={() => toggle(facetProp)}
@@ -250,7 +247,7 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
 
       {/* FIXED EXTENDED SEARCH CARD */}
       <div className="border border-[#E1E1E1] rounded-[8px] w-full bg-white">
-        <div className="flex items-center gap-2 bg-[#FAFAFA] px-4 py-2">
+        <div className="flex items-center gap-2 bg-[#FAFAFA] px-4 py-2 rounded-tr-[8px] rounded-tl-[8px]">
           <span className="font-medium text-sm">Extended search</span>
         </div>
         <div className="p-3 space-y-3">
