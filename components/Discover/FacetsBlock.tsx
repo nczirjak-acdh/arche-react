@@ -157,9 +157,6 @@ const FacetsBlock: React.FC<FacetsBlockProps> = ({
           (Array.isArray(fd.values) && fd.values.length === 0) || // empty array
           (!Array.isArray(fd.values) && String(fd.values).trim() === '') // empty string/null/undefined
         ) {
-          console.log('EMPTY _----> ');
-          console.log(fd.label);
-          console.log(fd);
           return null;
         }
 

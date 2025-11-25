@@ -12,6 +12,7 @@
   --color-arche-blue:  #3b89ad;
   --color-arche-gray:  #5b595b;
   --color-arche-red:   #dc3545;
+  --color-arche-new-blue: #88dbdf
 }
 
 :root { --asset-root: ""; }         /* override to "/browser" in prod if needed */
@@ -453,7 +454,7 @@ details p {
     width: fit-content;
     text-decoration: none;
   }
-  
+
   a.btn-arche-blue  {
     color: white !important;
     text-decoration: none;
@@ -463,6 +464,46 @@ details p {
       background-color: rgba(59, 137, 173, 0.5);
     text-decoration: none;
     color: white;
+  }
+
+  .table-row-acdhBlue {
+    background-color: #88dbdf;
+  }
+
+  @layer components {
+  /* Basic .table equivalent */
+  #filenames-formats-dynamic-table table,
+  #metadata-table table {
+    
+    @apply w-full text-left text-sm text-gray-900;
+    border-collapse: collapse; /* can't use @apply for this */
+  }
+
+  #filenames-formats-dynamic-table table thead,
+  #metadata-table table thead {
+    @apply align-bottom;
+  }
+
+  #filenames-formats-dynamic-table table th,
+  #metadata-table table th,
+  #filenames-formats-dynamic-table table td,
+  #metadata-table table td {
+    @apply px-3 py-2 align-top border-b border-gray-200;
+  }
+
+  /* Thicker bottom border for header – like Bootstrap */
+  #filenames-formats-dynamic-table table thead th ,
+  #metadata-table table thead th
+  {
+    @apply border-b-2 border-gray-300;
+  }
+
+}
+
+  #filenames-formats-dynamic-table table,
+  #metadata-table table {
+    width: 100%;
+    margin-top: 20px;
   }
 
   a.header-nav-text {

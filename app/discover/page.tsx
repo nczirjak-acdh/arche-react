@@ -361,7 +361,7 @@ export default function DiscoverPage() {
           </aside>
           <div className="w-full lg:w-[75%] space-y-4">
             <ResultBlock
-              data={data.results}
+              data={data}
               pagerData={pagerData}
               messages={data.messages}
               showMap={showMap}

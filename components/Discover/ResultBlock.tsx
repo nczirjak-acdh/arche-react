@@ -7,7 +7,7 @@ import AccessRestrictionBlock from './AccessRestrictionBlock';
 import MapView from './MapView';
 
 export default function ResultBlock({
-  data = [] as ResultItem[],
+  data = [],
   pagerData = [] as PagerItem[],
   messages = '',
   showMap = false,
@@ -16,7 +16,7 @@ export default function ResultBlock({
   onPolygonChange,
   onCloseMap,
 }: {
-  data?: ResultItem[];
+  data?: [];
   pagerData?: PagerItem[];
   messages?: string;
   showMap?: boolean;
@@ -25,6 +25,50 @@ export default function ResultBlock({
   onPolygonChange?: (polygon: string | null) => void;
   onCloseMap?: () => void;
 }) {
+  const dataResult = data?.results as ResultItem[];
+  const pinsGeoJson = React.useMemo<{
+    type: string;
+    coordinates: [number, number][];
+  } | null>(() => {
+    const rawPins = data?.allPins;
+    if (!rawPins) return null;
+
+    if (typeof rawPins === 'string') {
+      try {
+        return JSON.parse(rawPins);
+      } catch (err) {
+        console.warn('Could not parse pins GeoJSON', err);
+        return null;
+      }
+    }
+
+    if (
+      typeof rawPins === 'object' &&
+      'type' in rawPins &&
+      'coordinates' in rawPins
+    ) {
+      return rawPins as { type: string; coordinates: [number, number][] };
+    }
+
+    return null;
+  }, [data]);
+  const hasPins = !!pinsGeoJson?.coordinates?.length;
+
+  console.log('DATA');
+  console.log('PINS TYPE');
+  console.log(pinsGeoJson);
+  const pinsArray = pinsGeoJson
+    ? [{ type: pinsGeoJson.type, coordinates: pinsGeoJson.coordinates }]
+    : [];
+  console.log(pinsArray);
+
+  console.log('MAP GEO JSON start');
+  console.log(mapGeoJson);
+
+  console.log('MAP GEO JSON END');
+
+  const shouldShowMap = (showMap || hasPins) && mapGeoJson;
+
   return (
     <div className="flex flex-col rounded-[12px] border border-[#e1e1e1] bg-white relative">
       {/* Top row */}
@@ -49,8 +93,8 @@ export default function ResultBlock({
       </div>
 
       <div className="space-y-4">
-        {/* optional map panel */}
-        {showMap && mapGeoJson && (
+        {/*  map panel */}
+        {shouldShowMap && (
           <div className="border border-gray-200 rounded-md p-3 bg-white">
             <div className="flex justify-between items-center mb-2">
               <h2 className="font-semibold text-sm">Spatial coverage</h2>
@@ -64,6 +108,7 @@ export default function ResultBlock({
                 </button>
               )}
             </div>
+
             <MapView
               geoJson={mapGeoJson}
               currentPolygon={mapPolygon}
@@ -85,7 +130,7 @@ export default function ResultBlock({
       {/* Results */}
 
       <div>
-        {data.map((item) => (
+        {dataResult.map((item) => (
           <ResultRow key={item.id} item={item} />
         ))}
       </div>

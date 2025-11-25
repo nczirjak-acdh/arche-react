@@ -26,10 +26,14 @@ export default function HtmlFromTemplate({
   locale,
   name,
   base = '',
+  dynamicTableUrlForLang,
+  internalTableApi = [],
 }: {
   locale: string;
   name: string; // e.g. 'home'
   base?: string; // e.g. 'http://localhost/api/home'
+  dynamicTableUrlForLang?: (lang: string) => string | null;
+  internalTableApi?: { id: string; url: string }[];
 }) {
   const [tpl, setTpl] = useState('');
   const [json, setJson] = useState<JsonData | null>(null);
@@ -104,6 +108,44 @@ export default function HtmlFromTemplate({
       rootsRef.current = [];
     };
   }, [rendered]);
+
+  // Inject HTML blocks by id using internalTableApi config
+  useEffect(() => {
+    if (!internalTableApi?.length) return;
+    const host = containerRef.current;
+    if (!host) return;
+
+    const controller = new AbortController();
+    const escapeId = (id: string) =>
+      typeof CSS !== 'undefined' && CSS.escape
+        ? `#${CSS.escape(id)}`
+        : `[id="${id}"]`;
+
+    internalTableApi.forEach(({ id, url }) => {
+      if (!id) return;
+      const target = host.querySelector<HTMLElement>(escapeId(id));
+      if (!target) return;
+
+      const fetchUrl =
+        url || (dynamicTableUrlForLang ? dynamicTableUrlForLang(locale) : null);
+      if (!fetchUrl) return;
+
+      fetch(fetchUrl, { signal: controller.signal })
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.text();
+        })
+        .then((html) => {
+          if (!controller.signal.aborted) target.innerHTML = html;
+        })
+        .catch((error) => {
+          if (controller.signal.aborted) return;
+          console.warn(`Dynamic table fetch failed for ${id}`, error);
+        });
+    });
+
+    return () => controller.abort();
+  }, [rendered, locale, internalTableApi, dynamicTableUrlForLang]);
 
   if (loading) {
     return (

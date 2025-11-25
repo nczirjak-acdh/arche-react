@@ -134,7 +134,7 @@ export default function MapView({
 
   return (
     <div style={{ width: '100%', height: '500px', position: 'relative' }}>
-      <div className="absolute z-[1000] left-4 top-4 flex gap-2">
+      <div className="absolute z-[1000] left-20 top-4 flex gap-2">
         <button
           type="button"
           onClick={() => {
@@ -151,7 +151,7 @@ export default function MapView({
           onClick={handleClear}
           className="rounded-md bg-white/90 px-3 py-1 text-sm shadow border"
         >
-          Alakzat törlése
+          Remove rectangle
         </button>
       </div>
 
@@ -159,7 +159,7 @@ export default function MapView({
         center={[48.2082, 16.3738]}
         zoom={10}
         style={{ width: '100%', height: '100%' }}
-        // optional: dupla katt zoom kikapcs, hogy ne zavarjon rajzolásnál
+        // optional: double click disabled during drawing
         doubleClickZoom={false}
       >
         <TileLayer
