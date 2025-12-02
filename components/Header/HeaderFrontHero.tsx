@@ -16,6 +16,7 @@ export default function HeaderFrontHero() {
             height={200}
             className="w-auto h-auto"
           />
+          FRONT HERO
         </div>
 
         {/* Center content */}

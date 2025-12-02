@@ -44,7 +44,7 @@ const FacetsExtra = () => {
           target="_blank"
           className="block btn-arche-blue text-white w-full text-center"
         >
-          Add to CLARIN Virtual Collection
+          {t('Add to CLARIN Virtual Collection')}
         </Link>
       </div>
     </div>

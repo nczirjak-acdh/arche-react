@@ -23,16 +23,19 @@ export default function HeaderMain({
   return (
     <div className="  bg-[#e4eff5] max-h-[300px] background-image-front-div front-header-div">
       {/* Header */}
+
       <header className="flex items-center justify-between px-8 pt-5 bg-transparent">
         {/* Logo */}
         <div className="flex items-center gap-2 z-40">
-          <Image
-            src="/browser/images/logos/arche_transparent_header.svg"
-            alt="ARCHE logo"
-            width={160}
-            height={40}
-            className="w-[160px] h-[40px]"
-          />
+          <Link href="/" className="hover:!no-underline">
+            <Image
+              src="/browser/images/logos/arche_transparent_header.svg"
+              alt="ARCHE logo"
+              width={160}
+              height={40}
+              className="w-[160px] h-[40px]"
+            />
+          </Link>
         </div>
 
         {/* Nav */}
@@ -101,7 +104,6 @@ export default function HeaderMain({
           </div>
         )}
       </header>
-
       {/* Hero Section */}
       <section className="flex flex-col items-center text-center px-4 pt-5 pb-20">
         <h1 className="text-3xl font-bold text-[#2c2c2c] mb-2">

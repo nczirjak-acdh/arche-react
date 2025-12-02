@@ -15,7 +15,7 @@ export default function metadata() {
   if (lang === 'de') return null; // or a spinner while redirecting
 
   return (
-    <div className="mb-[100px]">
+    <div className="deposition-agreement-container">
       <HtmlFromTemplate
         locale={lang}
         name="deposition-agreement"

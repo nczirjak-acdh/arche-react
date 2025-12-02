@@ -16,7 +16,7 @@ export default function metadata() {
   if (lang === 'en') return null; // or a spinner while redirecting
 
   return (
-    <div className="mb-[100px]">
+    <div className="">
       <HtmlFromTemplate
         locale={lang}
         name="deposition-process"

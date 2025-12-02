@@ -232,7 +232,7 @@ input::-ms-input-placeholder {
   color: #666873;
 }
 
-  .resources-container-home {
+.resources-container-home {
 	background-image: url("/browser/images/common/resource_bottom_bubble.svg");
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -324,9 +324,26 @@ input::-ms-input-placeholder {
 
 
 .cards-container {
-  padding-bottom: 100px;
+  background-image: url("/browser/images/common/mission_bottom_bubble.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 60px;
+  padding-bottom: 150px;
+  
 }
 
+.deposition-agreement-container {
+background-image: url("/browser/images/common/mission_bottom_bubble.svg");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100%;
+  padding-bottom: 150px;
+  
+}
 
 .accordion-static {
   margin: 20px auto;

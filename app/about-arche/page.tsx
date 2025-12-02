@@ -9,7 +9,7 @@ export default function metadata() {
   const lang = Cookies.get('i18nextLng') || 'en';
 
   useEffect(() => {
-    if (lang === 'de') router.replace('/de/einreichungsprozess');
+    if (lang === 'de') router.replace('/de/ueber-arche');
   }, [lang, router]);
 
   if (lang === 'de') return null; // or a spinner while redirecting
@@ -18,7 +18,7 @@ export default function metadata() {
     <div className="">
       <HtmlFromTemplate
         locale={lang}
-        name="faq"
+        name="about-arche"
         base="https://raw.githubusercontent.com/nczirjak-acdh/arche-react-static-test/refs/heads/main/arche-react"
       />
     </div>
